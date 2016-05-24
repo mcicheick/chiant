@@ -19,7 +19,9 @@ sports.php
 	Constantes qui associe un numéro à chaque sport
 
 config.php
-	Appels de toutes config des sous-dossiers
+	Définition de constantes
+	Appels de toutes config.php des sous-dossiers
+
 
 entree_json.php
 	point d'entrée des requêtes en json

@@ -17,7 +17,7 @@ function routage() {
     return
         array('newuser'=>
                 array('fun' => 'register', 
-                      'file' => 'photo',
+                      //'file' => 'photo',
                       'params' => array('prenom', 'nom', 'email', 'hashmdp')),
               'update_user_sport_prefs' =>
                 array('fun' => 'update_user_sp_prefs', 
@@ -75,7 +75,7 @@ function errError() {
  }
 
 function exc_to_jsonErr($e) {
-     return makeErrorJson($e->getCode(), $e->getMessage();    
+     return makeErrorJson($e->getCode(), $e->getMessage());    
 }
 
  
@@ -109,12 +109,13 @@ function dispatchReq($params){
     try {
         $fun = $route['fun'];
         $args = $route['params'];
-        $args_fun = array_vales_from_keys($params,$args);
+        $args_fun = array_values_from_keys($params,$args);
         // Si upload de fichier
         if (isset($route['file']))
             // le premièr argument de fun est les infos relatifs au fichier
             // sur le serveur
-           array_unshift($args_fun, $_FILE[$route['file']])
+		true;
+           //array_unshift($args_fun, $_FILE[$route['file']]);
 
         return bret(call_user_func_array($fun,
                 $args_fun));
@@ -129,7 +130,7 @@ function dispatchReq($params){
         return errLoginNeeded();
     }
     catch (MyExc $e) {
-        return exc_to_jsonErr($e)
+        return exc_to_jsonErr($e);
     }
     catch(HermetiqueExc $e) {
         if (HERMETIQUE)
@@ -185,16 +186,17 @@ function photo_user_path($iduser, $extension) {
     return 'pictures/u'.$iduser.'.'.$extension;
 }
 
-function register($photoparams,$prenom, $nom, $email, $mdp) {
+function register(/*$photoparams,*/$prenom, $nom, $email, $mdp) {
     $iduser = I\create_user( $prenom, $nom, $email, $mdp);
+    /*
     if ($photoparams) {
         $up_path = $photoparams['tmp_name'];
         $ext = pathinfo($photoparams['name'], PATHINFO_EXTENSION);
         $photopath = photo_user_path($iduser, $ext);
         if (! move_uploaded_file($up_path, $photopath))
             raiseHermetiqueExc(ERR_ERROR, 'Impossible de déplacer le fichier uploadé');
-        I\update_user_photo($iduser, $photopath)
-    }
+        I\update_user_photo($iduser, $photopath);
+    }*/
     return true;
 }
 
