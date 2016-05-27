@@ -29,6 +29,7 @@ array(
 
             );
 
+/*
 function route_to_link ($requete, $params) {
     $params['requete'] = $requete;
     return '../entree_post.php?'. http_build_query($params);
@@ -41,9 +42,10 @@ function print_link($lien, $str) {
 function route_to_string($req, $params) {
     $str = 'requete: '.$req."\nparamètres : ";
     foreach ($params as $key => $param) 
-	$str .= "\t".$key. ': '.$param."\n";
+	$str .= "\t".$key. ':  <input type="text" name="'.$key.'" value="'.$param.'" />\n<br/>';
     return $str;
 }
+*/
 /*
     print_link(route_to_link($req,$params), route_to_string($req,$params));
  */
@@ -52,14 +54,16 @@ function print_route($req, $params) {
     echo '<form action="../entree_post.php" method="post">';
     $str = 'requete: '.$req."\nparamètres : ";
     foreach ($params as $key => $param) 
-	$str .= "\t".$key. ': '.$param."\n";
+	$str .= "\t".$key. ':  <input type="text" name="'.$key.'" value="'.$param.'" />\n<br/>';
+   
+    $str .= '<input type="submit" value="submit" /></form>';
     return $str;
 }
 
 echo "<pre>\n";
 
 foreach($tests as $req => $params) {
-    print_link(route_to_link($req,$params), route_to_string($req,$params));
+    //print_link(route_to_link($req,$params), route_to_string($req,$params));
     $params[MAGIC_PWD_FIELD] = MAGIC_PWD;
     $params[SESSION_USERID_NAME] = 2;
     print_route($req, $params);
