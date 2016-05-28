@@ -52,6 +52,7 @@ function route_to_string($req, $params) {
 
 function print_route($req, $params) {
     echo '<form action="../entree_post.php" method="post"><br/>';
+echo '<input type="hidden" name="requete" value="'.$req.'" />';
     $str = 'requete: '.$req."\n<br/>paramètres :<br/> ";
     foreach ($params as $key => $param) 
 	$str .= "\t".$key. ':  <input type="text" name="'.$key.'" value="'.$param.'" />\n<br/>';
