@@ -1,5 +1,5 @@
 <?php
-require_once '..\requete.php';
+require_once '../requete.php';
 
 echo '<pre>';
 $routes = routage();

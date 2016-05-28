@@ -51,17 +51,18 @@ function route_to_string($req, $params) {
  */
 
 function print_route($req, $params) {
-    echo '<form action="../entree_post.php" method="post">';
-    $str = 'requete: '.$req."\nparamètres : ";
+    echo '<form action="../entree_post.php" method="post"><br/>';
+    $str = 'requete: '.$req."\n<br/>paramètres :<br/> ";
     foreach ($params as $key => $param) 
 	$str .= "\t".$key. ':  <input type="text" name="'.$key.'" value="'.$param.'" />\n<br/>';
    
-    $str .= '<input type="submit" value="submit" /></form>';
-    return $str;
+    $str .= '<input type="submit" value="submit" /></form><p/>';
+	echo $str;
+    return ;
 }
 
-echo "<pre>\n";
 
+echo "<html>";
 foreach($tests as $req => $params) {
     //print_link(route_to_link($req,$params), route_to_string($req,$params));
     $params[MAGIC_PWD_FIELD] = MAGIC_PWD;

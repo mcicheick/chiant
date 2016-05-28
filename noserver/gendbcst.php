@@ -1,6 +1,6 @@
 <?php
 require_once 'env.php';
-require_once '..\db.php';
+require_once '../db.php';
 
 if (ENV != 'LOCAL')
 	die('Not in local mode');
