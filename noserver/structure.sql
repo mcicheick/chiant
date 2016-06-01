@@ -7,8 +7,6 @@
 -- Version du serveur: 5.5.27
 -- Version de PHP: 5.4.7
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -24,15 +22,6 @@ DELIMITER $$
 --
 -- Procédures
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `test_multi_sets`()
-    DETERMINISTIC
-begin
-        select user() as first_col;
-        select user() as first_col, now() as second_col;
-        select user() as first_col, now() as second_col, now() as third_col;
-        end$$
-
-DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -139,14 +128,6 @@ CREATE TABLE IF NOT EXISTS `lien_team_users` (
 -- Création: Jeu 17 Mars 2016 à 11:15
 --
 
-CREATE TABLE IF NOT EXISTS `schema_version` (
-  `major_version` int(11) NOT NULL,
-  `minor_version` int(11) NOT NULL,
-  `version_edit` int(11) NOT NULL,
-  `custom_major` int(11) NOT NULL DEFAULT '0',
-  `custom_minor` int(11) NOT NULL DEFAULT '0',
-  `custom_edit` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -166,7 +147,7 @@ CREATE TABLE IF NOT EXISTS `teams` (
   `RANK` int(11) DEFAULT NULL COMMENT 'possiblement inutile car redondant avec le score (calculable)',
   `SPORT` int(11) NOT NULL COMMENT 'entier représentant le sport',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -187,7 +168,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `PREFS_SPORT` int(11) NOT NULL DEFAULT '0' COMMENT 'Préférences sous forme de masque bits',
   PRIMARY KEY (`ID`),
   UNIQUE KEY `MAIL` (`MAIL`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=23 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
