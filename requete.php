@@ -28,6 +28,9 @@ function routage() {
               'join_team' =>
                 array('fun' => 'join_team', 
                       'params' => array('id_team')),
+              'unjoin_team' =>
+                array('fun' => 'unjoin_team', 
+                      'params' => array('id_team')),
               'new_team' =>
                 array('fun' => 'newteam_byuser_p',
                       'params' => array('pseudo', 'sport')),
@@ -67,7 +70,7 @@ function errForbidden      () { return makeErrorJson(ERR_FORBIDDEN,  "Forbidden"
 function errDuplicateEntry () { return makeErrorJson(ERR_DUPLICATE_ENTRY, 'Duplicate entry');}
 
 function errError() {
-    return makeErrorJson(array("answer" => "NO", "code" => ERR_ERROR, 'msg' => 'Error'));
+    return makeErrorJson(ERR_ERROR, 'Error');
 }
 
  function makeErrorJson($code, $msg) {
@@ -149,7 +152,7 @@ function bret($b) {
     if ($b)
         return (array("answer" => "OK"));
     else
-        return errError();
+        return raiseHermetiqueExc(ERR_ERROR, 'False return value : '.$b);
 }
 
 function login($email, $hashmdp) {
@@ -243,6 +246,11 @@ function join_team($id_team) {
     return I\u_joins_t($id_user, $id_team);
 }
 
+function unjoin_team($id_team) {
+    $id_user = checkLogged();
+    check_user_team($id_user, $id_team);
+    return I\u_unjoins_t($id_user, $id_team);
+}
 
 function check_logged_u_t ($id_team) {
     $id_user = checkLogged();

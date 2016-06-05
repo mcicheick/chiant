@@ -71,6 +71,7 @@ echo "<html>";
 $routes = routage();
 foreach(routage() as $req => $route) {
     $params = $route['params'];
+    $params = array_flip($params);
     $file = $route['file'];
     $params[MAGIC_PWD_FIELD] = MAGIC_PWD;
     $params[SESSION_USERID_NAME] = 2;

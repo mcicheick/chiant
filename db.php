@@ -126,5 +126,5 @@ function deleteDbArr($table, $wherea) {
 
     $lst = array_map(function($key) { return $key.'=?';}, $cles);
     $lst_str = join($lst, ' AND ');
-    return deleteDbWhStr($table,$cols, $lst_str, $vals);
+    return deleteDbWhStr($table,$lst_str, $vals);
 }

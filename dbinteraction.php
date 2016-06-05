@@ -79,6 +79,10 @@ function u_joins_t($id_user, $id_team) {
     return insertDb(TBL_LIEN_TEAM_USERS, array(LIEN_TEAM_USERS_ID_TEAM => $id_team, LIEN_TEAM_USERS_ID_USER => $id_user));
 }
 
+function u_unjoins_t($id_user, $id_team) {
+    return deleteDbArr(TBL_LIEN_TEAM_USERS, array(LIEN_TEAM_USERS_ID_TEAM => $id_team, LIEN_TEAM_USERS_ID_USER => $id_user));
+}
+
 function delete_invitations_ut($id_user, $id_team) {
     return deleteDbArr(TBL_INVITATIONS_EQUIPE_JOUEUR,
         array(INVITATIONS_INTER_EQUIPES_ID_INVITE => $id_user,
