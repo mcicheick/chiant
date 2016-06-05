@@ -1,5 +1,6 @@
 <?php
 require_once '../config.php';
+require_once '../requete.php';
 
 $tests =
 array(
@@ -50,9 +51,11 @@ function route_to_string($req, $params) {
     print_link(route_to_link($req,$params), route_to_string($req,$params));
  */
 
-function print_route($req, $params) {
+function print_route($req, $params, $file) {
     echo '<form action="../entree_post.php" method="post"><br/>';
 echo '<input type="hidden" name="requete" value="'.$req.'" />';
+if ($file)
+   echo '<input type="file" name="'.$file.'" /><br/>';
     $str = 'requete: '.$req."\n<br/>paramètres :<br/> ";
     foreach ($params as $key => $param) 
 	$str .= "\t".$key. ':  <input type="text" name="'.$key.'" value="'.$param.'" />\n<br/>';
@@ -64,6 +67,16 @@ echo '<input type="hidden" name="requete" value="'.$req.'" />';
 
 
 echo "<html>";
+
+$routes = routage();
+foreach(routage() as $req => $route) {
+    $params = $route['params'];
+    $file = $route['file'];
+    $params[MAGIC_PWD_FIELD] = MAGIC_PWD;
+    $params[SESSION_USERID_NAME] = 2;
+    print_route($req, $params, $file);
+}
+echo '<p> Tests paramétrés </p>';
 foreach($tests as $req => $params) {
     //print_link(route_to_link($req,$params), route_to_string($req,$params));
     $params[MAGIC_PWD_FIELD] = MAGIC_PWD;
