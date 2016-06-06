@@ -7,3 +7,5 @@ define('SESSION_USERID_NAME', 'id_user');
 define('ID_SUPER_USER', 1);
 define('WARNINGS', true);
 define('HERMETIQUE', ENV != 'LOCAL');
+
+define('PICTURES_DIR', 'pictures');
