@@ -17,8 +17,11 @@ function routage() {
     return
         array('newuser'=>
                 array('fun' => 'register', 
-                      'file' => 'photo',
                       'params' => array('prenom', 'nom', 'email', 'hashmdp')),
+		'update_user_picture' =>
+		array('fun' => 'update_u_picture',
+			'file' => 'photo',
+			'params' => array()),
               'update_user_sport_prefs' =>
                 array('fun' => 'update_user_sp_prefs', 
                       'params' => array('football', 'basket')),
@@ -114,11 +117,13 @@ function dispatchReq($params){
         $args = $route['params'];
         $args_fun = array_values_from_keys($params,$args);
         // Si upload de fichier
-        if (isset($route['file']))
+        if (isset($route['file'])) {
             // le premièr argument de fun est les infos relatifs au fichier
             // sur le serveur
 		//true;
            array_unshift($args_fun, $_FILES[$route['file']]);
+
+	}
 
         return bret(call_user_func_array($fun,
                 $args_fun));
@@ -186,20 +191,39 @@ function checkLogged() {
 }
 
 function photo_user_path($iduser, $extension) {
-    return 'pictures/u'.$iduser.'.'.$extension;
+    return PICTURES_DIR.'/u'.$iduser.'.'.$extension;
 }
 
-function register($photoparams,$prenom, $nom, $email, $mdp) {
+function delete_photo($path) {
+	// TODO: check that path is in dir (security check)
+	// TODO: use realpath
+	$rpath = basename(dirname(realpath($path)));
+
+	if ($rpath == PICTURES_DIR)
+		unlink($path);
+	else
+		raiseHermetiqueExc(ERR_ERROR,"Tentative de suppression d'un image dans le mauvais dossier ".$path. " dans ". $rpath);
+}
+
+function update_u_picture($photoparams) {
+    $iduser = checkLogged();
+    $old_path = I\get_photo($iduser);
+    if ($old_path)
+	    delete_photo($old_path);
+
+	$up_path = $photoparams['tmp_name'];
+	$ext = pathinfo($photoparams['name'], PATHINFO_EXTENSION);
+	$photopath = photo_user_path($iduser, $ext);
+	if (! move_uploaded_file($up_path, $photopath))
+		raiseHermetiqueExc(ERR_ERROR, 'Impossible de déplacer le fichier uploadé');
+	I\update_user_photo($iduser, $photopath);
+
+	return true;
+}
+
+function register($prenom, $nom, $email, $mdp) {
     $iduser = I\create_user( $prenom, $nom, $email, $mdp);
     
-    if ($photoparams) {
-        $up_path = $photoparams['tmp_name'];
-        $ext = pathinfo($photoparams['name'], PATHINFO_EXTENSION);
-        $photopath = photo_user_path($iduser, $ext);
-        if (! move_uploaded_file($up_path, $photopath))
-            raiseHermetiqueExc(ERR_ERROR, 'Impossible de déplacer le fichier uploadé');
-        I\update_user_photo($iduser, $photopath);
-    }
     return true;
 }
 

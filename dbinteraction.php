@@ -111,3 +111,7 @@ function u_post_msg_tt ($id_user, $id_team1, $id_team2, $msg) {
 	CHAT_INTER_EQUIPE_ID_EQUIPE2 => $id2));
 }
 
+function get_photo($id_user) {
+	return selectId(TBL_USERS, array(USERS_PICTURE_FILE), $id_user)->fetchColumn();
+}
+

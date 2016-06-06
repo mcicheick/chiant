@@ -52,7 +52,7 @@ function route_to_string($req, $params) {
  */
 
 function print_route($req, $params, $file) {
-    echo '<form action="../entree_post.php" method="post"><br/>';
+    echo '<form action="../entree_post.php" method="post"  enctype="multipart/form-data"><br/>';
 echo '<input type="hidden" name="requete" value="'.$req.'" />';
 if ($file)
    echo '<input type="file" name="'.$file.'" /><br/>';
