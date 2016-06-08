@@ -111,6 +111,15 @@ function u_post_msg_tt ($id_user, $id_team1, $id_team2, $msg) {
 	CHAT_INTER_EQUIPE_ID_EQUIPE2 => $id2));
 }
 
+function t_annonce_us($id_team, $frequence, $nb, $niveau, $description) {
+    return insertDb(TBL_OFFRE_TEAM_USERS, array(
+	OFFRE_TEAM_USERS_ID_TEAM => $id_team,
+	OFFRE_TEAM_USERS_DESCRIPTION => $description,
+	OFFRE_TEAM_USERS_NB => $nb,
+    OFFRE_TEAM_USERS_NIVEAU => $niveau,
+    OFFRE_TEAM_USERS_FREQUENCE => $frequence));
+}
+
 function get_photo($id_user) {
 	return selectId(TBL_USERS, array(USERS_PICTURE_FILE), $id_user)->fetchColumn();
 }

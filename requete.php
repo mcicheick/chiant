@@ -49,9 +49,13 @@ function routage() {
               'post_chat_inter_teams' =>
                 array('fun' => 'u_post_msg_tt', 
                 'params' => array('id_team_user','id_team_cible', 'msg')),
+
               'login' =>
                 array('fun' => 'login', 
-                'params' => array('email', 'hashmdp'))
+                'params' => array('email', 'hashmdp')),
+               'post_recherche_team_users' =>
+               array('fun' => 't_annonce_us',
+                 'params' => array('id_team', 'frequence', 'nb', 'niveau', 'description'))
 
             );
 
@@ -295,5 +299,13 @@ function u_post_msg_t ($id_team, $msg) {
 function u_post_msg_tt ($id_team_u, $id_team_cible, $msg) {
     $id_user = check_logged_u_t($id_team_u);
     //TODO: vérifier quoi d'autres ? (
-    return I\u_post_msg_tt($id_user, $id_team_u, $id_team_cible, $msg);
+    I\u_post_msg_tt($id_user, $id_team_u, $id_team_cible, $msg);
+    return true;
 }
+
+function t_annonce_us($id_team, $frequence, $nb, $niveau, $description) {
+     check_logged_u_t($id_team);
+    I\t_annonce_us($id_team, $frequence, $nb, $niveau, $description) ;
+    return true;
+}
+
