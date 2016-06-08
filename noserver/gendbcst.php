@@ -1,5 +1,5 @@
 <?php
-require_once 'env.php';
+require_once 'config.php';
 require_once '../db.php';
 
 if (ENV != 'LOCAL')
@@ -25,10 +25,12 @@ function showDescriptions(){
 
 
 echo '<pre>';
+/*
 $db = getDb();
 $query = $db->query('SELECT * FROM schema_version');
 echo '// Version de la bdd : ';
 echo join($query->fetch(PDO::FETCH_NUM),'.');
 echo "(+1) \n";
+*/
  (showDescriptions());
 

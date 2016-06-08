@@ -1,175 +1,283 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.2.2
+-- version 4.5.2
 -- http://www.phpmyadmin.net
 --
--- Client: 127.0.0.1
--- Généré le: Mar 31 Mai 2016 à 23:17
--- Version du serveur: 5.5.27
--- Version de PHP: 5.4.7
+-- Host: localhost
+-- Generation Time: Jun 08, 2016 at 10:55 
+-- Server version: 10.1.13-MariaDB
+-- PHP Version: 5.6.21
 
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données: `near2u`
+-- Database: `near2u`
 --
-
-DELIMITER $$
---
--- Procédures
---
+CREATE DATABASE IF NOT EXISTS `near2u` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `near2u`;
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `chat_interne_equipe`
---
--- Création: Mar 22 Mars 2016 à 19:11
+-- Table structure for table `chat_interne_equipe`
 --
 
-CREATE TABLE IF NOT EXISTS `chat_interne_equipe` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `chat_interne_equipe` (
+  `ID` int(11) NOT NULL,
   `CONTENT` text NOT NULL,
   `ID_USER` int(11) NOT NULL,
   `ID_EQUIPE` int(11) NOT NULL,
-  `DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  `DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- RELATIONS FOR TABLE `chat_interne_equipe`:
+--
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `chat_inter_equipes`
---
--- Création: Sam 02 Avril 2016 à 16:46
+-- Table structure for table `chat_inter_equipes`
 --
 
-CREATE TABLE IF NOT EXISTS `chat_inter_equipes` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `chat_inter_equipes` (
+  `ID` int(11) NOT NULL,
   `CONTENT` text NOT NULL,
   `ID_USER` int(11) NOT NULL,
   `ID_EQUIPE_USER` int(11) NOT NULL COMMENT 'équipe de celui qui a posté',
   `ID_EQUIPE2` int(11) NOT NULL COMMENT 'Par convention le plus grand des deux indices',
-  `DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  `DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- RELATIONS FOR TABLE `chat_inter_equipes`:
+--
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `coup_coeurs_equipes`
---
--- Création: Mar 22 Mars 2016 à 19:03
+-- Table structure for table `coup_coeurs_equipes`
 --
 
-CREATE TABLE IF NOT EXISTS `coup_coeurs_equipes` (
+CREATE TABLE `coup_coeurs_equipes` (
   `ID_AMOUREUX` int(11) NOT NULL,
   `ID_BOGOSS` int(11) NOT NULL,
   `DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `invitations_equipe_joueur`
---
--- Création: Mar 22 Mars 2016 à 19:09
---
-
-CREATE TABLE IF NOT EXISTS `invitations_equipe_joueur` (
-  `ID_INVITANT` int(11) NOT NULL,
-  `ID_INVITE` int(11) NOT NULL,
-  `ID_EQUIPE` int(11) NOT NULL,
-  PRIMARY KEY (`ID_INVITANT`,`ID_INVITE`,`ID_EQUIPE`)
+  `ID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- RELATIONS FOR TABLE `coup_coeurs_equipes`:
+--
+
 -- --------------------------------------------------------
 
 --
--- Structure de la table `invitations_inter_equipes`
---
--- Création: Mar 22 Mars 2016 à 19:15
+-- Table structure for table `invitations_equipe_joueur`
 --
 
-CREATE TABLE IF NOT EXISTS `invitations_inter_equipes` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `invitations_equipe_joueur` (
+  `ID_INVITANT` int(11) NOT NULL,
+  `ID_INVITE` int(11) NOT NULL,
+  `ID_EQUIPE` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- RELATIONS FOR TABLE `invitations_equipe_joueur`:
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `invitations_inter_equipes`
+--
+
+CREATE TABLE `invitations_inter_equipes` (
+  `ID` int(11) NOT NULL,
   `ID_INVITANT` int(11) NOT NULL,
   `ID_INVITE` int(11) NOT NULL,
   `DATE_RENCONTRE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `MONTANT` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `lien_team_users`
---
--- Création: Mar 22 Mars 2016 à 18:58
---
-
-CREATE TABLE IF NOT EXISTS `lien_team_users` (
-  `ID_TEAM` int(11) NOT NULL,
-  `ID_USER` int(11) NOT NULL,
-  PRIMARY KEY (`ID_TEAM`,`ID_USER`)
+  `MONTANT` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- --------------------------------------------------------
-
 --
--- Structure de la table `schema_version`
+-- RELATIONS FOR TABLE `invitations_inter_equipes`:
 --
--- Création: Jeu 17 Mars 2016 à 11:15
---
-
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `teams`
---
--- Création: Mar 22 Mars 2016 à 18:56
+-- Table structure for table `lien_team_users`
 --
 
-CREATE TABLE IF NOT EXISTS `teams` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `lien_team_users` (
+  `ID_TEAM` int(11) NOT NULL,
+  `ID_USER` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- RELATIONS FOR TABLE `lien_team_users`:
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `offre_team_users`
+--
+
+CREATE TABLE `offre_team_users` (
+  `ID_TEAM` int(11) NOT NULL,
+  `DESCRIPTION` varchar(255) NOT NULL,
+  `NB` int(11) NOT NULL COMMENT 'nombre de joueurs recherchés',
+  `FREQUENCE` int(11) NOT NULL COMMENT 'fréquence de jeu attendu',
+  `NIVEAU` int(11) NOT NULL COMMENT 'niveau de jeu attendu'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Annonces d''offres pour les équipes recherchant des joueur.';
+
+--
+-- RELATIONS FOR TABLE `offre_team_users`:
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `teams`
+--
+
+CREATE TABLE `teams` (
+  `ID` int(11) NOT NULL,
   `PSEUDO` varchar(255) NOT NULL,
   `PHOTO` varchar(255) DEFAULT NULL COMMENT 'Nom du fichier dans le dossier des images',
   `NB_PLAYED_M` int(11) NOT NULL DEFAULT '0',
   `NB_VICTORIES` int(11) NOT NULL DEFAULT '0',
   `SCORE` int(11) NOT NULL DEFAULT '0',
   `RANK` int(11) DEFAULT NULL COMMENT 'possiblement inutile car redondant avec le score (calculable)',
-  `SPORT` int(11) NOT NULL COMMENT 'entier représentant le sport',
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  `SPORT` int(11) NOT NULL COMMENT 'entier représentant le sport'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- RELATIONS FOR TABLE `teams`:
+--
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `users`
---
--- Création: Ven 04 Mars 2016 à 18:33
+-- Table structure for table `users`
 --
 
-CREATE TABLE IF NOT EXISTS `users` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `users` (
+  `ID` int(11) NOT NULL,
   `PRENOM` varchar(255) NOT NULL,
   `NOM` varchar(255) NOT NULL,
   `MAIL` varchar(255) NOT NULL,
   `PASSWORD` varchar(255) DEFAULT NULL COMMENT 'peut etre null si on se connecte par facebook',
   `PSEUDO` varchar(255) NOT NULL,
   `PICTURE_FILE` varchar(255) DEFAULT NULL COMMENT 'nom du fichier image',
-  `PREFS_SPORT` int(11) NOT NULL DEFAULT '0' COMMENT 'Préférences sous forme de masque bits',
-  PRIMARY KEY (`ID`),
-  UNIQUE KEY `MAIL` (`MAIL`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  `PREFS_SPORT` int(11) NOT NULL DEFAULT '0' COMMENT 'Préférences sous forme de masque bits'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- RELATIONS FOR TABLE `users`:
+--
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `chat_interne_equipe`
+--
+ALTER TABLE `chat_interne_equipe`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `chat_inter_equipes`
+--
+ALTER TABLE `chat_inter_equipes`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `coup_coeurs_equipes`
+--
+ALTER TABLE `coup_coeurs_equipes`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `invitations_equipe_joueur`
+--
+ALTER TABLE `invitations_equipe_joueur`
+  ADD PRIMARY KEY (`ID_INVITANT`,`ID_INVITE`,`ID_EQUIPE`);
+
+--
+-- Indexes for table `invitations_inter_equipes`
+--
+ALTER TABLE `invitations_inter_equipes`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `lien_team_users`
+--
+ALTER TABLE `lien_team_users`
+  ADD PRIMARY KEY (`ID_TEAM`,`ID_USER`);
+
+--
+-- Indexes for table `offre_team_users`
+--
+ALTER TABLE `offre_team_users`
+  ADD PRIMARY KEY (`ID_TEAM`);
+
+--
+-- Indexes for table `teams`
+--
+ALTER TABLE `teams`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`ID`),
+  ADD UNIQUE KEY `MAIL` (`MAIL`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `chat_interne_equipe`
+--
+ALTER TABLE `chat_interne_equipe`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `chat_inter_equipes`
+--
+ALTER TABLE `chat_inter_equipes`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `coup_coeurs_equipes`
+--
+ALTER TABLE `coup_coeurs_equipes`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `invitations_inter_equipes`
+--
+ALTER TABLE `invitations_inter_equipes`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `teams`
+--
+ALTER TABLE `teams`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
