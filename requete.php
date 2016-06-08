@@ -128,14 +128,13 @@ function dispatchReq($params){
            array_unshift($args_fun, $_FILES[$route['file']]);
 
 	}
-
         return bret(call_user_func_array($fun,
                 $args_fun));
     }
-    catch (DbInsertUnique $e) {
+    catch (DbInsertUniqueExc $e) {
              return errDuplicateEntry();
     }
-    catch (Forbidden $e) {
+    catch (ForbiddenExc $e) {
         return errForbidden();
     }
     catch (NeedLoginExc $e) {
