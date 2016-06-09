@@ -22,6 +22,10 @@ function routage() {
 		array('fun' => 'update_u_picture',
 			'file' => 'photo',
 			'params' => array()),
+		'update_team_picture' =>
+		array('fun' => 'update_t_picture',
+			'file' => 'photo',
+			'params' => array('id_team')),
               'update_user_sport_prefs' =>
                 array('fun' => 'update_user_sp_prefs', 
                       'params' => array('football', 'basket')),
@@ -62,7 +66,7 @@ function routage() {
 }
 
 /*
- * Pour crÈer un nouvel utilisateur
+ * Pour cr√©er un nouvel utilisateur
  * { requete = "newuser";
  *   content = {mdp="skjqhd"; prenom="kljkl"; nom="lkj"; email="kljklj"} }
  *
@@ -122,7 +126,7 @@ function dispatchReq($params){
         $args_fun = array_values_from_keys($params,$args);
         // Si upload de fichier
         if (isset($route['file'])) {
-            // le premiËr argument de fun est les infos relatifs au fichier
+            // le premi√®r argument de fun est les infos relatifs au fichier
             // sur le serveur
 		//true;
            array_unshift($args_fun, $_FILES[$route['file']]);
@@ -197,6 +201,10 @@ function photo_user_path($iduser, $extension) {
     return PICTURES_DIR.'/u'.$iduser.'.'.$extension;
 }
 
+function photo_team_path($idteam, $extension) {
+    return PICTURES_DIR.'/t'.$iduser.'.'.$extension;
+}
+
 function delete_photo($path) {
 	// TODO: check that path is in dir (security check)
 	// TODO: use realpath
@@ -210,7 +218,7 @@ function delete_photo($path) {
 
 function update_u_picture($photoparams) {
     $iduser = checkLogged();
-    $old_path = I\get_photo($iduser);
+    $old_path = I\get_u_photo($iduser);
     if ($old_path)
 	    delete_photo($old_path);
 
@@ -218,8 +226,24 @@ function update_u_picture($photoparams) {
 	$ext = pathinfo($photoparams['name'], PATHINFO_EXTENSION);
 	$photopath = photo_user_path($iduser, $ext);
 	if (! move_uploaded_file($up_path, $photopath))
-		raiseHermetiqueExc(ERR_ERROR, 'Impossible de dÈplacer le fichier uploadÈ');
+		raiseHermetiqueExc(ERR_ERROR, 'Impossible de d√©placer le fichier upload√©');
 	I\update_user_photo($iduser, $photopath);
+
+	return true;
+}
+
+function update_t_picture($photoparams, $id_team) {
+    $id_user = check_logged_u_t($id_team);
+    $old_path = I\get_t_photo($id_team);
+    if ($old_path)
+	    delete_photo($old_path);
+
+	$up_path = $photoparams['tmp_name'];
+	$ext = pathinfo($photoparams['name'], PATHINFO_EXTENSION);
+	$photopath = photo_team_path($id_team, $ext);
+	if (! move_uploaded_file($up_path, $photopath))
+		raiseHermetiqueExc(ERR_ERROR, 'Impossible de d√©placer le fichier upload√©');
+	I\update_team_photo($iduser, $photopath);
 
 	return true;
 }
@@ -259,7 +283,7 @@ function check_user_team ($id_user, $id_team) {
 function t_invites_u_ch($id_team, $id_invite) {
     $id_user = checkLogged();
     check_user_team($id_user, $id_team);
-    // TODO:VÈrifier que l'invitÈ n'est pas dÈj‡ dans la team
+    // TODO:V√©rifier que l'invit√© n'est pas d√©j√† dans la team
 
     return I\t_invites_u($id_user, $id_team, $id_invite);
 }
@@ -269,7 +293,7 @@ function join_team($id_team) {
     $id_user = checkLogged();
     I\delete_invitations_ut($id_user, $id_team);
     //TODO: CHeck that it is not already in the team
-    //(normalement automatique : c'est la contrainte d'unicitÈ)
+    //(normalement automatique : c'est la contrainte d'unicit√©)
     return I\u_joins_t($id_user, $id_team);
 }
 
@@ -297,7 +321,7 @@ function u_post_msg_t ($id_team, $msg) {
 
 function u_post_msg_tt ($id_team_u, $id_team_cible, $msg) {
     $id_user = check_logged_u_t($id_team_u);
-    //TODO: vÈrifier quoi d'autres ? (
+    //TODO: v√©rifier quoi d'autres ? (
     I\u_post_msg_tt($id_user, $id_team_u, $id_team_cible, $msg);
     return true;
 }
