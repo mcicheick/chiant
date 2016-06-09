@@ -53,6 +53,7 @@ define('TEAMS_NB_VICTORIES','NB_VICTORIES');
 define('TEAMS_SCORE','SCORE');
 define('TEAMS_RANK','RANK');
 define('TEAMS_SPORT','SPORT');
+define('TEAMS_PICTURE_FILE','PICTURE_FILE');
 
 define('TBL_USERS', 'users');
 
