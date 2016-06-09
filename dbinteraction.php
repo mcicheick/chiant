@@ -51,8 +51,8 @@ function create_team($pseudo, $sport) {
     return insertDb(TBL_TEAMS, array(TEAMS_PSEUDO=>$pseudo, TEAMS_SPORT => $sport));
 }
 
-function create_user($prenom, $nom, $email, $mdp) {
-    return insertDb(TBL_USERS, array(USERS_NOM => $nom, USERS_MAIL => $email, USERS_PASSWORD => $mdp, USERS_PRENOM => $prenom));
+function create_user($prenom, $nom, $email, $tel, $mdp) {
+    return insertDb(TBL_USERS, array(USERS_NOM => $nom, USERS_MAIL => $email, USERS_PASSWORD => $mdp, USERS_PRENOM => $prenom, USERS_TEL => $tel));
 }
 
 function create_team_by_user($id_user, $pseudo, $sport) {
