@@ -120,6 +120,14 @@ function t_annonce_us($id_team, $frequence, $nb, $niveau, $description) {
     OFFRE_TEAM_USERS_FREQUENCE => $frequence));
 }
 
+function list_t_annonce_us($sport) {
+   return selectDbWhStr(TBL_OFFRE_TEAM_USERS, $cols, '=?', array($sport));
+}
+
+function del_t_annonce_us($idteam) {
+   return select
+}
+
 function get_u_photo($id_user) {
 	return selectId(TBL_USERS, array(USERS_PICTURE_FILE), $id_user)->fetchColumn();
 }
