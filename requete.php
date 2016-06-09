@@ -57,9 +57,18 @@ function routage() {
               'login' =>
                 array('fun' => 'login', 
                 'params' => array('email', 'hashmdp')),
+                
                'post_recherche_team_users' =>
-               array('fun' => 't_annonce_us',
-                 'params' => array('id_team', 'frequence', 'nb', 'niveau', 'description'))
+               array('fun' => 'new_t_annonce_us',
+                 'params' => array('id_team', 'frequence', 'nb', 'niveau', 'description')),
+                 
+		'remove_recherche_team_users' =>
+               array('fun' => 'del_t_annonce_us',
+                 'params' => array('id_team')),
+                 
+                 'list_recherche_team_users' =>
+               array('fun' => 'list_t_annonce_us',
+                 'params' => array('sport'))
 
             );
 
@@ -326,9 +335,19 @@ function u_post_msg_tt ($id_team_u, $id_team_cible, $msg) {
     return true;
 }
 
-function t_annonce_us($id_team, $frequence, $nb, $niveau, $description) {
+function new_t_annonce_us($id_team, $frequence, $nb, $niveau, $description) {
      check_logged_u_t($id_team);
     I\t_annonce_us($id_team, $frequence, $nb, $niveau, $description) ;
     return true;
 }
+
+ function del_t_annonce_us($id_team) {
+ 	 check_logged_u_t($id_team);
+ 	 return I\del_t_annonce_us($id_team);
+ }
+ 
+ function list_t_annonce_us($sport) {
+ 	return I\list_t_annonce_us($sport)
+ }
+                 
 
