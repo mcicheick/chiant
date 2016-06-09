@@ -65,6 +65,7 @@ define('USERS_PASSWORD','PASSWORD');
 define('USERS_PSEUDO','PSEUDO');
 define('USERS_PICTURE_FILE','PICTURE_FILE');
 define('USERS_PREFS_SPORT','PREFS_SPORT');
+define('USERS_TEL','TELEPHONE');
 
 define('TBL_OFFRE_TEAM_USERS', 'offre_team_users');
 
