@@ -17,7 +17,7 @@ function routage() {
     return
         array('newuser'=>
                 array('fun' => 'register', 
-                      'params' => array('prenom', 'nom', 'email', 'hashmdp')),
+                      'params' => array('prenom', 'nom', 'email', 'tel', 'hashmdp')),
 		'update_user_picture' =>
 		array('fun' => 'update_u_picture',
 			'file' => 'photo',
@@ -248,8 +248,8 @@ function update_t_picture($photoparams, $id_team) {
 	return true;
 }
 
-function register($prenom, $nom, $email, $mdp) {
-    $iduser = I\create_user( $prenom, $nom, $email, $mdp);
+function register($prenom, $nom, $email, $tel, $mdp) {
+    $iduser = I\create_user( $prenom, $nom, $email, $tel, $mdp);
     
     return true;
 }
