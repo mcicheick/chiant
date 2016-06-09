@@ -120,7 +120,21 @@ function t_annonce_us($id_team, $frequence, $nb, $niveau, $description) {
     OFFRE_TEAM_USERS_FREQUENCE => $frequence));
 }
 
-function get_photo($id_user) {
+function get_u_photo($id_user) {
 	return selectId(TBL_USERS, array(USERS_PICTURE_FILE), $id_user)->fetchColumn();
+}
+
+function get_t_photo($id_team) {
+	return selectId(TBL_TEAMS, array(TEAMS_PICTURE_FILE), $id_team)->fetchColumn();
+}
+
+function update_user_photo($iduser, $path) {
+    $params = array(USERS_PICTURE_FILE => $path);
+    return updateDb(TBL_USERS, $params,$iduser);
+}
+
+function update_team_photo($idteam, $path) {
+    $params = array(TEAMS_PICTURE_FILE => $path);
+    return updateDb(TBL_TEAMS, $params,$idteam);
 }
 
