@@ -56,7 +56,7 @@ function print_route($req, $params, $file) {
 echo '<input type="hidden" name="requete" value="'.$req.'" />';
 if ($file)
    echo '<input type="file" name="'.$file.'" /><br/>';
-    $str = 'requete: '.$req."\n<br/>paramètres :<br/> ";
+    $str = 'requete: <span id="form_'.$req.'">'.$req."</span>\n<br/>paramètres :<br/> ";
     foreach ($params as $key => $param) 
 	$str .= "\t".$key. ':  <input type="text" name="'.$key.'" value="'.$param.'" />\n<br/>';
    
@@ -69,6 +69,14 @@ if ($file)
 echo "<html>";
 
 $routes = routage();
+foreach(routage() as $req => $route) {
+    echo 'requete: <a href="#form_'.$req.'">'.$req."</a><br/>\n";
+    if (isset($route['file']))
+        echo 'paramètre de fichier: '.$route['file']."<br/>\n";
+
+    echo "paramètres : ".join($route['params'],', ')."\n<p/>\n";
+}
+
 foreach(routage() as $req => $route) {
     $params = $route['params'];
     $params = array_flip($params);

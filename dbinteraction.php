@@ -34,11 +34,6 @@ function updateAffinitesSports($iduser, $affinite) {
     return updateDb(TBL_USERS, $params,$iduser);
 }
 
-function update_user_photo($iduser, $path) {
-    // TODO: suppriemr l'ancienne photo
-    $params = array(USERS_PICTURE_FILE => $path);
-    return updateDb(TBL_USERS, $params,$iduser);
-}
 
 function updateBAffinitesSports($iduser, $football, $basketball) {
     $prefs = new PreferencesSport();
@@ -121,11 +116,20 @@ function t_annonce_us($id_team, $frequence, $nb, $niveau, $description) {
 }
 
 function list_t_annonce_us($sport) {
-   return selectDbWhStr(TBL_OFFRE_TEAM_USERS, $cols, '=?', array($sport));
+   $db = getDb();
+
+   $requete ='SELECT o.* FROM '.TBL_OFFRE_TEAM_USERS.' as o JOIN '.TBL_TEAMS. ' as t ON t.'.  TEAMS_ID.'= o.'.OFFRE_TEAM_USERS_ID_TEAM.' WHERE t.sport=?';
+   //var_dump($requete);
+   $stmt= $db->prepare($requete);
+
+    if ($stmt->execute(array($sport)))
+	return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    else
+	return false;
 }
 
 function del_t_annonce_us($idteam) {
-   return select
+   return deleteDbArr(TBL_OFFRE_TEAM_USERS, array(OFFRE_TEAM_USERS_ID_TEAM => $idteam));
 }
 
 function get_u_photo($id_user) {

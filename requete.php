@@ -225,36 +225,48 @@ function delete_photo($path) {
 		raiseHermetiqueExc(ERR_ERROR,"Tentative de suppression d'un image dans le mauvais dossier ".$path. " dans ". $rpath);
 }
 
-function update_u_picture($photoparams) {
-    $iduser = checkLogged();
-    $old_path = I\get_u_photo($iduser);
+interface updatePictureI {
+    public function get_oldpath($id);
+    public function update_db($id, $path);
+    public function new_path($id, $ext);
+}
+
+function update_photo(updatePictureI $intf, $id) {
+    $old_path = $intf->get_oldpath($id);
     if ($old_path)
 	    delete_photo($old_path);
 
 	$up_path = $photoparams['tmp_name'];
 	$ext = pathinfo($photoparams['name'], PATHINFO_EXTENSION);
-	$photopath = photo_user_path($iduser, $ext);
+	$photopath = $intf->new_path($iduser, $ext);
 	if (! move_uploaded_file($up_path, $photopath))
 		raiseHermetiqueExc(ERR_ERROR, 'Impossible de déplacer le fichier uploadé');
-	I\update_user_photo($iduser, $photopath);
+
+	$intf->update_db($iduser, $photopath);
 
 	return true;
 }
 
+class UpdatePUserI implements updatePictureI { 
+        public function get_oldpath($iduser) { return I\get_u_photo($iduser); }
+        public function update_db($iduser, $path) { return I\update_user_photo($iduser, $path); }
+        public function new_path($iduser, $ext) { return photo_user_path($iduser, $ext); }
+}
+
+class UpdatePTeamI implements updatePictureI { 
+        public function get_oldpath($id) { return I\get_t_photo($id); }
+        public function update_db($id, $path) { return I\update_team_photo($id, $path); }
+        public function new_path($id, $ext) { return photo_team_path($id, $ext); }
+}
+
+function update_u_picture($photoparams) {
+    $iduser = checkLogged();
+    update_photo( new UpdatePUserI(), $iduser);
+}
+
 function update_t_picture($photoparams, $id_team) {
-    $id_user = check_logged_u_t($id_team);
-    $old_path = I\get_t_photo($id_team);
-    if ($old_path)
-	    delete_photo($old_path);
-
-	$up_path = $photoparams['tmp_name'];
-	$ext = pathinfo($photoparams['name'], PATHINFO_EXTENSION);
-	$photopath = photo_team_path($id_team, $ext);
-	if (! move_uploaded_file($up_path, $photopath))
-		raiseHermetiqueExc(ERR_ERROR, 'Impossible de déplacer le fichier uploadé');
-	I\update_team_photo($iduser, $photopath);
-
-	return true;
+    check_logged_u_t($id_team);
+    update_photo( new UpdatePTeamI(), $id_team);
 }
 
 function register($prenom, $nom, $email, $tel, $mdp) {
@@ -347,7 +359,7 @@ function new_t_annonce_us($id_team, $frequence, $nb, $niveau, $description) {
  }
  
  function list_t_annonce_us($sport) {
- 	return I\list_t_annonce_us($sport)
+ 	return I\list_t_annonce_us($sport);
  }
                  
 
