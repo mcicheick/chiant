@@ -211,7 +211,7 @@ function photo_user_path($iduser, $extension) {
 }
 
 function photo_team_path($idteam, $extension) {
-    return PICTURES_DIR.'/t'.$iduser.'.'.$extension;
+    return PICTURES_DIR.'/t'.$idteam.'.'.$extension;
 }
 
 function delete_photo($path) {
