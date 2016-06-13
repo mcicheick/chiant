@@ -2,6 +2,9 @@
 require_once '../config.php';
 require_once '../requete.php';
 
+if (ENV != 'LOCAL')
+	die('Not in local mode');
+
 $tests =
 array(
     'newuser'=>

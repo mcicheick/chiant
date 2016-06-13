@@ -1,5 +1,9 @@
 <?php
 require_once '../requete.php';
+require_once '../config.php';
+
+if (ENV != 'LOCAL')
+	die('Not in local mode');
 
 echo '<pre>';
 $routes = routage();
