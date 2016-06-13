@@ -368,6 +368,7 @@ function u_post_result($id_team_user, $id_team2, $result)  {
 }
 
 function u_validate_result($id_result)  {
-   //TODO: check that user belongs to idteam2
+   $id_user = checkLogged();
+   belongs_to_u_match_t2($id_user, $id_result) ;
    return I\validate_result($id_result);
 }

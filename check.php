@@ -6,8 +6,17 @@ require_once 'fieldsbdd.php';
 
 
 function belongs_to_u_t($id_user, $id_team) {
-   $stmt = selectDbArr(TBL_LIEN_TEAM_USERS, array('*'), array(LIEN_TEAM_USERS_ID_TEAM => $id_team, LIEN_TEAM_USERS_ID_USER => $id_user));
+   $stmt = selectDbArr(TBL_LIEN_TEAM_USERS, array('1'), array(LIEN_TEAM_USERS_ID_TEAM => $id_team, LIEN_TEAM_USERS_ID_USER => $id_user));
    return $stmt->rowCount() > 0;
+}
+
+function belongs_to_u_match_t2($id_user, $id_match) {
+    $db = getDb();
+    $stmt = $db->prepare('SELECT 1 FROM '.TBL_MATCHES.' AS M JOIN '.
+	    TBL_LIEN_TEAM_USERS.' AS L ON L.'.LIEN_TEAM_USERS_ID_TEAM.' = M.'.
+	    MATCHES_ID_TEAM2.' WHERE L.'.LIEN_TEAM_USERS_ID_USER.' = ? AND M.ID = ?' );
+    $stmt->execute(array($id_user, $id_match));
+    return $stmt->rowCount() > 0;
 }
 
 /*
@@ -24,6 +33,7 @@ function same_sport_t($id_team1, $id_team2) {
     $stmt->execute(array($id_team1, $id_team2));
     return $stmt->fetchColumn() == 2;
 }
+
 
 // retourne l'id utilisateur si possible
 function check_credentials($email, $hashmdp) {
