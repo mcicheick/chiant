@@ -274,12 +274,16 @@ function update_user_sp_prefs($football, $basket){
     return I\updateBAffinitesSports(checkLogged(), $params['football'], $params['basket']);
 }
 
+function check_same_sport($idteam1, $idteam2) {
+    if (!C\same_sport_t($idteam1, $idteam2));
+        raiseMyExc(ERR_FORBIDDEN, 'Teams have different sport');
+}
+
 
 function like_team_ch($id_bogoss, $id_amoureux) {
     check_logged_u_t();
     
-    if (!C\same_sport_t($id_bogoss, $id_amoureux));
-        raiseMyExc(ERR_FORBIDDEN, 'Teams have different sport');
+    check_same_sport($id_bogoss, $id_amoureux);
 
     return I\like_team($id_bogoss, $id_amoureux);
 }
@@ -359,6 +363,7 @@ function new_t_annonce_us($id_team, $frequence, $nb, $niveau, $description) {
                  
 function u_post_result($id_team_user, $id_team2, $result)  {
  check_logged_u_t($id_team_user);
+	check_same_sport($id_team_user, $id_team2);
    return I\u_post_result($id_team_user, $id_team2, $result);
 }
 
