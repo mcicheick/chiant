@@ -50,6 +50,14 @@ function routage() {
               'post_chat_interne' =>
                 array('fun' => 'u_post_msg_t', 
                 'params' => array('id_team', 'msg')),
+
+              'post_result_match' =>
+                array('fun' => 'u_post_result', 
+                'params' => array('id_team_user', 'id_team2', 'result')),
+              'validate_result_match' =>
+                array('fun' => 'u_validate_result', 
+                'params' => array('id_result')),
+
               'post_chat_inter_teams' =>
                 array('fun' => 'u_post_msg_tt', 
                 'params' => array('id_team_user','id_team_cible', 'msg')),
@@ -106,19 +114,6 @@ function error($msg) {
     return (array("answer" => "Error", "msg" =>$msg));
 }
 
-function dispatchJson($jsonStr){
-    $obj = json_decode($jsonStr);
-    if ($obj == null)
-        return error('invalid json');
-    switch ($obj->requete) {
-    case "newuser":
-        if (register($obj->content->prenom, $obj->content->nom, $obj->content->email, $obj->content->hashmdp))
-            return (array("answer" => "OK"));
-        break;
-    default:
-        return error("unknow request : " . $obj->requete);
-    }
-}
 
 function dispatchReq($params){  
     $req = $params['requete'];
@@ -362,4 +357,12 @@ function new_t_annonce_us($id_team, $frequence, $nb, $niveau, $description) {
  	return I\list_t_annonce_us($sport);
  }
                  
+function u_post_result($id_team_user, $id_team2, $result)  {
+ check_logged_u_t($id_team_user);
+   return I\u_post_result($id_team_user, $id_team2, $result);
+}
 
+function u_validate_result($id_result)  {
+   //TODO: check that user belongs to idteam2
+   return I\validate_result($id_result);
+}

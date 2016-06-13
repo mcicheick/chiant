@@ -150,3 +150,14 @@ function update_team_photo($idteam, $path) {
     return updateDb(TBL_TEAMS, $params,$idteam);
 }
 
+function validate_result($id_result) {
+   return updateDb(TBL_MATCHES, array(MATCHES_VALIDE => 1),$id_result);
+}
+
+function u_post_result($id_team_user, $id_team2, $result)  {
+    return insertDb(TBL_MATCHES, array(
+	MATCHES_ID_TEAM1 => $id_team_user,
+	MATCHES_ID_TEAM2 => $id_team2,
+	MATCHES_RESULTAT => $result));
+}
+

@@ -187,6 +187,7 @@ CREATE TABLE `near2u`.`matches` (
 `ID_TEAM1` INT NOT NULL ,
 `ID_TEAM2` INT NOT NULL ,
 `RESULTAT` INT NOT NULL ,
+`VALIDE` BOOLEAN DEFAULT NULL COMMENT 'vrai si lequipe adverse (idteam2) a valide le score ',
 PRIMARY KEY `PKEYID`(`ID`))
 ENGINE = InnoDB;
 
