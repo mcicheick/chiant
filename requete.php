@@ -76,7 +76,12 @@ function routage() {
                  
                  'list_recherche_team_users' =>
                array('fun' => 'list_t_annonce_us',
-                 'params' => array('sport'))
+                 'params' => array('sport')),
+                array('fun' => 'update_position', 
+                'params' => array('id_user')),
+                'update_last_connexion' =>
+                array('fun' => 'update_last_connexion', 
+                'params' => array('id_user'))  
 
             );
 
@@ -371,4 +376,14 @@ function u_validate_result($id_result)  {
    $id_user = checkLogged();
    belongs_to_u_match_t2($id_user, $id_result) ;
    return I\validate_result($id_result);
+}
+
+function update_position($id_user){
+    I\update_position($id_user);
+    return true;
+}
+
+function update_last_connexion($id_user){
+    I\update_last_connexion($id_user);
+    return true;
 }
