@@ -76,7 +76,11 @@ function routage() {
                  
                  'list_recherche_team_users' =>
                array('fun' => 'list_t_annonce_us',
-                 'params' => array('sport'))
+                 'params' => array('sport')),
+
+                 'list_teams_by_sport' =>
+               array('fun' => 'list_t_sport',
+                  'params' => array('sport'))
 
             );
 
@@ -115,8 +119,12 @@ function error($msg) {
 }
 
 
-function dispatchReq($params){  
-    $req = $params['requete'];
+function dispatchReq( $params) {
+   $req = $params['requete'];
+   dispatchParams($req, $params);
+}
+
+function dispatchParams($req, $params){  
     $routes = routage();
 
     if (!isset($routes[$req]))
@@ -359,6 +367,11 @@ function new_t_annonce_us($id_team, $frequence, $nb, $niveau, $description) {
  
  function list_t_annonce_us($sport) {
  	return I\list_t_annonce_us($sport);
+ }
+
+ function list_t_sport($sport) {
+    $id_user = check_logged();
+ 	return array_merge( I\list_t_sport_coupcoeur($sport, $id_user), I\list_t_sport($sport));
  }
                  
 function u_post_result($id_team_user, $id_team2, $result)  {

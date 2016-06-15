@@ -128,6 +128,35 @@ function list_t_annonce_us($sport) {
 	return false;
 }
 
+function list_t_sport_coupcoeur($sport, $iduser) {
+   $db = getDb();
+
+   $requete ='SELECT t.* FROM '.TBL_TEAMS.' as t JOIN '.TBL_COUP_COEURS_EQUIPES. ' as c ON t.'.  TEAMS_ID.'= c.'.COUP_COEURS_EQUIPES_ID_BOGOSS.
+   ' JOIN '.TBL_LIEN_TEAM_USERS. ' AS l ON l.'.LIEN_TEAM_USERS_ID_TEAM.' = c.'. COUP_COEURS_EQUIPES_ID_AMOUREUX.' WHERE t.'.TEAMS_SPORT.' =? '.
+   ' AND l.'.LIEN_TEAM_USERS_ID_USER.' = ? LIMIT 10';
+   //var_dump($requete);
+   $stmt= $db->prepare($requete);
+
+    if ($stmt->execute(array($sport, $iduser)))
+	return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    else
+	return false;
+}
+
+function list_t_sport($sport) {
+   $db = getDb();
+
+   $requete ='SELECT t.* FROM '.TBL_TEAMS.' as t WHERE t.'. TEAMS_SPORT. ' =? LIMIT 10 ';
+   //var_dump($requete);
+   $stmt= $db->prepare($requete);
+
+    if ($stmt->execute(array($sport)))
+	return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    else
+	return false;
+}
+
+
 function del_t_annonce_us($idteam) {
    return deleteDbArr(TBL_OFFRE_TEAM_USERS, array(OFFRE_TEAM_USERS_ID_TEAM => $idteam));
 }
