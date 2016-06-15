@@ -121,7 +121,7 @@ function error($msg) {
 
 function dispatchReq( $params) {
    $req = $params['requete'];
-   dispatchParams($req, $params);
+   return dispatchParams($req, $params);
 }
 
 function dispatchParams($req, $params){  

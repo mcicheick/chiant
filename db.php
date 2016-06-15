@@ -4,6 +4,7 @@
 require_once "nogit/config.php";
 require_once "noserver/config.php";
 require_once 'exceptions.php';
+require_once 'lib/medoo.php';
 
 if (ENV == "LOCAL")
 {
@@ -19,6 +20,24 @@ else {
 	define ('DB_HOST', SERVER_DB_HOST);
 }
 
+function getMedoo() {
+   static $db = null;
+
+   if ($db == null) {
+    $db = new medoo(array(
+            // required
+            'database_type' => 'mysql',
+            'database_name' => DB_NAME,
+            'server' => DB_HOST,
+            'username' => DB_USER,
+            'password' => DB_PWD,
+            'charset' => 'utf8',
+
+            )
+    );
+    }
+    return $db;
+}
 
 
 function getDb() {
