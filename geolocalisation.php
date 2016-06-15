@@ -14,7 +14,7 @@ function calcule_barycentre($reponse){
     $longueur=count($reponse);
     if($longueur==1) {return(array(TEAM_LATITUDE=>$reponse[0][TEAM_LATITUDE],TEAM_LONGITUDE=>$reponse[0][TEAM_LONGITUDE]));}
    elseif ($longueur==2) {
-    return(array(TEAM_LONGITUDE=>($reponse[0][TEAM_LONGITUDE]+$reponse[1][TEAM_LONGITUDE])/2,TEAM_LATITUDE=>($reponse[0][TEAM_LATITUDE+$reponse[1][TEAM_LATITUDE]))/2);
+    return(array(TEAM_LONGITUDE=>($reponse[0][TEAM_LONGITUDE]+$reponse[1][TEAM_LONGITUDE])/2,TEAM_LATITUDE=>($reponse[0][TEAM_LATITUDE]+$reponse[1][TEAM_LATITUDE]))/2);
 }
     else{for($i1=0;$i1<$longueur-2;$i1++)
         for($i2=$i1+1;$i2<$longueur-1;$i2++)
