@@ -4,6 +4,7 @@ namespace dbinteraction;
 require_once 'db.php';
 require_once 'fieldsbdd.php';
 require_once 'sports.php';
+require_once 'geolocalisation.php';
 
 require_once 'lib.php';
 
@@ -173,46 +174,8 @@ function update_positionTeam($idteam){
 
 $req=selectDbArr(TBL_TEAMS,array(TEAM_LONGITUDE,TEAM_LATITUDE), array(TEAMS_ID =>$idteam ))
 $reponse=$req->fetchall();
-$longueur=count($reponse);
-echo $longueur;
-
-if($longueur==1) {updateposition($idteam,$reponse[0][TEAM_LATITUDE],$reponse[0][TEAM_LONGITUDE])}
-elseif ($longueur==2) {
-    updateposition($idteam,($reponse[0][TEAM_LONGITUDE]+$reponse[1][TEAM_LONGITUDE])/2,($reponse[0][TEAM_LATITUDE+$reponse[1][TEAM_LATITUDE])/2);
-}
-else{
-
-
-    $positions_barycentre_solution=array();
-    $variance=array();
-    $triplet_solution=array();
-    $min=-1;
-    for($i1=0;$i1<$longueur-2;$i1++)
-        for($i2=$i1+1;$i2<$longueur-1;$i2++)
-            for ($i3=$i2+1; $i3 <=$longueur-1 ; $i3++) { 
-                $latitude_grav=($reponse[$i1][TEAM_LATITUDE]+$reponse[$i2][TEAM_LATITUDE]+$reponse[$i3][TEAM_LATITUDE])/3;
-                $longitude_grav=($reponse[$i1][TEAM_LONGITUDE]+$reponse[$i2][TEAM_LONGITUDE]+$reponse[$i3][TEAM_LONGITUDE])/3;
-                $positions_barycentre_possibles[$i1][$i2][$i3]= array(TEAM_LATITUDE =>$latitude_grav,TEAM_LONGITUDE=>$longitude_grav  );
-                 $sum=0;
-                 for($t=0;$t<$longueur;$t++){
-                    $sum=$sum+calcule_distance2($latitude_grav,$longitude_grav,$reponse[$t][TEAM_LATITUDE],$reponse[$t][TEAM_LONGITUDE]);
-                 }
-                 if ($min==-1){
-                    $positions_barycentre_solution=array(TEAM_LATITUDE=>$latitude_grav,TEAM_LONGITUDE=>$longitude_grav);
-                    $triplet_solution = array($i1,$i2,$i3 );
-                    $min=$sum;
-                }
-                 elseif($sum<$min){
-                    $min=$sum;
-                    $positions_barycentre_solution=array(TEAM_LATITUDE=>$latitude_grav,TEAM_LONGITUDE=>$longitude_grav);
-                    $triplet_solution = array($i1,$i2,$i3 );
-                 }
-
-
-            }
-            updatepositionDB($id_team,$latitude_grav,$longitude_grav);
-
-}
+$solution=calcule_barycentre($reponse);
+updatepositionDB($id_team,$solution[TEAM_LATITUDE],$solution[TEAM_LONGITUDE]);
 
 }
 
@@ -231,7 +194,3 @@ function update_last_connexion($id_user){
     $req->closeCursor();
     return();
 }
-
-
-
-

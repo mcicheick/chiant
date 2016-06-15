@@ -54,6 +54,10 @@ define('TEAMS_SCORE','SCORE');
 define('TEAMS_RANK','RANK');
 define('TEAMS_SPORT','SPORT');
 define('TEAMS_PICTURE_FILE','PICTURE_FILE');
+define('TEAM_LATITUDE',"LATITUDE");
+define('TEAM_LONGITUDE',"LONGITUDE");
+define('TEAM_LAST_CONNEXION',"LAST_CONNEXION");
+
 
 define('TBL_USERS', 'users');
 
