@@ -23,7 +23,7 @@ function calcule_barycentre($reponse){
                 $longitude_grav=($reponse[$i1][TEAM_LONGITUDE]+$reponse[$i2][TEAM_LONGITUDE]+$reponse[$i3][TEAM_LONGITUDE])/3;
                 $positions_barycentre_possibles[$i1][$i2][$i3]= array(TEAM_LATITUDE =>$latitude_grav,TEAM_LONGITUDE=>$longitude_grav  );
                  $sum=0;
-                 for($t=0;$t<$longueur;$t++){
+                 foreach(array($i1,$i2,$i3 ) as $t){
                     $sum=$sum+calcule_distance2($latitude_grav,$longitude_grav,$reponse[$t][TEAM_LATITUDE],$reponse[$t][TEAM_LONGITUDE]);
                  }
                  if ($min==-1){
