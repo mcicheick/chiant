@@ -34,10 +34,10 @@ echo "\n\n";
 foreach(routage() as $req => $route) {
   $params_s = array();
   foreach ($route['params'] as $param)
-	  $params_s[] = '$'.$param. ' => ?';
+	  $params_s[] = "'".$param. "' => ?";
 
-  if (isset($route['file']))
-           array_unshift($params_s, '$'.$route['file'].' => ?');
+  //if (isset($route['file']))
+           //array_unshift($params_s, '$'.$route['file'].' => ?');
 
   echo "dispatchParams('".$req."',  array (".join($params_s, ', ')."));\n";
 }
