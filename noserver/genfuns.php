@@ -5,8 +5,15 @@ require_once '../requete.php';
 if (ENV != 'LOCAL')
 	die('Not in local mode');
 
+
 $routes = routage();
+
+
+echo "<h1>Liste de fonctions automatiquement générés</h1>"
 echo "<pre>\n";
+
+
+
 // Génère les fonctions
 foreach(routage() as $req => $route) {
   $params_s = array();

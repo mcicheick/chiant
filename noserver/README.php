@@ -13,6 +13,8 @@ gendbcst.php
 	Génère des noms de constantes PHP correspondants aux champs/bdd de la base 
 genfuns.php
 	Génère des squelettes de fonctions PHP correspondant aux routes définies dans ../requete.php
+newlistcmd.php
+	Génère des squelettes de fonctions PHP pour lister une table et ajoute la requete dans le fichier des requetes
 structure.sql
 	Code SQL pour générer la structure de la base de données (sans données)
 
