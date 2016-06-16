@@ -1,0 +1,137 @@
+{
+    "newuser": {
+        "fun": "register",
+        "params": [
+            "prenom",
+            "nom",
+            "email",
+            "tel",
+            "hashmdp"
+        ]
+    },
+    "update_user_picture": {
+        "fun": "update_u_picture",
+        "file": "photo",
+        "params": []
+    },
+    "update_team_picture": {
+        "fun": "update_t_picture",
+        "file": "photo",
+        "params": [
+            "id_team"
+        ]
+    },
+    "update_user_sport_prefs": {
+        "fun": "update_user_sp_prefs",
+        "params": [
+            "football",
+            "basket"
+        ]
+    },
+    "team_likes_team": {
+        "fun": "like_team_ch",
+        "params": [
+            "id_bogoss",
+            "id_amoureux"
+        ]
+    },
+    "join_team": {
+        "fun": "join_team",
+        "params": [
+            "id_team"
+        ]
+    },
+    "unjoin_team": {
+        "fun": "unjoin_team",
+        "params": [
+            "id_team"
+        ]
+    },
+    "new_team": {
+        "fun": "newteam_byuser_p",
+        "params": [
+            "pseudo",
+            "sport"
+        ]
+    },
+    "invites_team_team": {
+        "fun": "t_invites_t",
+        "params": [
+            "id_invitant",
+            "id_invite",
+            "date",
+            "montant"
+        ]
+    },
+    "invites_in_team": {
+        "fun": "t_invites_u_ch",
+        "params": [
+            "id_team",
+            "id_invite"
+        ]
+    },
+    "post_chat_interne": {
+        "fun": "u_post_msg_t",
+        "params": [
+            "id_team",
+            "msg"
+        ]
+    },
+    "post_result_match": {
+        "fun": "u_post_result",
+        "params": [
+            "id_team_user",
+            "id_team2",
+            "result"
+        ]
+    },
+    "validate_result_match": {
+        "fun": "u_validate_result",
+        "params": [
+            "id_result"
+        ]
+    },
+    "post_chat_inter_teams": {
+        "fun": "u_post_msg_tt",
+        "params": [
+            "id_team_user",
+            "id_team_cible",
+            "msg"
+        ]
+    },
+    "login": {
+        "fun": "login",
+        "params": [
+            "email",
+            "hashmdp"
+        ]
+    },
+    "post_recherche_team_users": {
+        "fun": "new_t_annonce_us",
+        "params": [
+            "id_team",
+            "frequence",
+            "nb",
+            "niveau",
+            "description"
+        ]
+    },
+    "remove_recherche_team_users": {
+        "fun": "del_t_annonce_us",
+        "params": [
+            "id_team"
+        ]
+    },
+    "list_recherche_team_users": {
+        "fun": "list_t_annonce_us",
+        "params": [
+            "sport"
+        ]
+    },
+    "list_teams_by_sport": {
+        "fun": "list_t_sport",
+        "params": [
+            "sport"
+        ]
+    }
+}
