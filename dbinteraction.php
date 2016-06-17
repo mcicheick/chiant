@@ -172,7 +172,7 @@ function update_position($id_user){
 function update_positionTeam($idteam){
     
 
-$req=selectDbArr(TBL_TEAMS,array(TEAM_LONGITUDE,TEAM_LATITUDE), array(TEAMS_ID =>$idteam ))
+$req=selectDbArr(TBL_TEAMS,array(TEAM_LONGITUDE,TEAM_LATITUDE), array(TEAMS_ID =>$idteam ));
 $reponse=$req->fetchall();
 $solution=calcule_barycentre($reponse);
 updatepositionDB($id_team,$solution[TEAM_LATITUDE],$solution[TEAM_LONGITUDE]);
@@ -189,8 +189,8 @@ function updatepositionDB($latitude,$longitude,$id_team){
 
 /*fonction qui actualise la date de dernière connexion des équipes*/
 function update_last_connexion($id_user){
-    $req=selectDbArr(TBL_LIEN_TEAM_USERS,array(LIEN_TEAM_USERS_ID_TEAM), array(LIEN_TEAM_USERS_ID_USER =>$iduser ))
-    while($donnees=$req->fetch()) updateDb(TABLE_TEAMS,array(TEAM_LAST_CONNEXION => date('d/m/Y'), $donnees[LIEN_TEAM_USERS_ID_TEAM]))
+    $req=selectDbArr(TBL_LIEN_TEAM_USERS,array(LIEN_TEAM_USERS_ID_TEAM), array(LIEN_TEAM_USERS_ID_USER =>$iduser ));
+    while($donnees=$req->fetch()) updateDb(TABLE_TEAMS,array(TEAM_LAST_CONNEXION => date('d/m/Y'), $donnees[LIEN_TEAM_USERS_ID_TEAM]));
     $req->closeCursor();
-    return();
+    return(true);
 }
