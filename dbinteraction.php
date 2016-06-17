@@ -165,7 +165,7 @@ function u_post_result($id_team_user, $id_team2, $result)  {
 /*pour updater les positions de l'équipe toutes les variations de 1 km*/
 
 function update_position($id_user){
-    $req=selectDbArr(TBL_LIEN_TEAM_USERS,array(LIEN_TEAM_USERS_ID_TEAM), array(LIEN_TEAM_USERS_ID_USER =>$iduser ))
+    $req=selectDbArr(TBL_LIEN_TEAM_USERS,array(LIEN_TEAM_USERS_ID_TEAM), array(LIEN_TEAM_USERS_ID_USER =>$iduser ));
     while($donnees=$req->fetch()) update_positionTeam($donnees[LIEN_TEAM_USERS_ID_TEAM]);
     $req->closeCursor();
 }
