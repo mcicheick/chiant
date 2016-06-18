@@ -119,7 +119,7 @@ function login($email, $hashmdp) {
     if (!$id_user)
         raiseBadCredentials();
 
-    $_SESSION[SESSION_USERID_NAME] = $id;
+    $_SESSION[SESSION_USERID_NAME] = $id_user;
     return true;
 }
 
