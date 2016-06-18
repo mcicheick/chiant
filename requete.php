@@ -14,7 +14,7 @@ use dbinteraction as I;
 
 
 function routage() {
-   return (json_decode(file_get_contents(PRIVATE_DIR.'/routes')));
+   return (json_decode(file_get_contents( PRIVATE_DIR.'\routes',true), true));
 }
 
 /*
