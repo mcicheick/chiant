@@ -77,7 +77,7 @@ function routage() {
                  'list_recherche_team_users' =>
                array('fun' => 'list_t_annonce_us',
                  'params' => array('sport')),
-                array('fun' => 'update_position', 
+               'update_position'=>array('fun' => 'update_position', 
                 'params' => array('id_user')),
                 'update_last_connexion' =>
                 array('fun' => 'update_last_connexion', 
