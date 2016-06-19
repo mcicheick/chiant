@@ -1,0 +1,34 @@
+Date d'inscription pour les utilisateurs
+Evaluation d'une équipe par une autre
+fairplay : parfait/bien/moyen obligatoire
+Résqultat : défaite victoire égalité
+Avis: facultatif 
+AUssi pour la validation de résultat
+
+requete lister les resultats à valider
+que faire si on invalide
+*get_histoirique_team
+nb victoire/defaite/points/classement
+
+liste des derniers matchs rencontrées par ordre chronologique avec leur classement d'équipe, date de rencontre, si ils ont gagné ou perdu
+limite
+
+
+Obtenir les classements
+points/classement
+classement : fonction du nombre de points
+idée : faire plusieurs requetes en une seule
+
+signaler une équipe
+une équipe signale une équipe
+
+nouveau chat : team user
+
+requete : classement par sports avec score
+limite
+
+requete liste des match (like dans les deux directions)
+requete team like team : renvoie si l'autre a liké aussi
+
+requete la liste des message team team limit date
+prenom message heure
