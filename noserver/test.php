@@ -13,9 +13,9 @@ if (ENV != 'LOCAL')
 function print_route($req, $params, $file) {
     echo '<form action="../entree_post.php" method="post"  enctype="multipart/form-data"><br/>';
 echo '<input type="hidden" name="requete" value="'.$req.'" />';
+    $str = 'requete: <span id="form_'.$req.'">'.$req."</span>\n<br/>paramètres :<br/> ";
 if ($file)
    echo '<input type="file" name="'.$file.'" /><br/>';
-    $str = 'requete: <span id="form_'.$req.'">'.$req."</span>\n<br/>paramètres :<br/> ";
     foreach ($params as $key => $param) 
 	$str .= "\t".$key. ':  <input type="text" name="'.$key.'" value="'.$param.'" />\n<br/>';
    
