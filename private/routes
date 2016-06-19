@@ -133,5 +133,12 @@
         "params": [
             "sport"
         ]
-    }
+    },
+    "update_position": {
+      "fun" : "update_position", 
+      "params" : [] },
+
+    "update_last_connexion" : {
+        "fun" : "update_last_connexion", 
+        "params": [] }
 }

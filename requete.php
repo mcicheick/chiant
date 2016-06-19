@@ -317,12 +317,14 @@ function u_validate_result($id_result)  {
    return I\validate_result($id_result);
 }
 
-function update_position($id_user){
+function update_position(){
+    $id_user = check_logged();
     I\update_position($id_user);
     return true;
 }
 
-function update_last_connexion($id_user){
+function update_last_connexion(){
+    $id_user = check_logged();
     I\update_last_connexion($id_user);
     return true;
 }
