@@ -9,3 +9,4 @@ define('WARNINGS', true);
 define('HERMETIQUE', ENV != 'LOCAL');
 
 define('PICTURES_DIR', 'pictures');
+define('PRIVATE_DIR', 'private');

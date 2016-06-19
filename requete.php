@@ -14,77 +14,7 @@ use dbinteraction as I;
 
 
 function routage() {
-    return
-        array('newuser'=>
-                array('fun' => 'register', 
-                      'params' => array('prenom', 'nom', 'email', 'tel', 'hashmdp')),
-		'update_user_picture' =>
-		array('fun' => 'update_u_picture',
-			'file' => 'photo',
-			'params' => array()),
-		'update_team_picture' =>
-		array('fun' => 'update_t_picture',
-			'file' => 'photo',
-			'params' => array('id_team')),
-              'update_user_sport_prefs' =>
-                array('fun' => 'update_user_sp_prefs', 
-                      'params' => array('football', 'basket')),
-              'team_likes_team' =>
-                array('fun' => 'like_team_ch', 
-                      'params' => array('id_bogoss', 'id_amoureux')),
-              'join_team' =>
-                array('fun' => 'join_team', 
-                      'params' => array('id_team')),
-              'unjoin_team' =>
-                array('fun' => 'unjoin_team', 
-                      'params' => array('id_team')),
-              'new_team' =>
-                array('fun' => 'newteam_byuser_p',
-                      'params' => array('pseudo', 'sport')),
-              'invites_team_team' =>
-                array('fun' => 't_invites_t', 
-                'params' => array('id_invitant', 'id_invite', 'date', 'montant')),
-              'invites_in_team' =>
-                array('fun' => 't_invites_u_ch', 
-                'params' => array('id_team', 'id_invite')),
-              'post_chat_interne' =>
-                array('fun' => 'u_post_msg_t', 
-                'params' => array('id_team', 'msg')),
-
-              'post_result_match' =>
-                array('fun' => 'u_post_result', 
-                'params' => array('id_team_user', 'id_team2', 'result')),
-              'validate_result_match' =>
-                array('fun' => 'u_validate_result', 
-                'params' => array('id_result')),
-
-              'post_chat_inter_teams' =>
-                array('fun' => 'u_post_msg_tt', 
-                'params' => array('id_team_user','id_team_cible', 'msg')),
-
-              'login' =>
-                array('fun' => 'login', 
-                'params' => array('email', 'hashmdp')),
-                
-               'post_recherche_team_users' =>
-               array('fun' => 'new_t_annonce_us',
-                 'params' => array('id_team', 'frequence', 'nb', 'niveau', 'description')),
-                 
-		'remove_recherche_team_users' =>
-               array('fun' => 'del_t_annonce_us',
-                 'params' => array('id_team')),
-                 
-                 'list_recherche_team_users' =>
-               array('fun' => 'list_t_annonce_us',
-                 'params' => array('sport')),
-               'update_position'=>array('fun' => 'update_position', 
-                'params' => array('id_user')),
-                'update_last_connexion' =>
-                array('fun' => 'update_last_connexion', 
-                'params' => array('id_user'))  
-
-            );
-
+   return (json_decode(file_get_contents( PRIVATE_DIR.'/routes',true), true));
 }
 
 /*
@@ -120,8 +50,12 @@ function error($msg) {
 }
 
 
-function dispatchReq($params){  
-    $req = $params['requete'];
+function dispatchReq( $params) {
+   $req = $params['requete'];
+   return dispatchParams($req, $params);
+}
+
+function dispatchParams($req, $params){  
     $routes = routage();
 
     if (!isset($routes[$req]))
@@ -185,7 +119,7 @@ function login($email, $hashmdp) {
     if (!$id_user)
         raiseBadCredentials();
 
-    $_SESSION[SESSION_USERID_NAME] = $id;
+    $_SESSION[SESSION_USERID_NAME] = $id_user;
     return true;
 }
 
@@ -364,6 +298,11 @@ function new_t_annonce_us($id_team, $frequence, $nb, $niveau, $description) {
  
  function list_t_annonce_us($sport) {
  	return I\list_t_annonce_us($sport);
+ }
+
+ function list_t_sport($sport) {
+    $id_user = check_logged();
+ 	return array_merge( I\list_t_sport_coupcoeur($sport, $id_user), I\list_t_sport($sport));
  }
                  
 function u_post_result($id_team_user, $id_team2, $result)  {
