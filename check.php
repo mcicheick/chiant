@@ -29,9 +29,11 @@ function same_team_sport($id_user, $id_team_u, $id_team2) {
 
 function same_sport_t($id_team1, $id_team2) {
     $db = getDb();
-    $stmt = $db->prepare('SELECT COUNT(*) FROM '.TBL_TEAMS.' AS T WHERE ID=? || ID = ? GROUP BY '.TEAMS_SPORT);
+    $req = 'SELECT COUNT(*) FROM '.TBL_TEAMS.' AS T WHERE ID=? || ID = ? GROUP BY '.TEAMS_SPORT;
+    $stmt = $db->prepare($req);
     $stmt->execute(array($id_team1, $id_team2));
-    return $stmt->fetchColumn() == 2;
+    $resultat = $stmt->fetchColumn();
+    return ($resultat == 2);
 }
 
 

@@ -107,7 +107,7 @@ function bret($b) {
     if ($b)
         return (array("answer" => "OK"));
     else
-        return raiseHermetiqueExc(ERR_ERROR, 'False return value : '.$b);
+        return raiseHermetiqueExc('False return value : '.$b, ERR_ERROR);
 }
 
 function login($email, $hashmdp) {
@@ -217,8 +217,8 @@ function update_user_sp_prefs($football, $basket){
 }
 
 function check_same_sport($idteam1, $idteam2) {
-    if (!C\same_sport_t($idteam1, $idteam2));
-        raiseMyExc('Teams have different sport', ERR_FORBIDDEN);
+    if (!C\same_sport_t($idteam1, $idteam2))
+        raiseMyExc('Teams have coucou different sport', ERR_FORBIDDEN);
 }
 
 
@@ -274,6 +274,7 @@ function check_logged_u_t ($id_team) {
 }
 
 function t_invites_t($id_invitant, $id_invite, $date_rencontre, $montant) {
+	// TODO: check smae sport
     check_logged_u_t($id_invitant);
     return I\t_invites_t($id_invitant, $id_invite, $date_rencontre, $montant);
 }
@@ -306,7 +307,7 @@ function new_t_annonce_us($id_team, $frequence, $nb, $niveau, $description) {
  }
 
  function list_t_sport($sport) {
-    $id_user = check_logged();
+    $id_user = checkLogged();
  	return array_merge( I\list_t_sport_coupcoeur($sport, $id_user), I\list_t_sport($sport));
  }
                  
@@ -318,7 +319,7 @@ function u_post_result($id_team_user, $id_team2, $result)  {
 
 function u_validate_result($id_result)  {
    $id_user = checkLogged();
-   belongs_to_u_match_t2($id_user, $id_result) ;
+   C\belongs_to_u_match_t2($id_user, $id_result) ;
    return I\validate_result($id_result);
 }
 

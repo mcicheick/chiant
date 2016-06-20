@@ -9,7 +9,7 @@ define('CHAT_INTERNE_EQUIPE_ID_USER','ID_USER');
 define('CHAT_INTERNE_EQUIPE_ID_EQUIPE','ID_EQUIPE');
 define('CHAT_INTERNE_EQUIPE_DATE','DATE');
 
-define('TBL_CHAT_INTER_EQUIPE', 'chat_inter_equipe');
+define('TBL_CHAT_INTER_EQUIPE', 'chat_inter_equipes');
 
 define('CHAT_INTER_EQUIPE_CONTENT','CONTENT');
 define('CHAT_INTER_EQUIPE_ID_USER','ID_USER');

@@ -77,7 +77,8 @@ function exec_uniq($stmt,$vals) {
 	    throw $e;
 	}	
     }
-    return getDb()->lastInsertId();
+    $id = getDb()->lastInsertId();
+    return $id;
 }
 
 function insertDb($table, $array){
@@ -103,7 +104,8 @@ function updateDb($table, $valeurs, $id) {
     $stmt = $db->prepare("UPDATE ".$table." SET ".$str. ' WHERE ID=?');
     $vals[] = $id;
 
-    return exec_uniq($stmt, $vals);
+    $id = exec_uniq($stmt, $vals);
+    return $id;
 }
 
 function selectDbWhStr($table, $cols, $wherestr, $vals) {
