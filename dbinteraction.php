@@ -103,8 +103,8 @@ function u_post_msg_tt ($id_user, $id_team1, $id_team2, $msg) {
     return insertDb(TBL_CHAT_INTER_EQUIPE, array(
 	CHAT_INTER_EQUIPE_CONTENT => $msg,
 	CHAT_INTER_EQUIPE_ID_USER => $id_user,
-	CHAT_INTER_EQUIPE_ID_EQUIPE_U => $id1,
-	CHAT_INTER_EQUIPE_ID_EQUIPE2 => $id2));
+	CHAT_INTER_EQUIPE_ID_EQUIPE_U => $id_team1,
+	CHAT_INTER_EQUIPE_ID_EQUIPE2 => $id_team2));
 }
 
 function t_annonce_us($id_team, $frequence, $nb, $niveau, $description) {

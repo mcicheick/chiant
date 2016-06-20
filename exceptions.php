@@ -17,7 +17,7 @@ class HermetiqueExc extends Exception {
      throw new MyExc($msg, $code);
  }
 
- function raiseHermetiqueExc($code, $msg) {
+ function raiseHermetiqueExc($msg, $code) {
      throw new HermetiqueExc($msg, $code);
  }
 

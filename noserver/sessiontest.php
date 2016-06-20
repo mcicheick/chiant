@@ -15,6 +15,14 @@ function getLastIdTable($table) {
   return $sth->fetchColumn();
 }
 
+
+
+$uniq = uniqid();
+function genName($name) {
+	global $uniq;
+	return $name.$uniq;
+}
+
 function testParams($req, $is_ok, $params) {
  if (!$is_ok)
     echo "should raise an exception \n";
@@ -38,21 +46,24 @@ echo "<pre>Vider la base de données (de ses données) avant d'exécuter les tes
 //testParams('update_user_picture',  array ($photo => ?));
 //testParams('update_team_picture',  array ($photo => ?, $id_team => ?));
 
-testParams('newuser', true,  array ("prenom" => 'user_test', "nom" => 'name_atest', "email" => 'ta@gueule', "tel" => '0132', "hashmdp" => 'hash'));
+$user1_name = genName('user_test');
+$user1_mail = genName('ta@gueule');
+testParams('newuser', true,  array ("prenom" => $user1_name, "nom" => 'name_atest', "email" => $user1_mail, "tel" => '0132', "hashmdp" => 'hash'));
 
 $id_user1 = getLastIdTable(TBL_USERS);
 
 testParams('login', false, array ("email" => 'ta@gueule', "hashmdp" => 'rien'));
-testParams('login', true, array ("email" => 'ta@gueule', "hashmdp" => 'hash'));
+testParams('login', true, array ("email" =>$user1_mail, "hashmdp" => 'hash'));
 testParams('update_user_sport_prefs', true, array ("football" => 1, "basket" => 0));
-testParams('new_team', true, array ("pseudo" => 'test_team1', "sport" => 1));
+testParams('new_team', true, array ("pseudo" => genName('test_team1'), "sport" => 1));
 
 $id_team1 = getLastIdTable(TBL_TEAMS);
 
-testParams('newuser',true,  array ("prenom" => 'user_test2', "nom" => 'name_atest2', "email" => 'ta@gueule2', "tel" => '1132', "hashmdp" => 'hash2'));
-testParams('login', true, array ("email" => 'ta@gueule2', "hashmdp" => 'hash2'));
+$mail2 = genName('ta@gueule2_');
+testParams('newuser',true,  array ("prenom" => genName('user_test2'), "nom" => 'name_atest2', "email" =>$mail2, "tel" => '1132', "hashmdp" => 'hash2'));
+testParams('login', true, array ("email" =>$mail2, "hashmdp" => 'hash2'));
 testParams('update_user_sport_prefs',true,  array ("football" => 1, "basket" => 0));
-testParams('new_team',true,  array ("pseudo" => 'test_team2', "sport" => 1));
+testParams('new_team',true,  array ("pseudo" => genName('test_team2'), "sport" => 1));
 
 $id_team2 = getLastIdTable(TBL_TEAMS);
 

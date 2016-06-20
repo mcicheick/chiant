@@ -119,19 +119,21 @@ function login($email, $hashmdp) {
     if (!$id_user)
         raiseBadCredentials();
 
+    echo 'coucou';
     $_SESSION[SESSION_USERID_NAME] = $id_user;
     return true;
 }
 
 function checkLogged() {
     $id = null;
-    if (! MAGIC_USER) {
-        if (isset ($_SESSION[SESSION_USERID_NAME]))
+   if (isset ($_SESSION[SESSION_USERID_NAME]))
             $id = $_SESSION[SESSION_USERID_NAME];
-    }
-    elseif(isset($_REQUEST[MAGIC_PWD_FIELD])) {
+
+    if ( MAGIC_USER) {
+    if(isset($_REQUEST[MAGIC_PWD_FIELD])) {
         if ($_REQUEST[MAGIC_PWD_FIELD] == MAGIC_PWD)
            $id = $_REQUEST[SESSION_USERID_NAME];
+    }
     }
 
     if (is_null($id))
@@ -210,17 +212,18 @@ function register($prenom, $nom, $email, $tel, $mdp) {
 }
 
 function update_user_sp_prefs($football, $basket){
-    return I\updateBAffinitesSports(checkLogged(), $params['football'], $params['basket']);
+    I\updateBAffinitesSports(checkLogged(), $football, $basket);
+    return true;
 }
 
 function check_same_sport($idteam1, $idteam2) {
     if (!C\same_sport_t($idteam1, $idteam2));
-        raiseMyExc(ERR_FORBIDDEN, 'Teams have different sport');
+        raiseMyExc('Teams have different sport', ERR_FORBIDDEN);
 }
 
 
 function like_team_ch($id_bogoss, $id_amoureux) {
-    check_logged_u_t();
+    check_logged_u_t($id_bogoss);
     
     check_same_sport($id_bogoss, $id_amoureux);
 
@@ -228,14 +231,15 @@ function like_team_ch($id_bogoss, $id_amoureux) {
 }
 
 function newteam_byuser_p($pseudo, $sport) {
-    return I\create_team_by_user(checkLogged(),
+    I\create_team_by_user(checkLogged(),
         $pseudo,
         $sport);
+    return true;
 }
 
 function check_user_team ($id_user, $id_team) {
         if (!C\belongs_to_u_t($id_user, $id_team)) 
-            raiseMyExc(ERR_FORBIDDEN, 'User does not belong to team');
+            raiseMyExc('User does not belong to team', ERR_FORBIDDEN);
 }
 
 
@@ -244,7 +248,8 @@ function t_invites_u_ch($id_team, $id_invite) {
     check_user_team($id_user, $id_team);
     // TODO:Vérifier que l'invité n'est pas déjà dans la team
 
-    return I\t_invites_u($id_user, $id_team, $id_invite);
+     I\t_invites_u($id_user, $id_team, $id_invite);
+    return true;
 }
 
 
