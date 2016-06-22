@@ -157,9 +157,9 @@ CREATE TABLE `teams` (
   `NB_VICTORIES` int(11) NOT NULL DEFAULT '0',
   `SCORE` int(11) NOT NULL DEFAULT '0',
   `RANK` int(11) DEFAULT NULL COMMENT 'possiblement inutile car redondant avec le score (calculable)',
-  `SPORT` int(11) NOT NULL COMMENT 'entier représentant le sport'
-  `LATITUDE` FLOAT NOT NULL COMMENT 'float représentant la latitude',
-  `LONGITUDE` FLOAT NOT NULL COMMENT 'float représentant la longitude',
+  `SPORT` int(11) NOT NULL COMMENT 'entier représentant le sport',
+  `LATITUDE` float(10) NOT NULL COMMENT 'float représentant la latitude',
+  `LONGITUDE` float(10) NOT NULL COMMENT 'float représentant la longitude',
   `LAST_CONNEXION` DATE NOT NULL COMMENT 'date représentant la date de la dernière connexion'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
