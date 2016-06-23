@@ -177,7 +177,7 @@ CREATE TABLE `teams` (
 --
 
 CREATE TABLE `users` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `ID` int(11) NOT NULL,
   `PRENOM` varchar(255) NOT NULL,
   `NOM` varchar(255) NOT NULL,
   `MAIL` varchar(255) NOT NULL,
