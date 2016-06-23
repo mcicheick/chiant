@@ -174,14 +174,14 @@ CREATE TABLE `teams` (
 --
 
 CREATE TABLE `users` (
-  `ID` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `PRENOM` varchar(255) NOT NULL,
   `NOM` varchar(255) NOT NULL,
   `MAIL` varchar(255) NOT NULL,
   `PASSWORD` varchar(255) DEFAULT NULL COMMENT 'peut etre null si on se connecte par facebook',
   `PSEUDO` varchar(255) NOT NULL,
   `PICTURE_FILE` varchar(255) DEFAULT NULL COMMENT 'nom du fichier image',
-  `TELEPHONE` varchar(255) NOT NULL,
+  `TELEPHONE` varchar(255) DEFAULT NULL,
   `PREFS_SPORT` int(11) NOT NULL DEFAULT '0' COMMENT 'Préférences sous forme de masque bits'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
