@@ -10,3 +10,5 @@ define('HERMETIQUE', ENV != 'LOCAL');
 
 define('PICTURES_DIR', 'near2u-pictures');
 define('PRIVATE_DIR', 'private');
+
+define('IMAGES_EXT', 'png jpg jpeg gif bmp');

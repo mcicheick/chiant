@@ -119,7 +119,6 @@ function login($email, $hashmdp) {
     if (!$id_user)
         raiseBadCredentials();
 
-    echo 'coucou';
     $_SESSION[SESSION_USERID_NAME] = $id_user;
     return true;
 }
@@ -158,51 +157,60 @@ function delete_photo($path) {
 	if ($rpath == PICTURES_DIR)
 		unlink($path);
 	else
-		raiseHermetiqueExc(ERR_ERROR,"Tentative de suppression d'un image dans le mauvais dossier ".$path. " dans ". $rpath);
+		raiseHermetiqueExc("Tentative de suppression d'un image dans le mauvais dossier ".$path. " dans ". $rpath, ERR_ERROR);
 }
 
-interface updatePictureI {
-    public function get_oldpath($id);
-    public function update_db($id, $path);
-    public function new_path($id, $ext);
+abstract class updatePictureI {
+    var $id;
+    public function __construct($id) {
+    $this -> id = $id;
+    }
+    abstract public function get_oldpath();
+    abstract public function update_db($path);
+    abstract public function new_path($ext);
 }
 
-function update_photo(updatePictureI $intf, $id) {
-    $old_path = $intf->get_oldpath($id);
+function update_photo($photoparams, updatePictureI $intf) {
+    $old_path = $intf->get_oldpath();
     if ($old_path)
 	    delete_photo($old_path);
 
 	$up_path = $photoparams['tmp_name'];
 	$ext = pathinfo($photoparams['name'], PATHINFO_EXTENSION);
-	$photopath = $intf->new_path($iduser, $ext);
-	if (! move_uploaded_file($up_path, $photopath))
-		raiseHermetiqueExc(ERR_ERROR, 'Impossible de déplacer le fichier uploadé');
 
-	$intf->update_db($iduser, $photopath);
+    if (!in_array(strtolower($ext), explode(' ',IMAGES_EXT)))
+		raiseHermetiqueExc("Le fichier a l'extension ".$ext. " : ce n'est pas une image", ERR_ERROR);
+
+	$photopath = $intf->new_path($ext);
+	if (! move_uploaded_file($up_path, $photopath))
+		raiseHermetiqueExc('Impossible de déplacer le fichier uploadé', ERR_ERROR);
+
+	$intf->update_db($photopath);
 
 	return true;
 }
 
-class UpdatePUserI implements updatePictureI { 
-        public function get_oldpath($iduser) { return I\get_u_photo($iduser); }
-        public function update_db($iduser, $path) { return I\update_user_photo($iduser, $path); }
-        public function new_path($iduser, $ext) { return photo_user_path($iduser, $ext); }
+
+class UpdatePUserI extends updatePictureI { 
+        public function get_oldpath() { return I\get_u_photo($this->id); }
+        public function update_db($path) { return I\update_user_photo($this->id, $path); }
+        public function new_path($ext) { return photo_user_path($this->id, $ext); }
 }
 
-class UpdatePTeamI implements updatePictureI { 
-        public function get_oldpath($id) { return I\get_t_photo($id); }
-        public function update_db($id, $path) { return I\update_team_photo($id, $path); }
-        public function new_path($id, $ext) { return photo_team_path($id, $ext); }
+class UpdatePTeamI extends updatePictureI { 
+        public function get_oldpath() { return I\get_t_photo($this->id); }
+        public function update_db($path) { return I\update_team_photo($this->id, $path); }
+        public function new_path($ext) { return photo_team_path($this->id, $ext); }
 }
 
 function update_u_picture($photoparams) {
     $iduser = checkLogged();
-    update_photo( new UpdatePUserI(), $iduser);
+    return update_photo($photoparams, new UpdatePUserI($iduser));
 }
 
 function update_t_picture($photoparams, $id_team) {
     check_logged_u_t($id_team);
-    update_photo( new UpdatePTeamI(), $id_team);
+    return update_photo($photoparams, new UpdatePTeamI($id_team));
 }
 
 function register($prenom, $nom, $email, $tel, $mdp) {
