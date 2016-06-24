@@ -16,7 +16,7 @@ genfuns.php
 newlistcmd.php
 	Génère des squelettes de fonctions PHP pour lister une table et ajoute la requete dans le fichier des requetes
 structure.sql
-	Code SQL pour générer la structure de la base de données (sans données)
+	Code SQL pour générer la structure de la base de données (sans données). ATTENTION !!! Supprime la base de données
 
 routes.php
 	Affiche la liste des requêtes possibles avec leur paramètres
