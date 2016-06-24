@@ -56,8 +56,10 @@ function create_team_by_user($id_user, $pseudo, $sport) {
 	return false;
 
     $id_team = getDb()->lastInsertId();
+    //echo'Nouvelle team : '.$id_team."\n";
 
-    return u_joins_t($id_user, $id_team);
+    u_joins_t($id_user, $id_team);
+    return true;
 }
 
 function like_team($id_bogoss, $id_amoureux) {

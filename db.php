@@ -87,8 +87,10 @@ function insertDb($table, $array){
 
     $str_marks = join(',', $marks);
     $str_keys = join(',', $cles);
-
-    $stmt = $db->prepare("INSERT INTO ".$table."(".$str_keys.') VALUES ('.$str_marks.')');
+    $req = "INSERT INTO ".$table."(".$str_keys.') VALUES ('.$str_marks.')';
+    $stmt = $db->prepare($req);
+    //var_dump($req);
+    //var_dump($vals);
 
     return exec_uniq($stmt, $vals);
 }

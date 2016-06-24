@@ -239,10 +239,9 @@ function like_team_ch($id_bogoss, $id_amoureux) {
 }
 
 function newteam_byuser_p($pseudo, $sport) {
-    I\create_team_by_user(checkLogged(),
+    return (I\create_team_by_user(checkLogged(),
         $pseudo,
-        $sport);
-    return true;
+        $sport));
 }
 
 function check_user_team ($id_user, $id_team) {
@@ -263,16 +262,21 @@ function t_invites_u_ch($id_team, $id_invite) {
 
 function join_team($id_team) {
     $id_user = checkLogged();
+    if (!C\belongs_to_u_same_sport($id_user, $id_team))
+      raiseMyExc('User already belongs to a team with the same sport', ERR_ERROR);
     I\delete_invitations_ut($id_user, $id_team);
     //TODO: CHeck that it is not already in the team
     //(normalement automatique : c'est la contrainte d'unicité)
-    return I\u_joins_t($id_user, $id_team);
+    I\u_joins_t($id_user, $id_team);
+    return true;
 }
 
 function unjoin_team($id_team) {
     $id_user = checkLogged();
     check_user_team($id_user, $id_team);
-    return I\u_unjoins_t($id_user, $id_team);
+
+    I\u_unjoins_t($id_user, $id_team);
+    return true;
 }
 
 function check_logged_u_t ($id_team) {
@@ -307,11 +311,13 @@ function new_t_annonce_us($id_team, $frequence, $nb, $niveau, $description) {
 
  function del_t_annonce_us($id_team) {
  	 check_logged_u_t($id_team);
- 	 return I\del_t_annonce_us($id_team);
+ 	 I\del_t_annonce_us($id_team);
+     return true;
  }
  
  function list_t_annonce_us($sport) {
  	return I\list_t_annonce_us($sport);
+    
  }
 
  function list_t_sport($sport) {
@@ -322,13 +328,16 @@ function new_t_annonce_us($id_team, $frequence, $nb, $niveau, $description) {
 function u_post_result($id_team_user, $id_team2, $result)  {
  check_logged_u_t($id_team_user);
 	check_same_sport($id_team_user, $id_team2);
-   return I\u_post_result($id_team_user, $id_team2, $result);
+   I\u_post_result($id_team_user, $id_team2, $result);
+   return true;
 }
 
 function u_validate_result($id_result)  {
    $id_user = checkLogged();
-   C\belongs_to_u_match_t2($id_user, $id_result) ;
-   return I\validate_result($id_result);
+   if (!C\belongs_to_u_match_t2($id_user, $id_result) )
+      raiseHermetiqueExc('User does not belongs to target team', ERR_ERROR);
+   I\validate_result($id_result);
+   return true;
 }
 
 function update_position(){

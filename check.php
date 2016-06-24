@@ -29,11 +29,29 @@ function same_team_sport($id_user, $id_team_u, $id_team2) {
 
 function same_sport_t($id_team1, $id_team2) {
     $db = getDb();
-    $req = 'SELECT COUNT(*) FROM '.TBL_TEAMS.' AS T WHERE ID=? || ID = ? GROUP BY '.TEAMS_SPORT;
+    // TODO: transformer en double join
+    $req = 'SELECT COUNT('.TEAMS_SPORT.') FROM '.TBL_TEAMS.' AS T WHERE ID=? || ID = ?';
     $stmt = $db->prepare($req);
     $stmt->execute(array($id_team1, $id_team2));
     $resultat = $stmt->fetchColumn();
     return ($resultat == 2);
+}
+
+// Renvoie true si l'utilisateur est dans une équipe qui a le même sport que $id_team
+function belongs_to_u_same_sport($id_user, $id_team) {
+    $db = getDb();
+    $req = 'SELECT COUNT(T.'.TEAMS_SPORT.') FROM '.TBL_TEAMS.' AS T JOIN '.
+            TBL_LIEN_TEAM_USERS.' AS L ON L.'.LIEN_TEAM_USERS_ID_TEAM.' = T.'.TEAMS_ID.
+                    //' JOIN '.TBL_TEAMS. ' AS T2 ON T.'.TEAMS_SPORT.'=T2.'.TEAMS_SPORT.
+                            ' WHERE L.'.LIEN_TEAM_USERS_ID_USER.' = ? OR T.ID = ?' ;
+    $stmt = $db->prepare($req);
+    $stmt->execute(array($id_user, $id_team));
+    /*
+    var_dump($req);
+    var_dump($id_user);
+    var_dump($id_team);
+    */
+    return $stmt->fetchColumn() == 1;
 }
 
 
