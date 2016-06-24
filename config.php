@@ -8,5 +8,5 @@ define('ID_SUPER_USER', 1);
 define('WARNINGS', true);
 define('HERMETIQUE', ENV != 'LOCAL');
 
-define('PICTURES_DIR', 'pictures');
+define('PICTURES_DIR', 'near2u-pictures');
 define('PRIVATE_DIR', 'private');
