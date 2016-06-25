@@ -5,6 +5,9 @@ Résqultat : défaite victoire égalité
 Avis: facultatif 
 AUssi pour la validation de résultat
 
+
+FAIT
+
 requete lister les resultats à valider
 que faire si on invalide
 *get_histoirique_team
@@ -28,7 +31,9 @@ requete : classement par sports avec score
 limite
 
 requete liste des match (like dans les deux directions)
+
 requete team like team : renvoie si l'autre a liké aussi
+FAIT
 
 requete la liste des message team team limit date
 prenom message heure

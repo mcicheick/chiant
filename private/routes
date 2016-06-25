@@ -82,13 +82,17 @@
         "params": [
             "id_team_user",
             "id_team2",
-            "result"
+            "result",
+            "fairplay",
+            "avis"
         ]
     },
     "validate_result_match": {
         "fun": "u_validate_result",
         "params": [
-            "id_result"
+            "id_result",
+            "fairplay",
+            "avis"
         ]
     },
     "post_chat_inter_teams": {

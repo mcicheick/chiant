@@ -135,7 +135,7 @@ CREATE TABLE `lien_team_users` (
 
 CREATE TABLE `offre_team_users` (
   `ID_TEAM` int(11) NOT NULL,
-  `DESCRIPTION` varchar(255) NOT NULL,
+  `DESCRIPTION` TEXT NOT NULL,
   `NB` int(11) NOT NULL COMMENT 'nombre de joueurs recherchés',
   `FREQUENCE` int(11) NOT NULL COMMENT 'fréquence de jeu attendu',
   `NIVEAU` int(11) NOT NULL COMMENT 'niveau de jeu attendu'
@@ -184,7 +184,8 @@ CREATE TABLE `users` (
   `PSEUDO` varchar(255) NOT NULL,
   `PICTURE_FILE` varchar(255) DEFAULT NULL COMMENT 'nom du fichier image',
   `TELEPHONE` varchar(255) DEFAULT NULL,
-  `PREFS_SPORT` int(11) NOT NULL DEFAULT '0' COMMENT 'Préférences sous forme de masque bits'
+  `PREFS_SPORT` int(11) NOT NULL DEFAULT '0' COMMENT 'Préférences sous forme de masque bits',
+  `DATE_INSCRIPTION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `near2u`.`matches` (
@@ -194,6 +195,10 @@ CREATE TABLE `near2u`.`matches` (
 `ID_TEAM2` INT NOT NULL ,
 `RESULTAT` INT NOT NULL ,
 `VALIDE` BOOLEAN DEFAULT NULL COMMENT 'vrai si lequipe adverse (idteam2) a valide le score ',
+`AVIS1` TEXT NULL DEFAULT NULL COMMENT 'Avis de l''équipe 2 sur équipe 1',
+`FAIRPLAY1` TINYINT NULL DEFAULT NULL COMMENT 'Fairplay de 1 selon 2'  ,
+`AVIS2` TEXT NULL DEFAULT NULL COMMENT 'Avis de l''équipe 1 sur équipe 2' ,
+`FAIRPLAY2` TINYINT NULL DEFAULT NULL COMMENT 'Fairplay de 2 selon 1',
 PRIMARY KEY `PKEYID`(`ID`))
 ENGINE = InnoDB;
 

@@ -182,15 +182,24 @@ function update_team_photo($idteam, $path) {
     return updateDb(TBL_TEAMS, $params,$idteam);
 }
 
-function validate_result($id_result) {
-   return updateDb(TBL_MATCHES, array(MATCHES_VALIDE => 1),$id_result);
+function validate_result($id_result, $fairplay, $avis) {
+   return updateDb(TBL_MATCHES, array(MATCHES_VALIDE => 1,
+    MATCHES_AVIS_SUR1 => $avis,
+    MATCHES_FAIRPLAY_SUR1 => $fairplay
+   ),$id_result);
 }
 
-function u_post_result($id_team_user, $id_team2, $result)  {
+function u_post_result($id_team_user, $id_team2, $result, $fairplay, $avis)  {
     return insertDb(TBL_MATCHES, array(
 	MATCHES_ID_TEAM1 => $id_team_user,
 	MATCHES_ID_TEAM2 => $id_team2,
-	MATCHES_RESULTAT => $result));
+	MATCHES_RESULTAT => $result,
+    MATCHES_AVIS_SUR2 => $avis,
+    MATCHES_FAIRPLAY_SUR2 => $fairplay
+    
+    )
+    
+    );
 }
 
 /*pour updater les positions de l'équipe toutes les variations de 1 km*/

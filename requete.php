@@ -230,12 +230,14 @@ function check_same_sport($idteam1, $idteam2) {
 }
 
 
+// Returns if the other one has liked the team
 function like_team_ch($id_bogoss, $id_amoureux) {
     check_logged_u_t($id_bogoss);
     
     check_same_sport($id_bogoss, $id_amoureux);
 
-    return I\like_team($id_bogoss, $id_amoureux);
+    I\like_team($id_bogoss, $id_amoureux);
+    return array('match' => C\like_team($id_amoureux, $id_bogoss));
 }
 
 function newteam_byuser_p($pseudo, $sport) {
@@ -325,18 +327,18 @@ function new_t_annonce_us($id_team, $frequence, $nb, $niveau, $description) {
  	return array_merge( I\list_t_sport_coupcoeur($sport, $id_user), I\list_t_sport($sport));
  }
                  
-function u_post_result($id_team_user, $id_team2, $result)  {
+function u_post_result($id_team_user, $id_team2, $result, $fairplay, $avis)  {
  check_logged_u_t($id_team_user);
 	check_same_sport($id_team_user, $id_team2);
-   I\u_post_result($id_team_user, $id_team2, $result);
+   I\u_post_result($id_team_user, $id_team2, $result, $fairplay, $avis);
    return true;
 }
 
-function u_validate_result($id_result)  {
+function u_validate_result($id_result, $fairplay, $avis)  {
    $id_user = checkLogged();
    if (!C\belongs_to_u_match_t2($id_user, $id_result) )
       raiseHermetiqueExc('User does not belongs to target team', ERR_ERROR);
-   I\validate_result($id_result);
+   I\validate_result($id_result, $fairplay, $avis);
    return true;
 }
 

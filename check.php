@@ -10,6 +10,11 @@ function belongs_to_u_t($id_user, $id_team) {
    return $stmt->rowCount() > 0;
 }
 
+function like_team($id_bogoss, $id_amoureux) {
+    $stmt = selectDbArr(TBL_COUP_COEURS_EQUIPES, array('1'), array(COUP_COEURS_EQUIPES_ID_BOGOSS => $id_bogoss, COUP_COEURS_EQUIPES_ID_AMOUREUX => $id_amoureux));
+    return $stmt->rowCount() > 0;
+}
+
 function belongs_to_u_match_t2($id_user, $id_match) {
     $db = getDb();
     $stmt = $db->prepare('SELECT 1 FROM '.TBL_MATCHES.' AS M JOIN '.
