@@ -202,6 +202,11 @@ CREATE TABLE `near2u`.`matches` (
 PRIMARY KEY `PKEYID`(`ID`))
 ENGINE = InnoDB;
 
+CREATE TABLE `near2u`.`signals_teams` ( 
+`ID_TEAM1` INT NOT NULL COMMENT 'équipe qui signale l''autre' ,
+  `ID_TEAM2` INT NOT NULL COMMENT 'équipe signalé' ,  
+`DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP )
+ ENGINE = InnoDB COMMENT = 'une équipe peut en signaler une autre';
 
 --
 -- RELATIONS FOR TABLE `users`:
@@ -295,6 +300,11 @@ ALTER TABLE `invitations_inter_equipes`
 --
 ALTER TABLE `teams`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `signals_teams`
+  ADD PRIMARY KEY (`ID_TEAM1`,`ID_TEAM2`);
+
+
 --
 -- AUTO_INCREMENT for table `users`
 --
