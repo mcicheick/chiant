@@ -1,6 +1,7 @@
 <?php
 require_once 'config.php';
 require_once '../requete.php';
+require_once '../config.php';
 
 if (ENV != 'LOCAL')
 	die('Not in local mode');
@@ -21,8 +22,6 @@ echo "PLEASE Check with git diff <pre>\n\n";
 $routes = routage();
 
 
-$req = $_POST['requete'];
-if(!$req) {
 ?>
 
 
@@ -40,9 +39,11 @@ Paramètres
 <input type='text' name='params[]' value="" />
 
 <?php
-die('fin');
-}
 
+
+$req = $_POST['requete'];
+if (!$req)
+   die('Pas de requête');
 $params = array_filter($_POST['params']);
 $serieux = $_POST['serieux'] == 'serieux';
 
@@ -50,7 +51,7 @@ if ($serieux)
   echo "ATTENTION: SERIEUX\n";
 $fun = $_POST['fun'];
 
-$route = array('fun' -> $fun, 'params' => $params);
+$route = array('fun' => $fun, 'params' => $params);
 
 $routes[$requete] = $route;
 putRoutes($routes);

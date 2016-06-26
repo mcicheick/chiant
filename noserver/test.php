@@ -1,4 +1,14 @@
 <?php
+define('CST', 5);
+echo "${CST}";
+class Test {
+  function __toString() { return 'coucou'; }
+}
+
+$o = new Test();
+echo 'wesh'.$o;
+printf ("%s", $o);
+die('FIN');
 require_once '../config.php';
 require_once '../requete.php';
 
@@ -74,7 +84,9 @@ foreach(routage() as $req => $route) {
 foreach(routage() as $req => $route) {
     $params = $route['params'];
     $params = array_flip($params);
-    $file = $route['file'];
+    $file = null;
+    if (isset($route['file']))
+      $file = $route['file'];
     $params[MAGIC_PWD_FIELD] = MAGIC_PWD;
     $params[SESSION_USERID_NAME] = 2;
     print_route($req, $params, $file);
