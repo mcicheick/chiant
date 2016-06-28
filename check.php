@@ -16,11 +16,17 @@ function like_team($id_bogoss, $id_amoureux) {
 }
 
 function belongs_to_u_match_t2($id_user, $id_match) {
-    $db = getDb();
-    $stmt = $db->prepare('SELECT 1 FROM '.TBL_MATCHES.' AS M JOIN '.
-	    TBL_LIEN_TEAM_USERS.' AS L ON L.'.LIEN_TEAM_USERS_ID_TEAM.' = M.'.
-	    MATCHES_ID_TEAM2.' WHERE L.'.LIEN_TEAM_USERS_ID_USER.' = ? AND M.ID = ?' );
-    $stmt->execute(array($id_user, $id_match));
+	$stmt= oselect()->setColStr('1')->from(TBL_MATCHES, 'M')
+		->joinp(TBL_LIEN_TEAM_USERS, 'L', 'L',
+			LIEN_TEAM_USERS_ID_TEAM, 'M', MATCHES_ID_TEAM2)
+		->andWhereEqp('L', LIEN_TEAM_USERS_ID_USER, $id_user)
+		->andWhereEqp('M', MATCHES_ID, $id_match)
+		->execute();
+    //$db = getDb();
+    //$stmt = $db->prepare('SELECT 1 FROM '.TBL_MATCHES.' AS M JOIN '.
+	    //TBL_LIEN_TEAM_USERS.' AS L ON L.'.LIEN_TEAM_USERS_ID_TEAM.' = M.'.
+	    //MATCHES_ID_TEAM2.' WHERE L.'.LIEN_TEAM_USERS_ID_USER.' = ? AND M.ID = ?' );
+    //$stmt->execute(array($id_user, $id_match));
     return $stmt->rowCount() > 0;
 }
 
@@ -33,11 +39,9 @@ function same_team_sport($id_user, $id_team_u, $id_team2) {
  */
 
 function same_sport_t($id_team1, $id_team2) {
-    $db = getDb();
     // TODO: transformer en double join
     $req = 'SELECT COUNT('.TEAMS_SPORT.') FROM '.TBL_TEAMS.' AS T WHERE ID=? || ID = ?';
-    $stmt = $db->prepare($req);
-    $stmt->execute(array($id_team1, $id_team2));
+    $stmt = execCheck($req, array($id_team1, $id_team2));
     $resultat = $stmt->fetchColumn();
     return ($resultat == 2);
 }

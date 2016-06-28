@@ -1,14 +1,4 @@
 <?php
-define('CST', 5);
-echo "${CST}";
-class Test {
-  function __toString() { return 'coucou'; }
-}
-
-$o = new Test();
-echo 'wesh'.$o;
-printf ("%s", $o);
-die('FIN');
 require_once '../config.php';
 require_once '../requete.php';
 

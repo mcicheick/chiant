@@ -5,7 +5,7 @@ require_once "nogit/config.php";
 require_once "noserver/config.php";
 require_once 'exceptions.php';
 require_once 'lib/medoo.php';
-require_once 'lib.php'
+require_once 'lib.php';
 
 if (ENV == "LOCAL")
 {
@@ -82,24 +82,11 @@ function exec_uniq($stmt,$vals) {
     return $id;
 }
 
-interface SQLRequete {
-  function sqlrequete();
-}
 
 interface SQLExecute {
   function execute($stmt);
 }
 
-interface SQLIRE extends SQLRequete, SQLExecute {
-}
-
-
-class SQLExecReq {
-  public $requete ;
-  public $execute ;
-
-  function __construct($req, $exec) { $this->requete = $req; $this->execute = $execute; }
-}
 
 abstract class SQLExecAbs implements SQLExecute {
   protected $vals;
@@ -123,36 +110,15 @@ class SQLExecUniq extends SQLExecAbs {
   }
 }
 
-class SQLRequeteStr implements SQLRequete {
-  protected $req;
-  function __construct($req) { $this->req = $req; }
-  function sqlrequete() { return $this->req; }
+
+function requestGeneric($requete, SQLExecute $e) {
+    $db = getDb();
+    var_dump($requete);
+    $stmt= $db->prepare($requete);
+    return ($e->execute($stmt));
 }
 
-/*
-function table($table, $alias) {
-   return $table.' AS '.$alias;
-}
-
-/*
-function col ($prefix, $col) {
-   return $prefix.'.'.$col;
-}
-
-function eq($s1, $s2) {
-   return $s1.'='.$s2;
-}
-
-class buildCond {
-  var $cond_str = '';
-
-  function and($cond) {
-    
-  }
-}
-*/
-
-class buildQuery implements SQLIRE {
+class SQLSelect {
   //protected $cmd;
   //var $table;
   protected $wherestr = null;
@@ -164,103 +130,98 @@ class buildQuery implements SQLIRE {
   protected $join_str = '';
   protected $from_str = '';
 
-
   function setColStr($colstr) {
     $this->cols_str = $colstr;
     return $this;
   }
   // colonne
-  function setCols($cols) {
+  public function setCols($cols) {
      $this->cols_str = join($cols,',');
      return $this;
   }
 
-  function addCol($col, $prefix='T') {
+  public function addCol($col, $prefix='T') {
      set_concat_sep($this->cols_str, $prefix.'.'.$col);
      return $this;
   }
 
 
-  function from($table, $alias = 'T') {
+  public function from($table, $alias = 'T') {
     $this->from_str = $table.' AS '.$alias;
     return $this;
   }
 
-  function wherestr($wherestr, $vals) {
+  function setWhere($wherestr, $vals) {
      $this->str = $wherestr;
      $this->where_vals = $vals;
      return $this;
   }
 
-  function limit($limit) {
+  public function limit($limit) {
      $this->limit = $limit;
      return $this;
   }
 
-  function join($table, $oncond, $alias = 'J') {
-     $this->join_str .= ' JOIN '.$table.' AS '.$alias.' ON '.$oncond.' ';
+  
+   public function joinp($table, $alias, $prefix1, $col1, $prefix2, $col2) {
+     $this->join_str .= "JOIN $table AS $alias ON $prefix1.$col1 = $prefix2.$col2";
      return $this;
   }
 
-  function exec(SQLExecAbs $o) {
-     $this->oexec = $o;
+
+  public function andWhereEqp($prefix, $col, $val) {
+     set_concat_sep($this->where_str, "$prefix.$col = ?", ' AND ');
+     $this->where_vals[] = $val;
      return $this;
   }
 
-  function addWhereStr (&$str) {
-    if ($this->wherestr)
-        $str.= ' WHERE '.$this->wherestr.' '; 
+  public function andWhereStr($str, $vals) {
+     set_concat_sep($this->where_str, $str, ' AND ');
+     $this->where_vals += $vals;
+     return $this;
   }
 
-  function addLimitStr(&$str) {
-    if ($this->limit)
-        $str.= ' LIMIT '.intval($this->limit).' ';
+
+  protected function getWhereStr(){
+     return ($this->where_str) ? ' WHERE '.$this->where_str.' ' : '';
+  }
+  protected function getLimitStr() {
+     return ($this->limit) ? ' LIMIT '.intval($this->limit).' ' : '';
   }
 
-  function sqlrequete() {
-    //$cols_str = join($cols,',');
-    $str = sprintf('SELECT %s %s', $this->cols_str, $this->from_str);
 
-    $str.= $this->join_str;
-    $this->addWhereStr($str);
-    $this->addLimitStr($str);
-
-
-    return $str;
-  }
-
-  function execute($stmt) {
+  public function execute() {
      if (!$this->oexec)
        $this->oexec = new SQLExecCheck();
 
      $vals = $this->where_vals;
      $this->oexec->setvals($vals);
-     return $this->oexec->execute($stmt);
+     return requestGeneric($this->sqlrequete(), $this->oexec);
   }
 
+  function sqlrequete() {
+    //$cols_str = join($cols,',');
+    $str = sprintf('SELECT %s FROM %s %s %s %s ', $this->cols_str, $this->from_str, $this->join_str, $this->getWhereStr(), $this->getLimitStr());
+
+    return $str;
+  }
 }
 
-//function newSelect($cmd) { return new buildRequete($cmd); }
+
+
+function oselect() { return new SQLSelect(); }
 
 
 
 function selReqDbWhStr($table, $cols, $wherestr) {
     $cols_str = join($cols,',');
-    return new SQLRequeteStr('SELECT '.$cols_str.' FROM '.$table.' WHERE '.$wherestr);
+    return ('SELECT '.$cols_str.' FROM '.$table.' WHERE '.$wherestr);
 }
 
 
-function requestGeneric(SQLRequete $r, SQLExecute $e) {
-    $db = getDb();
-    $stmt= $db->prepare($r->sqlrequete());
-    return ($e->execute($stmt));
-}
 
-function requestGeneric1(SQLIRE $o) {
-    return requestGeneric($o, $o);
-}
 
-function execCheckGeneric($req, $vals) {
+function execCheck($req, $vals) {
     return requestGeneric($req, new SQLExecCheck($vals));
 }
 
@@ -268,7 +229,7 @@ function execUniqGeneric($req, $vals) {
     return requestGeneric($req, new SQLExecUniq($vals));
 }
 function selectDbWhStr($table, $cols, $wherestr, $vals) {
-    return execCheckGeneric(selReqDbWhStr($table, $cols, $wherestr), $vals);
+    return execCheck(selReqDbWhStr($table, $cols, $wherestr), $vals);
 }
 
 function insertDb($table, $array){
@@ -278,7 +239,7 @@ function insertDb($table, $array){
     $str_keys = join(',', $cles);
     $req = "INSERT INTO ".$table."(".$str_keys.') VALUES ('.$str_marks.')';
 
-    return execUniqGeneric(new SQLRequeteStr($req), $vals);
+    return execUniqGeneric(($req), $vals);
     //var_dump($req);
     //var_dump($vals);
 
@@ -294,7 +255,7 @@ function updateDb($table, $valeurs, $id) {
     $req = ("UPDATE ".$table." SET ".$str. ' WHERE ID=?');
     $vals[] = $id;
 
-    return execUniqGeneric(new SQLRequeteStr($req), $vals);
+    return execUniqGeneric(($req), $vals);
 
 }
 
