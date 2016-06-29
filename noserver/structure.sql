@@ -193,6 +193,7 @@ CREATE TABLE `near2u`.`matches` (
 `DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
 `ID_TEAM1` INT NOT NULL ,
 `ID_TEAM2` INT NOT NULL ,
+`VICTOIRE` BOOLEAN NOT NULL COMMENT  's''agit-il d''une victoire de l''équipe 1 ? (possiblement redondant avec résultat)',
 `RESULTAT` INT NOT NULL ,
 `VALIDE` BOOLEAN DEFAULT NULL COMMENT 'vrai si lequipe adverse (idteam2) a valide le score ',
 `AVIS1` TEXT NULL DEFAULT NULL COMMENT 'Avis de l''Ã©quipe 2 sur Ã©quipe 1',
