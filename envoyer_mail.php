@@ -1,4 +1,6 @@
 <?php
+namespace envoyer_mail;
+function send_mail_inscription($email,$iduser,$cle){
 	// Préparation du mail contenant le lien d'activation
 $destinataire = $email;
 $sujet = "Activer votre compte" ;
@@ -20,6 +22,7 @@ Ceci est un mail automatique, Merci de ne pas y répondre.';
 mail($destinataire, $sujet, $message, $entete) ; // Envoi du mail
 }
 
+function send_mail_change_password($email,$cle){
 	// Préparation du mail contenant le lien d'activation
 $destinataire = $email;
 $sujet = "Activer votre compte" ;
