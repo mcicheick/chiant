@@ -146,6 +146,11 @@ class SQLSelect {
      return $this;
   }
 
+  public function addCola ($alias, $col, $prefix='T') {
+     set_concat_sep($this->cols_str, "$prefix.$col AS $alias");
+     return $this;
+  }
+
 
   public function from($table, $alias = 'T') {
     $this->from_str = $table.' AS '.$alias;
