@@ -144,5 +144,29 @@
 
     "update_last_connexion" : {
         "fun" : "update_last_connexion", 
-        "params": [] }
+        "params": [] },
+
+    "check_cle_actif" : {
+        "fun" : "check_cle_actif", 
+        "params": ["iduser","cle"] },
+
+    "confirmation_inscription" : {
+        "fun" : "confirmation_inscription", 
+        "params": ["iduser"] },
+
+    "get_cle_email" : {
+        "fun" : "get_cle_email", 
+        "params": ["email"] },
+
+    "update_password" : {
+        "fun" : "update_password", 
+        "params": ["email","password"] },
+
+    "send_mail_change_password" : {
+        "fun" : "send_mail_change_password", 
+        "params": ["email"] },
+
+    "send_mail_inscription" : {
+        "fun" : "send_mail_inscription", 
+        "params": ["email","iduser","cle"] }
 }

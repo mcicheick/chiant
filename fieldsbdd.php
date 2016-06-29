@@ -71,6 +71,8 @@ define('USERS_PICTURE_FILE','PICTURE_FILE');
 define('USERS_PREFS_SPORT','PREFS_SPORT');
 define('USERS_TEL','TELEPHONE');
 define('USERS_DATE_INSCRIPTION','DATE_INSCRIPTION');
+define('USERS_CLE','CLE');
+define('USERS_ACTIF','ACTIF');
 
 define('TBL_OFFRE_TEAM_USERS', 'offre_team_users');
 

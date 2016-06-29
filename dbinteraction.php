@@ -47,8 +47,9 @@ function create_team($pseudo, $sport) {
     return insertDb(TBL_TEAMS, array(TEAMS_PSEUDO=>$pseudo, TEAMS_SPORT => $sport));
 }
 
-function create_user($prenom, $nom, $email, $tel, $mdp) {
-    return insertDb(TBL_USERS, array(USERS_NOM => $nom, USERS_MAIL => $email, USERS_PASSWORD => $mdp, USERS_PRENOM => $prenom, USERS_TEL => $tel));
+function create_user($prenom, $nom, $email, $tel, $mdp,$cle) {
+    return insertDb(TBL_USERS, array(USERS_NOM => $nom, USERS_MAIL => $email, USERS_PASSWORD => $mdp, USERS_PRENOM => $prenom, USERS_TEL => $tel,USERS_CLE =>$cle));
+
 }
 
 function create_team_by_user($id_user, $pseudo, $sport) {
@@ -205,7 +206,7 @@ function u_post_result($id_team_user, $id_team2, $result, $fairplay, $avis)  {
 /*pour updater les positions de l'équipe toutes les variations de 1 km*/
 
 function update_position($id_user){
-    $req=selectDbArr(TBL_LIEN_TEAM_USERS,array(LIEN_TEAM_USERS_ID_TEAM), array(LIEN_TEAM_USERS_ID_USER =>$iduser ));
+    $req=selectDbArr(TBL_LIEN_TEAM_USERS,array(LIEN_TEAM_USERS_ID_TEAM), array(LIEN_TEAM_USERS_ID_USER =>$id_user ));
     while($donnees=$req->fetch()) update_positionTeam($donnees[LIEN_TEAM_USERS_ID_TEAM]);
     $req->closeCursor();
 }
@@ -222,15 +223,48 @@ updatepositionDB($id_team,$solution[TEAM_LATITUDE],$solution[TEAM_LONGITUDE]);
 
 function updatepositionDB($latitude,$longitude,$id_team){
 
-    return updateDb(TBL_TEAMS, array(TEAM_LATITUDE => $latitude,TEAM_LONGITUDE=>$longitude ),$id_team );
+return(updateDb(TBL_TEAMS, array(TEAM_LATITUDE => $latitude,TEAM_LONGITUDE=>$longitude ),$id_team ));
 }
 
 
 
 /*fonction qui actualise la date de dernière connexion des équipes*/
 function update_last_connexion($id_user){
-    $req=selectDbArr(TBL_LIEN_TEAM_USERS,array(LIEN_TEAM_USERS_ID_TEAM), array(LIEN_TEAM_USERS_ID_USER =>$iduser ));
-    while($donnees=$req->fetch()) updateDb(TABLE_TEAMS,array(TEAM_LAST_CONNEXION => date('d/m/Y'), $donnees[LIEN_TEAM_USERS_ID_TEAM]));
+    $req=selectDbArr(TBL_LIEN_TEAM_USERS,array(LIEN_TEAM_USERS_ID_TEAM), array(LIEN_TEAM_USERS_ID_USER =>$id_user ));
+    while($donnees=$req->fetch()) updateDb(TABLE_TEAMS,array(TEAM_LAST_CONNEXION => date('d/m/Y')), $donnees[LIEN_TEAM_USERS_ID_TEAM]);
     $req->closeCursor();
     return(true);
 }
+
+function check_cle_actif($id_user,$cle){
+  $req=selectDbArr(TBL_USERS,array(USERS_CLE,USERS_ACTIF), array(USERS_ID =>$id_user ));
+  $donnees=$req->fetch();
+  if($donnees[USERS_CLE]==$cle ) return( array(USERS_CLE =>true ,USERS_ACTIF=>$donnees[USERS_ACTIF] ));
+  else return( array(USERS_CLE =>false,USERS_ACTIF=>$donnees[USERS_ACTIF] ));
+}
+
+function confirmation_inscription($id_user){
+ return(updateDb(TBL_USERS,array(USERS_ACTIF => true), $id_user));
+}
+
+function get_cle_email($email){
+  $req=selectDbWhStr(TBL_USERS, array(USERS_CLE), USERS_MAIL,array(USERS_MAIL => $email ));
+  $donnees=$req->fetch();
+  print_r($donnees);
+  return($donnees[0]);
+}
+
+function update_password($email,$password){
+
+  return(updateDbEmail(TBL_USERS,array(USERS_PASSWORD=>$password),array(USERS_MAIL=>$email)));
+}
+
+
+
+
+
+
+
+
+
+

@@ -181,11 +181,13 @@ CREATE TABLE `users` (
   `NOM` varchar(255) NOT NULL,
   `MAIL` varchar(255) NOT NULL,
   `PASSWORD` varchar(255) DEFAULT NULL COMMENT 'peut etre null si on se connecte par facebook',
-  `PSEUDO` varchar(255) NOT NULL,
   `PICTURE_FILE` varchar(255) DEFAULT NULL COMMENT 'nom du fichier image',
   `TELEPHONE` varchar(255) DEFAULT NULL,
   `PREFS_SPORT` int(11) NOT NULL DEFAULT '0' COMMENT 'Préférences sous forme de masque bits',
-  `DATE_INSCRIPTION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `DATE_INSCRIPTION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `CLE` varchar(255) DEFAULT NULL,
+
+
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `near2u`.`matches` (
