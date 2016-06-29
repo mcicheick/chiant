@@ -113,7 +113,8 @@ class SQLExecUniq extends SQLExecAbs {
 
 function requestGeneric($requete, SQLExecute $e) {
     $db = getDb();
-    var_dump($requete);
+    if (DEBUG_DUMP_SQL)
+    	echo "$requete\n";
     $stmt= $db->prepare($requete);
     return ($e->execute($stmt));
 }
@@ -164,7 +165,7 @@ class SQLSelect {
 
   
    public function joinp($table, $alias, $prefix1, $col1, $prefix2, $col2) {
-     $this->join_str .= "JOIN $table AS $alias ON $prefix1.$col1 = $prefix2.$col2";
+     $this->join_str .= " JOIN $table AS $alias ON $prefix1.$col1 = $prefix2.$col2";
      return $this;
   }
 
@@ -245,30 +246,40 @@ function insertDb($table, $array){
 
 }
 
+function update_wherestr($table, $valeurs, $wherestr, $where_vals) {
+    list($set_str, $set_vals) = equalities_string($valeurs, ',');
+
+    $req = ("UPDATE $table SET $set_str WHERE $wherestr");
+    return execUniqGeneric(($req), array_merge($set_vals, $where_vals));
+}
+
+function update_wherea($table, $valeurs, $wherea) {
+    list($where_str, $where_vals) = equalities_string($wherea, 'AND');
+    return update_wherestr($table, $valeurs, $where_str,$where_vals);
+}
+
 function updateDb($table, $valeurs, $id) {
-
-    list($cles,$vals,$marks) = arrToKeysAndMarks($valeurs);
-
-    $lst_str = array_map(function($key) { return $key.'=?';}, $cles);
-    $str = join($lst_str, ',');
-
-    $req = ("UPDATE ".$table." SET ".$str. ' WHERE ID=?');
-    $vals[] = $id;
-
-    return execUniqGeneric(($req), $vals);
-
+	return update_wherea($table, $valeurs, array('ID' => $id));
 }
 
 
 
-
-function selectDbArr($table, $cols, $wherea) {
-
+function equalities_string($wherea, $sep) {
+    $str = '';
     list($cles,$vals,$marks) = arrToKeysAndMarks($wherea);
 
-    $lst = array_map(function($key) { return $key.'=?';}, $cles);
-    $lst_str = join($lst, ' AND ');
-    return selectDbWhStr($table,$cols, $lst_str, $vals);
+    foreach ($cles as $cle)
+	$str .= "$sep $cle = ? ";
+
+    if ($str)
+       $str = substr($str, strlen($sep));
+    return array($str, $vals);
+}
+
+function selectDbArr($table, $cols, $wherea) {
+    list($wherestr, $vals) = equalities_string($wherea, 'AND');
+
+    return selectDbWhStr($table,$cols, $wherestr, $vals);
 }
 
 function selectId($table, $cols, $id) {
@@ -283,9 +294,6 @@ function deleteDbWhStr($table, $wherestr, $vals) {
 }
 
 function deleteDbArr($table, $wherea) {
-    list($cles,$vals,$marks) = arrToKeysAndMarks($wherea);
-
-    $lst = array_map(function($key) { return $key.'=?';}, $cles);
-    $lst_str = join($lst, ' AND ');
-    return deleteDbWhStr($table,$lst_str, $vals);
+    list($wherestr, $vals) = equalities_string($wherea, 'AND');
+    return deleteDbWhStr($table,$wherestr, $vals);
 }
