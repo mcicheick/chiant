@@ -146,13 +146,6 @@
         "fun" : "update_last_connexion", 
         "params": [] },
 
-    "confirmation_inscription" : {
-        "fun" : "confirmation_inscription", 
-        "params": ["email"] },
-
-    "get_cle_email" : {
-        "fun" : "get_cle_email", 
-        "params": ["email"] },
 
     "update_password" : {
         "fun" : "update_password", 

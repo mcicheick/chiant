@@ -365,14 +365,6 @@ function update_last_connexion(){
     return true;
 }
 
-function confirmation_inscription($email){
-    return(I\confirmation_inscription($email));
-}
-
-function get_cle_email($email){
-    return(I\get_cle_email($email));
-}
-
 
 function update_password($email,$password){
     return(I\update_password($email,sha1($password)));
