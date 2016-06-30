@@ -235,11 +235,20 @@ function update_last_connexion($id_user){
     return(true);
 }
 
+function rankReq() {
+    static $var = null;
+
+    if (!$var)
+      $var = 
+       	oselect()->from(TBL_TEAMS, 'L')
+	   ->setColStr("COUNT(*)+1")
+	   ->setWhere('L.'.TEAMS_SCORE.' > T.'.TEAMS_SCORE, array())->sqlrequete();
+   return $var;
+}
+
 //nb victoire/defaite/points/classement
 function get_stat_team($id_team)  {
-	$rank1 = oselect()->from(TBL_TEAMS)
-		->setColStr("COUNT(*)")
-		->setWhere(TEAMS_SCORE.' <= T.'.TEAMS_SCORE);
+	$rank1 = rankReq();
 
 
 	$scorerank = oselect()->from(TBL_TEAMS, 'T')
@@ -253,7 +262,7 @@ function get_stat_team($id_team)  {
 		oselect()->from(TBL_MATCHES, 'M')
 		->addColStr("COUNT(*), SUM(".MATCHES_VICTOIRE.")")
 		->andWhereEqp('M', MATCHES_ID_TEAM1, $id_team)
-	        ->andWhereStr(MATCHES_VALIDE. ' = 1') 
+	        ->andWhereStr(MATCHES_VALIDE. ' = 1', array()) 
 		->execute()
 		->fetch(\PDO::FETCH_NUM);
 
@@ -261,7 +270,7 @@ function get_stat_team($id_team)  {
 		oselect()->from(TBL_MATCHES, 'M')
 		->addColStr("COUNT(*), SUM(".MATCHES_VICTOIRE.")")
 		->andWhereEqp('M', MATCHES_ID_TEAM2, $id_team)
-	        ->andWhereStr(MATCHES_VALIDE. ' = 1') 
+	        ->andWhereStr(MATCHES_VALIDE. ' = 1', array()) 
 		->execute()
 		->fetch(\PDO::FETCH_NUM);
 
@@ -270,25 +279,25 @@ function get_stat_team($id_team)  {
 	return $scorerank;
 }
 function list_historique_team($id_team, $limit)  {
+	$rank1 = rankReq();
 
-	$rank1 = oselect()->from(TBL_TEAMS)
-		->setColStr("COUNT(*)")
-		->setWhere(TEAMS_SCORE.' <= T.'.TEAMS_SCORE, array());
 
 	$select1 = oselect()->from(TBL_MATCHES, 'M')
 		->addCola('date', MATCHES_DATE, 'M')
 		-> addCola('victoire',  MATCHES_VICTOIRE, 'M')
+		->addCola('id_team', MATCHES_ID_TEAM2, 'M')
 		->addColStr("($rank1) AS rang_team")
 		->joinp(TBL_TEAMS, 'T', 'T', TEAMS_ID, 'M', MATCHES_ID_TEAM2)
 		->andWhereEqp('M', MATCHES_ID_TEAM1, null)
-	        ->andWhereStr('M'.MATCHES_VALIDE. ' = 1') ;
+	        ->andWhereStr('M.'.MATCHES_VALIDE. ' = 1', array()) ;
 	$select2 = oselect()->from(TBL_MATCHES, 'M')
 		->addCola('date', MATCHES_DATE, 'M')
 		->addColStr('NOT M.'.MATCHES_VICTOIRE.' AS victoire')
 		->addColStr("($rank1) AS rang_team")
+		->addCola('id_team', MATCHES_ID_TEAM1, 'M')
 		->joinp(TBL_TEAMS, 'T', 'T', TEAMS_ID, 'M', MATCHES_ID_TEAM1)
 		->andWhereEqp('M', MATCHES_ID_TEAM2, null)
-	        ->andWhereStr('M'.MATCHES_VALIDE. ' = 1') ;
+	        ->andWhereStr('M.'.MATCHES_VALIDE. ' = 1', array()) ;
 	
 	$requete = "$select1 UNION ALL $select2 ORDER BY date DESC LIMIT $limit";
 	$stmt = execCheck($requete, array($id_team, $id_team));
@@ -302,5 +311,17 @@ function list_historique_team($id_team, $limit)  {
 		->execute();
     return $stmt->fetchall();
 	 */
+}
+
+function list_t_classements($limit)  {
+	$rank1 = rankReq();
+
+       $stmt= oselect()->addCola('score', TEAMS_SCORE)
+		->addColStr("($rank1) AS rang")
+                ->from(TBL_TEAMS, 'T')
+		->limit($limit)
+		->order('T', TEAMS_SCORE, 'DESC')
+		->execute();
+    return $stmt->fetchall(\PDO::FETCH_ASSOC);
 }
 

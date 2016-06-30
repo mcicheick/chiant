@@ -158,5 +158,11 @@
             "id_team",
             "limit"
         ]
+    },
+    "classement_teams": {
+        "fun": "list_t_classements",
+        "params": [
+            "limit"
+        ]
     }
 }

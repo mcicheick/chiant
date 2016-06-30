@@ -20,7 +20,11 @@ function getLastIdTable($table) {
 $uniq = uniqid();
 function genName($name) {
 	global $uniq;
-	return $name.$uniq;
+	return $name.'_'.$uniq;
+}
+
+function genUniqName($name) {
+	return $name.'_'.uniqid();
 }
 
 
@@ -40,7 +44,7 @@ function testParams($req, Validator $is_ok, $params) {
 	  $color = 'red';
 
 	  echo '<p style="background-color:'.$color.'">';
-  echo json_encode($ret);
+  echo json_encode($ret, JSON_PRETTY_PRINT);
 	  
   echo "</p>\n\n\n";
 }
@@ -71,6 +75,19 @@ class MatchValidator implements Validator {
 
 
 echo "<pre>Vider la base de donn√©es (de ses donn√©es) avant d'ex√©cuter les tests\n";
+
+
+function lienTo($lien) {
+   echo "<a href='#$lien'>$lien</a>\n";
+}
+function liensrc($lien) {
+   echo "<a id='$lien'>$lien</a>\n";
+}
+
+lienTo('basique');
+lienTo('historique-teams');
+
+liensrc('basique');
 
 //testParams('update_user_picture',  array ($photo => ?));
 //testParams('update_team_picture',  array ($photo => ?, $id_team => ?));
@@ -132,3 +149,47 @@ testParams('list_recherche_team_users',  $valid_ok, array ("sport" => 1));
 testParams('remove_recherche_team_users', $valid_ok,  array ("id_team" => $id_team1));
 
 
+liensrc('historique-teams');
+
+use dbinteraction as I;
+// On crÈe 10 utilisateurs, avec chacun 10 Èquipes avec des scores du tableau $scores. Chacune des Èquipes
+// rencontre les autres
+$nb = 10;
+$nbrencontres = intval(pow($nb , 1.5));
+
+echo "$nb Èquipes, $nbrencontres rencontres\n";
+
+$scores= array();
+//$users_id = array();
+$teams_ids = array();
+for ($i=0; $i < $nb; $i++) {
+  $score = rand();
+  $scores[] = $score;
+  $id_team = insertDb(TBL_TEAMS, array(TEAMS_PSEUDO=>genName("hist_team_$i"), TEAMS_SPORT => 1, TEAMS_SCORE => $score));
+  $teams_ids[] = $id_team;
+}
+
+/*
+for ($i=0; $i < $nbrencontres; $i++) {
+	echo rand(0,1);
+}
+ */
+
+
+for ($i=0; $i < $nbrencontres; $i++) {
+// CHaque Èquipe rencontre entre 1 et 5 Èquipes
+  list($team1, $team2) = array_rand($teams_ids, 2);
+  $date = date("Y-m-d H:i:s", rand(1,100000000));
+  echo "date : $date\n";
+    insertDb(TBL_MATCHES, array(
+	MATCHES_ID_TEAM1 => $teams_ids[$team1],
+	MATCHES_ID_TEAM2 => $teams_ids[$team2],
+	MATCHES_VICTOIRE => rand(0,1),
+	MATCHES_VALIDE => rand(0,1),
+        MATCHES_DATE => $date));
+
+}
+
+
+testParams('classement_teams', $valid_ok, array ('limit' => 20));
+testParams('historique_team',$valid_ok,  array ('id_team' =>$teams_ids[0], 'limit' => 20));

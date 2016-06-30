@@ -356,7 +356,11 @@ function update_last_connexion(){
 function get_historique_team($id_team, $limit)  {
    $list = I\list_historique_team($id_team, $limit);
    $stats = I\get_stat_team($id_team);
-   $stats['historique'] = $lists;
+   $stats['historique'] = $list;
    return $stats;
+}
+
+function list_t_classements($limit)  {
+   return I\list_t_classements($limit);
 }
 
