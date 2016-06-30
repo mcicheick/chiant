@@ -129,7 +129,8 @@ function requestGeneric($requete, SQLExecute $e) {
 class SQLSelect {
   //protected $cmd;
   //var $table;
-  protected $wherestr = null;
+  protected $where_str = null;
+  protected $orderstr = '';
   protected $limit= null;
   //protectedar $columns = array();
   protected $cols_str = '';
@@ -161,6 +162,11 @@ class SQLSelect {
       return $this->addColStr("$prefix.$col AS $alias");
   }
 
+  public function order($prefix, $col, $ordre) {
+      $this->orderstr = " ORDER BY $prefix.$col $ordre ";
+      return $this;
+  }
+
 
   public function from($table, $alias = 'T') {
     $this->from_str = $table.' AS '.$alias;
@@ -168,7 +174,7 @@ class SQLSelect {
   }
 
   function setWhere($wherestr, $vals) {
-     $this->str = $wherestr;
+     $this->where_str = $wherestr;
      $this->where_vals = $vals;
      return $this;
   }
@@ -193,7 +199,7 @@ class SQLSelect {
 
   public function andWhereStr($str, $vals) {
      set_concat_sep($this->where_str, $str, ' AND ');
-     $this->where_vals += $vals;
+     $this->where_vals = array_merge($this->where_vals, $vals);
      return $this;
   }
 
@@ -217,7 +223,7 @@ class SQLSelect {
 
   function sqlrequete() {
     //$cols_str = join($cols,',');
-    $str = sprintf('SELECT %s FROM %s %s %s %s ', $this->cols_str, $this->from_str, $this->join_str, $this->getWhereStr(), $this->getLimitStr());
+    $str = sprintf('SELECT %s FROM %s %s %s %s %s ', $this->cols_str, $this->from_str, $this->join_str, $this->getWhereStr(), $this->orderstr, $this->getLimitStr());
 
     return $str;
   }
