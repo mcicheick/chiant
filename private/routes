@@ -12,7 +12,9 @@
     "update_user_picture": {
         "fun": "update_u_picture",
         "file": "photo",
-        "params": []
+        "params": [
+
+        ]
     },
     "update_team_picture": {
         "fun": "update_t_picture",
@@ -139,10 +141,22 @@
         ]
     },
     "update_position": {
-      "fun" : "update_position", 
-      "params" : [] },
+        "fun": "update_position",
+        "params": [
 
-    "update_last_connexion" : {
-        "fun" : "update_last_connexion", 
-        "params": [] }
+        ]
+    },
+    "update_last_connexion": {
+        "fun": "update_last_connexion",
+        "params": [
+
+        ]
+    },
+    "historique_team": {
+        "fun": "get_historique_team",
+        "params": [
+            "id_team",
+            "limit"
+        ]
+    }
 }

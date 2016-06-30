@@ -234,3 +234,73 @@ function update_last_connexion($id_user){
     $req->closeCursor();
     return(true);
 }
+
+//nb victoire/defaite/points/classement
+function get_stat_team($id_team)  {
+	$rank1 = oselect()->from(TBL_TEAMS)
+		->setColStr("COUNT(*)")
+		->setWhere(TEAMS_SCORE.' <= T.'.TEAMS_SCORE);
+
+
+	$scorerank = oselect()->from(TBL_TEAMS, 'T')
+		->addCola('score', TEAMS_SCORE, 'T')
+		->addColStr("($rank1) AS rang")
+		->andWhereEqp('T', TEAMS_ID, $id_team)
+		->execute()
+		->fetch(\PDO::FETCH_ASSOC);
+
+	list($total1, $nbvictoire1) =
+		oselect()->from(TBL_MATCHES, 'M')
+		->addColStr("COUNT(*), SUM(".MATCHES_VICTOIRE.")")
+		->andWhereEqp('M', MATCHES_ID_TEAM1, $id_team)
+	        ->andWhereStr(MATCHES_VALIDE. ' = 1') 
+		->execute()
+		->fetch(\PDO::FETCH_NUM);
+
+	list($total2, $nbdefaite2) =
+		oselect()->from(TBL_MATCHES, 'M')
+		->addColStr("COUNT(*), SUM(".MATCHES_VICTOIRE.")")
+		->andWhereEqp('M', MATCHES_ID_TEAM2, $id_team)
+	        ->andWhereStr(MATCHES_VALIDE. ' = 1') 
+		->execute()
+		->fetch(\PDO::FETCH_NUM);
+
+	$scorerank['nb_victoires'] = $nbvictoire1 + $total2 - $nbdefaite2;
+        $scorerank['nb_defaite'] = $nbdefaite2 + $total1 - $nbvictoire1;
+	return $scorerank;
+}
+function list_historique_team($id_team, $limit)  {
+
+	$rank1 = oselect()->from(TBL_TEAMS)
+		->setColStr("COUNT(*)")
+		->setWhere(TEAMS_SCORE.' <= T.'.TEAMS_SCORE, array());
+
+	$select1 = oselect()->from(TBL_MATCHES, 'M')
+		->addCola('date', MATCHES_DATE, 'M')
+		-> addCola('victoire',  MATCHES_VICTOIRE, 'M')
+		->addColStr("($rank1) AS rang_team")
+		->joinp(TBL_TEAMS, 'T', 'T', TEAMS_ID, 'M', MATCHES_ID_TEAM2)
+		->andWhereEqp('M', MATCHES_ID_TEAM1, null)
+	        ->andWhereStr('M'.MATCHES_VALIDE. ' = 1') ;
+	$select2 = oselect()->from(TBL_MATCHES, 'M')
+		->addCola('date', MATCHES_DATE, 'M')
+		->addColStr('NOT M.'.MATCHES_VICTOIRE.' AS victoire')
+		->addColStr("($rank1) AS rang_team")
+		->joinp(TBL_TEAMS, 'T', 'T', TEAMS_ID, 'M', MATCHES_ID_TEAM1)
+		->andWhereEqp('M', MATCHES_ID_TEAM2, null)
+	        ->andWhereStr('M'.MATCHES_VALIDE. ' = 1') ;
+	
+	$requete = "$select1 UNION ALL $select2 ORDER BY date DESC LIMIT $limit";
+	$stmt = execCheck($requete, array($id_team, $id_team));
+	return ($stmt) ? $stmt->fetchAll(\PDO::FETCH_ASSOC) : false;
+	/*
+       $stmt= oselect()->addCol('alias', ?, 'R')->
+                ->from(?, 'M')
+		->joinp(?, 'L', 'L',
+			?, 'M', ?)
+		->andWhereEqp('M', ?, $?)
+		->execute();
+    return $stmt->fetchall();
+	 */
+}
+

@@ -91,7 +91,14 @@ interface SQLExecute {
 abstract class SQLExecAbs implements SQLExecute {
   protected $vals;
   function __construct($vals =null) { $this->setvals($vals);}
-  public function setvals($vals) { $this->vals = ($vals == null) ? array() : $vals; return $this ;}
+  public function setvals($vals) { 
+	  if (DEBUG_DUMP_SQL) {
+	         echo "valeurs SQL : ";
+               var_dump($vals);
+		 echo "\n";
+	  }
+	  $this->vals = ($vals == null) ? array() : $vals; return $this ;
+  }
 }
 
 class SQLExecCheck extends SQLExecAbs {
@@ -141,14 +148,17 @@ class SQLSelect {
      return $this;
   }
 
-  public function addCol($col, $prefix='T') {
-     set_concat_sep($this->cols_str, $prefix.'.'.$col);
+  public function addColStr($str) {
+     set_concat_sep($this->cols_str, $str);
      return $this;
   }
 
+  public function addCol($col, $prefix='T') {
+     return $this->addColStr("$prefix.$col");
+  }
+
   public function addCola ($alias, $col, $prefix='T') {
-     set_concat_sep($this->cols_str, "$prefix.$col AS $alias");
-     return $this;
+      return $this->addColStr("$prefix.$col AS $alias");
   }
 
 
@@ -211,6 +221,11 @@ class SQLSelect {
 
     return $str;
   }
+
+  function __toString() {
+	  return $this->sqlrequete();
+  }
+
 }
 
 

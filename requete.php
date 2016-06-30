@@ -353,3 +353,10 @@ function update_last_connexion(){
     I\update_last_connexion($id_user);
     return true;
 }
+function get_historique_team($id_team, $limit)  {
+   $list = I\list_historique_team($id_team, $limit);
+   $stats = I\get_stat_team($id_team);
+   $stats['historique'] = $lists;
+   return $stats;
+}
+
