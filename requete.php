@@ -218,7 +218,8 @@ function update_t_picture($photoparams, $id_team) {
 function register($prenom, $nom, $email, $tel, $mdp) {
     if ($mdp!=null){
     $cle = md5(microtime(TRUE)*100000);
-    $iduser = I\create_user( $prenom, $nom, $email, $tel, $mdp,$cle);
+
+    $iduser = I\create_user_inactif( $prenom, $nom, $email, $tel, $mdp,$cle);
     E\send_mail_inscription($email,$iduser,$cle);
 }
 else{
@@ -364,11 +365,8 @@ function update_last_connexion(){
     return true;
 }
 
-function check_cle_actif($id_user,$cle){
-    return(I\check_cle_actif($id_user,$cle));
-}
-function confirmation_inscription($iduser){
-    return(I\confirmation_inscription($iduser));
+function confirmation_inscription($email){
+    return(I\confirmation_inscription($email));
 }
 
 function get_cle_email($email){
@@ -377,7 +375,6 @@ function get_cle_email($email){
 
 
 function update_password($email,$password){
-    print(sha1($password));
     return(I\update_password($email,sha1($password)));
 }
 
@@ -391,5 +388,6 @@ function send_mail_inscription($email,$iduser,$cle){
     E\send_mail_inscription($email,$iduser,$cle);
     return(true);
 }
+
 
 

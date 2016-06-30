@@ -122,8 +122,8 @@ function updateDbEmail($table, $valeurs, $email) {
     $vals[] = $email;
 
 
-    $id = exec_uniq($stmt, $vals);
-    return $id;
+    $email = exec_uniq($stmt, $vals);
+    return $email;
 }
 
 function selectDbWhStr($table, $cols, $wherestr, $vals) {

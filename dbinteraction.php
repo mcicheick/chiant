@@ -236,35 +236,39 @@ function update_last_connexion($id_user){
     return(true);
 }
 
-function check_cle_actif($id_user,$cle){
-  $req=selectDbArr(TBL_USERS,array(USERS_CLE,USERS_ACTIF), array(USERS_ID =>$id_user ));
-  $donnees=$req->fetch();
-  if($donnees[USERS_CLE]==$cle ) return( array(USERS_CLE =>true ,USERS_ACTIF=>$donnees[USERS_ACTIF] ));
-  else return( array(USERS_CLE =>false,USERS_ACTIF=>$donnees[USERS_ACTIF] ));
-}
 
-function confirmation_inscription($id_user){
- return(updateDb(TBL_USERS,array(USERS_ACTIF => true), $id_user));
+function confirmation_inscription($email){
+  $req=selectDbArr(TBL_USERS_INACTIF,array("*"), array(USERS_INACTIF_MAIL =>$email ));
+  $numResults = count($req);
+  $counter = 0;
+  while ($donnees = $req->fetch()) {
+    if (++$counter == $numResults) {
+        $nom=$donnees[strtolower(USERS_INACTIF_NOM)];
+        $email=$donnees[strtolower(USERS_INACTIF_MAIL)];
+        $mdp=$donnees[strtolower(USERS_INACTIF_PASSWORD)];
+        $prenom=$donnees[strtolower(USERS_INACTIF_PRENOM)];
+        $tel=$donnees[strtolower(USERS_INACTIF_TEL)];
+        $cle=$donnees[strtolower(USERS_INACTIF_CLE)];
+        return(insertDb(TBL_USERS, array(USERS_NOM => $nom, USERS_MAIL => $email, USERS_PASSWORD => $mdp, USERS_PRENOM => $prenom, USERS_TEL => $tel,USERS_CLE =>$cle)));
+
+  }
+
+  }
 }
 
 function get_cle_email($email){
   $req=selectDbWhStr(TBL_USERS, array(USERS_CLE), USERS_MAIL,array(USERS_MAIL => $email ));
   $donnees=$req->fetch();
-  print_r($donnees);
-  return($donnees[0]);
+  return($donnees[strtolower(USERS_CLE)]);
 }
 
 function update_password($email,$password){
 
-  return(updateDbEmail(TBL_USERS,array(USERS_PASSWORD=>$password),array(USERS_MAIL=>$email)));
+  return(updateDbEmail(TBL_USERS,array(USERS_PASSWORD=>$password),$email));
 }
 
 
+function create_user_inactif($prenom, $nom, $email, $tel, $mdp,$cle) {
+    return(insertDb(TBL_USERS_INACTIF, array(USERS_INACTIF_NOM => $nom, USERS_INACTIF_MAIL => $email, USERS_INACTIF_PASSWORD => $mdp, USERS_INACTIF_PRENOM => $prenom, USERS_INACTIF_TEL => $tel,USERS_INACTIF_CLE =>$cle)));
 
-
-
-
-
-
-
-
+}

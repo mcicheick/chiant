@@ -146,13 +146,9 @@
         "fun" : "update_last_connexion", 
         "params": [] },
 
-    "check_cle_actif" : {
-        "fun" : "check_cle_actif", 
-        "params": ["iduser","cle"] },
-
     "confirmation_inscription" : {
         "fun" : "confirmation_inscription", 
-        "params": ["iduser"] },
+        "params": ["email"] },
 
     "get_cle_email" : {
         "fun" : "get_cle_email", 
@@ -169,4 +165,6 @@
     "send_mail_inscription" : {
         "fun" : "send_mail_inscription", 
         "params": ["email","iduser","cle"] }
+
+        
 }
