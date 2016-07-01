@@ -23,6 +23,9 @@ DROP DATABASE IF EXISTS `near2u`;
 CREATE DATABASE IF NOT EXISTS `near2u` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 USE `near2u`;
 
+DROP TABLE IF EXISTS `chat_interne_equipe`,`chat_inter_equipes`,`coup_coeurs_equipes`,`invitations_equipe_joueur`,
+`invitations_inter_equipes`,`lien_team_users`,`offre_team_users`,`teams`,`users`,`users_inactif`,matches FROM `near2u`;
+
 
 -- --------------------------------------------------------
 

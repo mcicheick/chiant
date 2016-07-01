@@ -257,10 +257,16 @@ function confirmation_inscription($email){
 }
 
 function get_cle_email($email){
-  $req=selectDbWhStr(TBL_USERS, array(USERS_CLE), USERS_MAIL,array(USERS_MAIL => $email ));
+  $req=selectDbArr(TBL_USERS, array(USERS_CLE), array(USERS_MAIL => $email ));
   $donnees=$req->fetch();
   return($donnees[strtolower(USERS_CLE)]);
 }
+
+function get_cle_user($id_user){
+  $req=selectDbArr(TBL_USERS_INACTIF, array(USERS_INACTIF_CLE), array(USERS_INACTIF_ID => $id_user ));
+  $donnees = $req->fetch();
+  return($donnees[strtolower(USERS_CLE)]);
+  }
 
 function update_password($email,$password){
 

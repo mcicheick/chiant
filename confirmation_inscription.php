@@ -1,25 +1,18 @@
 <?php
-require_once 'requete.php';
+require_once 'dbinteraction.php';
 require_once 'fieldsbdd.php';
- ?>
-<div style="margin-top:0px;position:fixed;top:0;left:0;width:100%;" >
-<div style="color:white;font-weight:bold;font-size: 150%;text-align:left;background-color:#3B90AF;margin-top:0px;padding-left:30px;padding-bottom:2px;padding-top:2px;border-bottom:1px double black;">SportGreed</div>
-
- 
-</div>
+include('header.html');
 
 
-<?php
 // Récupération des variables nécessaires à l'activation
 $iduser = $_GET['iduser'];
 $cle = $_GET['cle'];
+$email=$_GET['email'];
  
 // Récupération de la clé correspondant au $login dans la base de données
-check=check_cle_actif($iduser,$cle);
-
-$actif=check[USERS_ACTIF];
-
-if($actif == true) // Si le compte est déjà actif on prévient
+$true_key=dbinteraction\get_cle_user($iduser);
+$isactif=dbinteraction\get_cle_email($email);
+if($cle == $true_key & $isactif!=null) // Si le compte est déjà actif on prévient
   {?>
 <div style="width:100%;align:center;border:10px;">
  
@@ -32,9 +25,8 @@ if($actif == true) // Si le compte est déjà actif on prévient
   }
 else // Si ce n'est pas le cas on passe aux comparaisons
   {
-     if($actif == false) 
-       { 
-        confirmation_inscription($iduser)
+  	if($cle==$true_key){
+        dbinteraction\confirmation_inscription($iduser);
         ?>
 <div style="width:100%;align:center;border:10px;">
  
@@ -44,7 +36,7 @@ else // Si ce n'est pas le cas on passe aux comparaisons
 </div>
 
 <?php
-       }
+ }
   }
  
  
