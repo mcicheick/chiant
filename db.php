@@ -133,6 +133,7 @@ function selectDbWhStr($table, $cols, $wherestr, $vals) {
     $cols_str = join($cols,',');
 
     $stmt= $db->prepare('SELECT '.$cols_str.' FROM '.$table.' WHERE '.$wherestr);
+
     if ($stmt->execute($vals))
 	return $stmt;
     else

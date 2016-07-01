@@ -237,23 +237,17 @@ function update_last_connexion($id_user){
 }
 
 
-function confirmation_inscription($email){
-  $req=selectDbArr(TBL_USERS_INACTIF,array("*"), array(USERS_INACTIF_MAIL =>$email ));
-  $numResults = count($req);
-  $counter = 0;
-  while ($donnees = $req->fetch()) {
-    if (++$counter == $numResults) {
-        $nom=$donnees[strtolower(USERS_INACTIF_NOM)];
-        $email=$donnees[strtolower(USERS_INACTIF_MAIL)];
-        $mdp=$donnees[strtolower(USERS_INACTIF_PASSWORD)];
-        $prenom=$donnees[strtolower(USERS_INACTIF_PRENOM)];
-        $tel=$donnees[strtolower(USERS_INACTIF_TEL)];
-        $cle=$donnees[strtolower(USERS_INACTIF_CLE)];
-        return(insertDb(TBL_USERS, array(USERS_NOM => $nom, USERS_MAIL => $email, USERS_PASSWORD => $mdp, USERS_PRENOM => $prenom, USERS_TEL => $tel,USERS_CLE =>$cle)));
+function confirmation_inscription($email,$cle){
+  $req=selectDbArr(TBL_USERS_INACTIF, array('*'), array(USERS_INACTIF_MAIL => $email ,USERS_INACTIF_CLE => $cle));
+  $donnees = $req->fetch();
+  $nom=$donnees[strtolower(USERS_INACTIF_NOM)];
+  $email=$donnees[strtolower(USERS_INACTIF_MAIL)];
+  $mdp=$donnees[strtolower(USERS_INACTIF_PASSWORD)];
+  $prenom=$donnees[strtolower(USERS_INACTIF_PRENOM)];
+  $tel=$donnees[strtolower(USERS_INACTIF_TEL)];
+  $cle=$donnees[strtolower(USERS_INACTIF_CLE)];
+  return(insertDb(TBL_USERS, array(USERS_NOM => $nom, USERS_MAIL => $email, USERS_PASSWORD => $mdp, USERS_PRENOM => $prenom, USERS_TEL => $tel,USERS_CLE =>$cle)));
 
-  }
-
-  }
 }
 
 function get_cle_email($email){

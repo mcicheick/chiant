@@ -26,7 +26,7 @@ if($cle == $true_key & $isactif!=null) // Si le compte est déjà actif on prév
 else // Si ce n'est pas le cas on passe aux comparaisons
   {
   	if($cle==$true_key){
-        dbinteraction\confirmation_inscription($iduser);
+        dbinteraction\confirmation_inscription($email,$cle);
         ?>
 <div style="width:100%;align:center;border:10px;">
  
