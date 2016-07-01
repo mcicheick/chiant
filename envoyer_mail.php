@@ -12,7 +12,7 @@ $message = 'Bienvenue sur SportGreed,
 Pour activer votre compte, veuillez cliquer sur le lien ci dessous
 ou copier/coller dans votre navigateur internet.
   
-http://www.jh-vehicules.fr/near2u/activation.php?iduser='.urlencode($iduser).'&cle='.urlencode($cle).'
+http://www.jh-vehicules.fr/near2u/confirmation_inscription.php?iduser='.urlencode($iduser).'&cle='.urlencode($cle).'
  
  
 ---------------
@@ -34,7 +34,7 @@ $message = 'Bienvenue sur SportGreed,
 Pour activer votre compte, veuillez cliquer sur le lien ci dessous
 ou copier/coller dans votre navigateur internet.
   
-http://www.jh-vehicules.fr/near2u/activation.php?email='.urlencode($email).'&cle='.urlencode($cle).'
+http://www.jh-vehicules.fr/near2u/change_password.php?email='.urlencode($email).'&cle='.urlencode($cle).'
  
  
 ---------------
