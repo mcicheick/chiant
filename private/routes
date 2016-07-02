@@ -53,7 +53,7 @@
         "fun": "newteam_byuser_p",
         "params": [
             "pseudo",
-            "sport"
+            "id_sport"
         ]
     },
     "invites_team_team": {
@@ -131,13 +131,13 @@
     "list_recherche_team_users": {
         "fun": "list_t_annonce_us",
         "params": [
-            "sport"
+            "id_sport"
         ]
     },
     "list_teams_by_sport": {
         "fun": "list_t_sport",
         "params": [
-            "sport"
+            "id_sport"
         ]
     },
     "update_position": {
