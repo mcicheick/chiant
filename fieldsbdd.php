@@ -99,3 +99,9 @@ define('TBL_SIGNALS_TEAMS', 'signals_teams');
 define('SIGNALS_TEAMS_ID_TEAM1','ID_TEAM1');
 define('SIGNALS_TEAMS_ID_TEAM2','ID_TEAM2');
 define('SIGNALS_TEAMS_DATE','DATE');
+
+define('TBL_REF_SPORTS', 'ref_sports');
+
+define('REF_SPORTS_ID','ID');
+define('REF_SPORTS_NOM','NOM');
+

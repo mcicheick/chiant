@@ -209,6 +209,21 @@ CREATE TABLE `near2u`.`signals_teams` (
 `DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP )
  ENGINE = InnoDB COMMENT = 'une équipe peut en signaler une autre';
 
+ 
+ 
+CREATE TABLE `near2u`.`ref_sports` (
+  `ID` int(11) NOT NULL,
+  `NOM` varchar(50) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='table de références : idsport/nom du sport (non modifiable)';
+
+ALTER TABLE  `near2u`.`ref_sports` ADD UNIQUE (
+`NOM`
+);
+
+INSERT INTO `near2u`.`ref_sports` VALUES(0, 'football');
+INSERT INTO `near2u`.`ref_sports` VALUES(1, 'basketball');
+
 --
 -- RELATIONS FOR TABLE `users`:
 --
