@@ -158,12 +158,18 @@ CREATE TABLE `teams` (
   `NB_PLAYED_M` int(11) NOT NULL DEFAULT '0',
   `NB_VICTORIES` int(11) NOT NULL DEFAULT '0',
   `SCORE` int(11) NOT NULL DEFAULT '0',
-  `RANK` int(11) DEFAULT NULL COMMENT 'possiblement inutile car redondant avec le score (calculable)',
   `SPORT` int(11) NOT NULL COMMENT 'entier représentant le sport',
   `LATITUDE` float(10) NOT NULL COMMENT 'float représentant la latitude',
   `LONGITUDE` float(10) NOT NULL COMMENT 'float représentant la longitude',
   `LAST_CONNEXION` DATE NOT NULL COMMENT 'date représentant la date de la dernière connexion'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE VIEW  `view_teams_rank` (
+ID,
+RANG
+) AS SELECT ID, (
+(SELECT COUNT(*)+1 FROM teams AS L   WHERE L.SCORE > T.SCORE    ))
+FROM  `teams` T;
 
 --
 -- RELATIONS FOR TABLE `teams`:
@@ -188,12 +194,14 @@ CREATE TABLE `users` (
   `DATE_INSCRIPTION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
+
 CREATE TABLE `near2u`.`matches` (
 `ID` INT NOT NULL AUTO_INCREMENT ,
 `DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
 `ID_TEAM1` INT NOT NULL ,
 `ID_TEAM2` INT NOT NULL ,
-`VICTOIRE` BOOLEAN NOT NULL COMMENT  's''agit-il d''une victoire de l''�quipe 1 ? (possiblement redondant avec r�sultat)',
+`VICTOIRE` tinyint(2) NOT NULL COMMENT  ' 1 : vicoire de 1; 2 : victoire de 2; 0 : matchnul (possiblement redondant avec r�sultat)',
 `RESULTAT` INT NOT NULL ,
 `VALIDE` BOOLEAN DEFAULT NULL COMMENT 'vrai si lequipe adverse (idteam2) a valide le score ',
 `AVIS1` TEXT NULL DEFAULT NULL COMMENT 'Avis de l''équipe 2 sur équipe 1',
@@ -202,6 +210,7 @@ CREATE TABLE `near2u`.`matches` (
 `FAIRPLAY2` TINYINT NULL DEFAULT NULL COMMENT 'Fairplay de 2 selon 1',
 PRIMARY KEY `PKEYID`(`ID`))
 ENGINE = InnoDB;
+
 
 CREATE TABLE `near2u`.`signals_teams` ( 
 `ID_TEAM1` INT NOT NULL COMMENT 'équipe qui signale l''autre' ,

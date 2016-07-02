@@ -135,7 +135,7 @@ class SQLSelect {
   //protectedar $columns = array();
   protected $cols_str = '';
   protected $oexec=  null;
-  protected $where_vals = array();
+  protected $vals = array();
   protected $join_str = '';
   protected $from_str = '';
 
@@ -173,9 +173,9 @@ class SQLSelect {
     return $this;
   }
 
-  function setWhere($wherestr, $vals) {
+  function setWhere($wherestr, $vals=array()) {
      $this->where_str = $wherestr;
-     $this->where_vals = $vals;
+     $this->vals = $vals;
      return $this;
   }
 
@@ -190,18 +190,31 @@ class SQLSelect {
      return $this;
   }
 
+  public function addVal($val){
+     $this->vals[] = $val;
+     return $this;
+  }
 
-  public function andWhereEqp($prefix, $col, $val) {
+  public function addVals($vals){
+     $this->vals = array_merge($this->vals, $vals);
+     return $this;
+  }
+
+
+  public function andWhereEqp($prefix, $col, $val = null) {
      set_concat_sep($this->where_str, "$prefix.$col = ?", ' AND ');
-     $this->where_vals[] = $val;
+
+     if ($val !== null)
+     	$this->vals[] = $val;
      return $this;
   }
 
-  public function andWhereStr($str, $vals) {
+  public function andWhereStr($str, $vals = array()) {
      set_concat_sep($this->where_str, $str, ' AND ');
-     $this->where_vals = array_merge($this->where_vals, $vals);
+     $this->vals = array_merge($this->vals, $vals);
      return $this;
   }
+
 
 
   protected function getWhereStr(){
@@ -216,7 +229,7 @@ class SQLSelect {
      if (!$this->oexec)
        $this->oexec = new SQLExecCheck();
 
-     $vals = $this->where_vals;
+     $vals = $this->vals;
      $this->oexec->setvals($vals);
      return requestGeneric($this->sqlrequete(), $this->oexec);
   }

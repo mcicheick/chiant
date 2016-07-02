@@ -184,7 +184,7 @@ for ($i=0; $i < $nbrencontres; $i++) {
     insertDb(TBL_MATCHES, array(
 	MATCHES_ID_TEAM1 => $teams_ids[$team1],
 	MATCHES_ID_TEAM2 => $teams_ids[$team2],
-	MATCHES_VICTOIRE => rand(0,1),
+	MATCHES_VICTOIRE => rand(0,2),
 	MATCHES_VALIDE => rand(0,1),
         MATCHES_DATE => $date));
 

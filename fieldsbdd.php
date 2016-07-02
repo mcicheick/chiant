@@ -51,7 +51,6 @@ define('TEAMS_PHOTO','PHOTO');
 define('TEAMS_NB_PLAYED_M','NB_PLAYED_M');
 define('TEAMS_NB_VICTORIES','NB_VICTORIES');
 define('TEAMS_SCORE','SCORE');
-define('TEAMS_RANK','RANK');
 define('TEAMS_SPORT','SPORT');
 define('TEAMS_PICTURE_FILE','PICTURE_FILE');
 define('TEAM_LATITUDE',"LATITUDE");
@@ -105,3 +104,13 @@ define('TBL_REF_SPORTS', 'ref_sports');
 define('REF_SPORTS_ID','ID');
 define('REF_SPORTS_NOM','NOM');
 
+define('TBL_VIEW_MATCHES_VAINQUEUR', 'view_matches_vainqueur');
+
+//define('VIEW_MATCHES_VAINQUEUR_ID','ID');
+//define('VIEW_MATCHES_VAINQUEUR_ID_VAINQUEUR','ID_VAINQUEUR');
+//define('VIEW_MATCHES_VAINQUEUR_ID_PERDANT','ID_PERDANT');
+
+define('TBL_VIEW_TEAMS_RANK', 'view_teams_rank');
+
+define('VIEW_TEAMS_RANK_ID','ID');
+define('VIEW_TEAMS_RANK_RANG','RANG');
