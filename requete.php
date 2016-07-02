@@ -361,6 +361,11 @@ function get_historique_team($id_team, $limit)  {
 }
 
 function list_t_classements($limit)  {
-   return I\list_t_classements($limit);
+   $sportsa = I\list_sports();
+   $list_sports = array();
+   foreach ($sportsa as $idsport => $sport) {
+	$list_sports[$sport] = I\list_t_classement_s($limit, $idsport);
+   }
+   return $list_sports;
 }
 

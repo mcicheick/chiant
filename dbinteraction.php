@@ -313,15 +313,22 @@ function list_historique_team($id_team, $limit)  {
 	 */
 }
 
-function list_t_classements($limit)  {
+function list_t_classement_s($limit, $idsport)  {
 	$rank1 = rankReq();
 
        $stmt= oselect()->addCola('score', TEAMS_SCORE)
 		->addColStr("($rank1) AS rang")
+		->andWhereEqp('T', TEAMS_SPORT, $idsport)
                 ->from(TBL_TEAMS, 'T')
 		->limit($limit)
 		->order('T', TEAMS_SCORE, 'DESC')
 		->execute();
     return $stmt->fetchall(\PDO::FETCH_ASSOC);
+}
+
+// renvoie ID => nomdusport
+function list_sports() {
+    $stmt = selectDbWhStr(TBL_REF_SPORTS,array(REF_SPORTS_ID, REF_SPORTS_NOM), 1, array());
+     return $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
 }
 
