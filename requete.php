@@ -226,7 +226,7 @@ function update_user_sp_prefs($football, $basket){
 
 function check_same_sport($idteam1, $idteam2) {
     if (!C\same_sport_t($idteam1, $idteam2))
-        raiseMyExc('Teams have coucou different sport', ERR_FORBIDDEN);
+        raiseMyExc('Teams have different sport', ERR_FORBIDDEN);
 }
 
 
@@ -264,7 +264,7 @@ function t_invites_u_ch($id_team, $id_invite) {
 
 function join_team($id_team) {
     $id_user = checkLogged();
-    if (!C\belongs_to_u_same_sport($id_user, $id_team))
+    if (C\belongs_to_u_t_same_sport($id_user, $id_team))
       raiseMyExc('User already belongs to a team with the same sport', ERR_ERROR);
     I\delete_invitations_ut($id_user, $id_team);
     //TODO: CHeck that it is not already in the team
@@ -367,5 +367,10 @@ function list_t_classements($limit)  {
 	$list_sports[$sport] = I\list_t_classement_s($limit, $idsport);
    }
    return $list_sports;
+}
+
+function list_waiting_results($id_team)  {
+   check_logged_u_t($id_team);
+   return I\list_waiting_results($id_team);
 }
 

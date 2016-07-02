@@ -40,27 +40,47 @@ function same_team_sport($id_user, $id_team_u, $id_team2) {
 
 function same_sport_t($id_team1, $id_team2) {
     // TODO: transformer en double join
-    $req = 'SELECT COUNT('.TEAMS_SPORT.') FROM '.TBL_TEAMS.' AS T WHERE ID=? || ID = ?';
+    $req = 'SELECT COUNT(DISTINCT '.TEAMS_SPORT.') FROM '.TBL_TEAMS.' AS T WHERE ID=? || ID = ?';
     $stmt = execCheck($req, array($id_team1, $id_team2));
     $resultat = $stmt->fetchColumn();
-    return ($resultat == 2);
+    return ($resultat == 1);
 }
 
 // Renvoie true si l'utilisateur est dans une équipe qui a le même sport que $id_team
-function belongs_to_u_same_sport($id_user, $id_team) {
-    $db = getDb();
-    $req = 'SELECT COUNT(T.'.TEAMS_SPORT.') FROM '.TBL_TEAMS.' AS T JOIN '.
+function belongs_to_u_different_sport($id_user, $id_team) {
+
+		
+   $req = 'SELECT COUNT(DISTINCT T.'.TEAMS_SPORT.') FROM '.TBL_TEAMS.' AS T JOIN '.
             TBL_LIEN_TEAM_USERS.' AS L ON L.'.LIEN_TEAM_USERS_ID_TEAM.' = T.'.TEAMS_ID.
                     //' JOIN '.TBL_TEAMS. ' AS T2 ON T.'.TEAMS_SPORT.'=T2.'.TEAMS_SPORT.
                             ' WHERE L.'.LIEN_TEAM_USERS_ID_USER.' = ? OR T.ID = ?' ;
-    $stmt = $db->prepare($req);
-    $stmt->execute(array($id_user, $id_team));
+
+    $stmt = execCheck($req, array($id_user, $id_team));
     /*
     var_dump($req);
     var_dump($id_user);
     var_dump($id_team);
     */
-    return $stmt->fetchColumn() == 1;
+    $ret = $stmt->fetchColumn();
+    return $ret == 2;
+}
+
+// renvoie false si l'utilisateur n'est pas dans une équipe
+function belongs_to_u_t_same_sport($id_user, $id_team) {
+
+		
+   $req = 'SELECT 1 FROM '.TBL_LIEN_TEAM_USERS.' AS L JOIN '.
+            TBL_TEAMS.' AS T ON L.'.LIEN_TEAM_USERS_ID_TEAM.' = T.'.TEAMS_ID.
+	    ' JOIN '.TBL_TEAMS. ' AS T2 ON T.'.TEAMS_SPORT.'=T2.'.TEAMS_SPORT.
+                            ' WHERE L.'.LIEN_TEAM_USERS_ID_USER.' = ? AND T2.ID = ?' ;
+
+    $stmt = execCheck($req, array($id_user, $id_team));
+    /*
+    var_dump($req);
+    var_dump($id_user);
+    var_dump($id_team);
+    */
+    return $stmt->rowCount() > 0;
 }
 
 

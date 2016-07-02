@@ -400,9 +400,10 @@ function list_waiting_results($id_team)  {
 		->addCola('id_team', MATCHES_ID_TEAM1, 'M')
 		->addCola('pseudo_team', TEAMS_PSEUDO, 'T')
 		->joinp(TBL_TEAMS, 'T', 'T', TEAMS_ID, 'M', MATCHES_ID_TEAM1)
-		->andWhereEqp('T', MATCHES_VALIDE, 0)
-		->andWhereEqp('T', MATCHES_ID_TEAM2, $id_team)
+		->andWhereEqp('M', MATCHES_VALIDE, 0)
+		->andWhereEqp('M', MATCHES_ID_TEAM2, $id_team)
+		->order('M', MATCHES_DATE, 'DESC')
 		->execute();
-    return $stmt->fetchall();
+    return $stmt->fetchall(\PDO::FETCH_ASSOC);
 }
 

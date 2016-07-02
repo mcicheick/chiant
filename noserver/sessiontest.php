@@ -23,9 +23,9 @@ function genName($name) {
 	return $name.'_'.$uniq;
 }
 
-function genUniqName($name) {
-	return $name.'_'.uniqid();
-}
+//function genUniqName($name) {
+	//return $name.'_'.uniqid();
+//}
 
 
 interface Validator {
@@ -40,8 +40,10 @@ function testParams($req, Validator $is_ok, $params) {
   $ret = dispatchParams($req, $params);
   if ($is_ok->validate($ret))
 	  $color = 'green';
-  else
+  else {
 	  $color = 'red';
+	  echo "ECHEC\n";
+  }
 
 	  echo '<p style="background-color:'.$color.'">';
   echo json_encode($ret, JSON_PRETTY_PRINT);
@@ -86,6 +88,8 @@ function liensrc($lien) {
 
 lienTo('basique');
 lienTo('historique-teams');
+lienTo('list-matches-valid');
+
 
 liensrc('basique');
 
@@ -151,11 +155,14 @@ testParams('remove_recherche_team_users', $valid_ok,  array ("id_team" => $id_te
 
 liensrc('historique-teams');
 
+echo "TODO : affiner le validateur (pour l'instant on vérifie juste que le serveur renvoie OK)\n\n";
+
 use dbinteraction as I;
 // On crée 10 utilisateurs, avec chacun 10 équipes avec des scores du tableau $scores. Chacune des équipes
 // rencontre les autres
 $nb = 10;
-$nbrencontres = intval(pow($nb , 1.5));
+//
+$nbrencontres = 200;
 
 echo "$nb équipes, $nbrencontres rencontres\n";
 
@@ -180,16 +187,35 @@ for ($i=0; $i < $nbrencontres; $i++) {
 // CHaque équipe rencontre entre 1 et 5 équipes
   list($team1, $team2) = array_rand($teams_ids, 2);
   $date = date("Y-m-d H:i:s", rand(1,100000000));
-  echo "date : $date\n";
     insertDb(TBL_MATCHES, array(
 	MATCHES_ID_TEAM1 => $teams_ids[$team1],
 	MATCHES_ID_TEAM2 => $teams_ids[$team2],
 	MATCHES_VICTOIRE => rand(0,2),
 	MATCHES_VALIDE => rand(0,1),
         MATCHES_DATE => $date));
-
 }
 
 
 testParams('classement_teams', $valid_ok, array ('limit' => 20));
 testParams('historique_team',$valid_ok,  array ('id_team' =>$teams_ids[0], 'limit' => 20));
+
+echo "Test de la liste des matches à valider\n\n";
+liensrc('list-matches-valid');
+
+$user1_name = genName('user_validator');
+$user1_mail = genName('ta@validator');
+testParams('newuser', $valid_ok,  array ("prenom" => $user1_name, "nom" => 'name_atest', "email" => $user1_mail, "tel" => '0132', "hashmdp" => 'hash'));
+testParams('login', $valid_ok, array ("email" =>$user1_mail, "hashmdp" => 'hash'));
+testParams('join_team', $valid_ok, array ("id_team" => $teams_ids[0]));
+
+for ($i=0; $i < 20; $i++) {
+  $team1 = array_rand($teams_ids, 1);
+  $date = date("Y-m-d H:i:s", rand(1,100000000));
+    insertDb(TBL_MATCHES, array(
+	MATCHES_ID_TEAM1 => $teams_ids[$team1],
+	MATCHES_ID_TEAM2 => $teams_ids[0],
+	MATCHES_VICTOIRE => rand(0,2),
+	MATCHES_VALIDE => 0,
+        MATCHES_DATE => $date));
+}
+testParams('list_results_a_valider', $valid_ok, array ("id_team" => $teams_ids[0]));

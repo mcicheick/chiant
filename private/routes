@@ -164,5 +164,11 @@
         "params": [
             "limit"
         ]
+    },
+    "list_results_a_valider": {
+        "fun": "list_waiting_results",
+        "params": [
+            "id_team"
+        ]
     }
 }
