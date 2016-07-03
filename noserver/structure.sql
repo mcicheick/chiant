@@ -23,6 +23,9 @@ DROP DATABASE IF EXISTS `near2u`;
 CREATE DATABASE IF NOT EXISTS `near2u` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 USE `near2u`;
 
+DROP TABLE IF EXISTS `chat_interne_equipe`,`chat_inter_equipes`,`coup_coeurs_equipes`,`invitations_equipe_joueur`,
+`invitations_inter_equipes`,`lien_team_users`,`offre_team_users`,`teams`,`users`,`users_inactif`,matches FROM `near2u`;
+
 
 -- --------------------------------------------------------
 
@@ -181,15 +184,32 @@ CREATE TABLE `users` (
   `NOM` varchar(255) NOT NULL,
   `MAIL` varchar(255) NOT NULL,
   `PASSWORD` varchar(255) DEFAULT NULL COMMENT 'peut etre null si on se connecte par facebook',
-  `PSEUDO` varchar(255) NOT NULL,
   `PICTURE_FILE` varchar(255) DEFAULT NULL COMMENT 'nom du fichier image',
   `TELEPHONE` varchar(255) DEFAULT NULL,
   `PREFS_SPORT` int(11) NOT NULL DEFAULT '0' COMMENT 'Préférences sous forme de masque bits',
-  `DATE_INSCRIPTION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `DATE_INSCRIPTION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `CLE` varchar(255) DEFAULT NULL COMMENT 'le couplet(email,cle) permet l update du password par methode email+get si oubli'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
+
+CREATE TABLE `users_inactif` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+  `PRENOM` varchar(255) NOT NULL,
+  `NOM` varchar(255) NOT NULL,
+  `MAIL` varchar(255) NOT NULL,
+  `PASSWORD` varchar(255) NOT NULL ,
+  `TELEPHONE` varchar(255) DEFAULT NULL,
+  `DATE_INSCRIPTION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `CLE` varchar(255) DEFAULT NULL COMMENT 'le couplet(email,cle) permet d activer le compte par une methode email+get'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+
 CREATE TABLE `near2u`.`matches` (
-`ID` INT NOT NULL AUTO_INCREMENT ,
+`ID` INT NOT NULL AUTO_INCREMENT,
 `DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
 `ID_TEAM1` INT NOT NULL ,
 `ID_TEAM2` INT NOT NULL ,
@@ -270,6 +290,8 @@ ALTER TABLE `teams`
 ALTER TABLE `users`
   ADD PRIMARY KEY (`ID`),
   ADD UNIQUE KEY `MAIL` (`MAIL`);
+
+
 
 --
 -- AUTO_INCREMENT for dumped tables

@@ -110,6 +110,22 @@ function updateDb($table, $valeurs, $id) {
     return $id;
 }
 
+function updateDbEmail($table, $valeurs, $email) {
+    $db = getDb();
+
+    list($cles,$vals,$marks) = arrToKeysAndMarks($valeurs);
+
+    $lst_str = array_map(function($key) { return $key.'=?';}, $cles);
+    $str = join($lst_str, ',');
+
+    $stmt = $db->prepare("UPDATE ".$table." SET ".$str. ' WHERE MAIL=?');
+    $vals[] = $email;
+
+
+    $email = exec_uniq($stmt, $vals);
+    return $email;
+}
+
 function selectDbWhStr($table, $cols, $wherestr, $vals) {
     $db = getDb();
 
@@ -117,6 +133,7 @@ function selectDbWhStr($table, $cols, $wherestr, $vals) {
     $cols_str = join($cols,',');
 
     $stmt= $db->prepare('SELECT '.$cols_str.' FROM '.$table.' WHERE '.$wherestr);
+
     if ($stmt->execute($vals))
 	return $stmt;
     else

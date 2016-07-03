@@ -8,9 +8,11 @@ require_once 'exceptions.php';
 require_once 'config.php';
 require_once 'dbinteraction.php';
 require_once 'check.php';
+require_once 'envoyer_mail.php';
 
 use dbcheck as C;
 use dbinteraction as I;
+use envoyer_mail as E;
 
 
 function routage() {
@@ -215,8 +217,17 @@ function update_t_picture($photoparams, $id_team) {
 }
 
 function register($prenom, $nom, $email, $tel, $mdp) {
-    $iduser = I\create_user( $prenom, $nom, $email, $tel, $mdp);
-    
+    if ($mdp!=null){
+    $cle = md5(microtime(TRUE)*100000);
+
+    $iduser = I\create_user_inactif( $prenom, $nom, $email, $tel, $mdp,$cle);
+    E\send_mail_inscription($email,$iduser,$cle);
+}
+else{
+    $cle=null;
+    $iduser = I\create_user( $prenom, $nom, $email, $tel, $mdp,$cle);
+}
+
     return true;
 }
 
@@ -344,13 +355,32 @@ function u_validate_result($id_result, $fairplay, $avis)  {
 }
 
 function update_position(){
-    $id_user = check_logged();
+    $id_user = checkLogged();
     I\update_position($id_user);
     return true;
 }
 
 function update_last_connexion(){
-    $id_user = check_logged();
+    $id_user = checkLogged();
     I\update_last_connexion($id_user);
     return true;
 }
+
+
+function update_password($email,$password){
+    return(I\update_password($email,sha1($password)));
+}
+
+function send_mail_change_password($email){
+    $cle=I\get_cle_email($email);
+    E\send_mail_change_password($email,$cle);
+    return(true);
+    }
+
+function send_mail_inscription($email,$iduser,$cle){
+    E\send_mail_inscription($email,$iduser,$cle);
+    return(true);
+}
+
+
+
