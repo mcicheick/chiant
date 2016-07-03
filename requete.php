@@ -150,8 +150,9 @@ function photo_team_path($idteam, $extension) {
 }
 
 function delete_photo($path) {
-	// TODO: check that path is in dir (security check)
-	// TODO: use realpath
+	if (!file_exists($path))
+	   return;
+
 	$rpath = basename(dirname(realpath($path)));
 
 	if ($rpath == PICTURES_DIR)
