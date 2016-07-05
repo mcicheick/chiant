@@ -217,7 +217,6 @@ function update_t_picture($photoparams, $id_team) {
 }
 
 function register($prenom, $nom, $email, $tel, $mdp) {
-	echo "coucou register $mdp\n";
     if ($mdp!=null){
     $cle = md5(microtime(TRUE)*100000);
 

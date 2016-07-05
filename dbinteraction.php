@@ -48,7 +48,6 @@ function create_team($pseudo, $sport) {
 }
 
 function create_user($prenom, $nom, $email, $tel, $mdp,$cle) {
-	echo "coucou\n";
     return insertDb(TBL_USERS, array(USERS_NOM => $nom, USERS_MAIL => $email, USERS_PASSWORD => $mdp, USERS_PRENOM => $prenom, USERS_TEL => $tel,USERS_CLE =>$cle));
 
 }
