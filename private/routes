@@ -6,7 +6,11 @@
             "nom",
             "email",
             "tel",
-            "hashmdp"
+            "hashmdp",
+            "latitude",
+            "longitude",
+            "country",
+            "city"
         ]
     },
     "update_user_picture": {
@@ -140,7 +144,7 @@
     },
     "update_position": {
       "fun" : "update_position", 
-      "params" : [] },
+      "params" : ["latitude","longitude","city","country"] },
 
     "update_last_connexion" : {
         "fun" : "update_last_connexion", 

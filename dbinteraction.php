@@ -47,8 +47,8 @@ function create_team($pseudo, $sport) {
     return insertDb(TBL_TEAMS, array(TEAMS_PSEUDO=>$pseudo, TEAMS_SPORT => $sport));
 }
 
-function create_user($prenom, $nom, $email, $tel, $mdp,$cle) {
-    return insertDb(TBL_USERS, array(USERS_NOM => $nom, USERS_MAIL => $email, USERS_PASSWORD => $mdp, USERS_PRENOM => $prenom, USERS_TEL => $tel,USERS_CLE =>$cle));
+function create_user($prenom, $nom, $email, $tel, $mdp,$cle,$latitude,$longitude,$city,$country) {
+    return insertDb(TBL_USERS, array(USERS_NOM => $nom, USERS_MAIL => $email, USERS_PASSWORD => $mdp, USERS_PRENOM => $prenom, USERS_TEL => $tel,USERS_CLE =>$cle,USERS_LONGITUDE =>$longitude,USERS_LATITUDE =>$latitude,USERS_COUNTRY =>$country,USERS_CITY =>$city));
 
 }
 
@@ -205,15 +205,17 @@ function u_post_result($id_team_user, $id_team2, $result, $fairplay, $avis)  {
 
 /*pour updater les positions de l'équipe toutes les variations de 1 km*/
 
-function update_position($id_user){
+function update_position($id_user,$latitude,$longitude,$city,$country){
+    updateDb(TBL_USERS, array(USERS_LATITUDE=> $latitude,USERS_LONGITUDE=>$longitude,USERS_CITY=>$city,USERS_COUNTRY=>$country ),$id_user );
     $req=selectDbArr(TBL_LIEN_TEAM_USERS,array(LIEN_TEAM_USERS_ID_TEAM), array(LIEN_TEAM_USERS_ID_USER =>$id_user ));
     while($donnees=$req->fetch()) update_positionTeam($donnees[LIEN_TEAM_USERS_ID_TEAM]);
     $req->closeCursor();
+    return true;
 }
-function update_positionTeam($idteam){
-    
 
-$req=selectDbArr(TBL_TEAMS,array(TEAM_LONGITUDE,TEAM_LATITUDE), array(TEAMS_ID =>$idteam ));
+function update_positionTeam($idteam){   
+
+$req=selectDbArr(TBL_LIEN_TEAM_USERS,array(LIEN_TEAM_USERS_ID_USER), array(TEAMS_ID =>$idteam ));
 $reponse=$req->fetchall();
 $solution=calcule_barycentre($reponse);
 updatepositionDB($id_team,$solution[TEAM_LATITUDE],$solution[TEAM_LONGITUDE]);
@@ -246,7 +248,11 @@ function confirmation_inscription($email,$cle){
   $prenom=$donnees[strtolower(USERS_INACTIF_PRENOM)];
   $tel=$donnees[strtolower(USERS_INACTIF_TEL)];
   $cle=$donnees[strtolower(USERS_INACTIF_CLE)];
-  return(insertDb(TBL_USERS, array(USERS_NOM => $nom, USERS_MAIL => $email, USERS_PASSWORD => $mdp, USERS_PRENOM => $prenom, USERS_TEL => $tel,USERS_CLE =>$cle)));
+  $latitude=$donnees[strtolower(USERS_INACTIF_LATITUDE)];
+  $longitude=$donnees[strtolower(USERS_INACTIF_LONGITUDE)];
+  $country=$donnees[strtolower(USERS_INACTIF_COUNTRY)];
+  $city=$donnees[strtolower(USERS_INACTIF_CITY)];
+  return(insertDb(TBL_USERS, array(USERS_NOM => $nom, USERS_MAIL => $email, USERS_PASSWORD => $mdp, USERS_PRENOM => $prenom, USERS_TEL => $tel,USERS_CLE =>$cle,USERS_LONGITUDE =>$longitude,USERS_LATITUDE =>$latitude,USERS_CITY =>$city,USERS_COUNTRY =>$country)));
 
 }
 
@@ -268,7 +274,7 @@ function update_password($email,$password){
 }
 
 
-function create_user_inactif($prenom, $nom, $email, $tel, $mdp,$cle) {
-    return(insertDb(TBL_USERS_INACTIF, array(USERS_INACTIF_NOM => $nom, USERS_INACTIF_MAIL => $email, USERS_INACTIF_PASSWORD => $mdp, USERS_INACTIF_PRENOM => $prenom, USERS_INACTIF_TEL => $tel,USERS_INACTIF_CLE =>$cle)));
+function create_user_inactif($prenom, $nom, $email, $tel, $mdp,$cle,$latitude,$longitude,$city,$country) {
+    return(insertDb(TBL_USERS_INACTIF, array(USERS_INACTIF_NOM => $nom, USERS_INACTIF_MAIL => $email, USERS_INACTIF_PASSWORD => $mdp, USERS_INACTIF_PRENOM => $prenom, USERS_INACTIF_TEL => $tel,USERS_INACTIF_CLE =>$cle,USERS_INACTIF_LATITUDE =>$latitude,USERS_INACTIF_LONGITUDE =>$longitude,USERS_INACTIF_COUNTRY =>$country,USERS_INACTIF_CITY =>$city)));
 
 }

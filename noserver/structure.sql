@@ -187,8 +187,12 @@ CREATE TABLE `users` (
   `PICTURE_FILE` varchar(255) DEFAULT NULL COMMENT 'nom du fichier image',
   `TELEPHONE` varchar(255) DEFAULT NULL,
   `PREFS_SPORT` int(11) NOT NULL DEFAULT '0' COMMENT 'Préférences sous forme de masque bits',
+  `LATITUDE` float(10) NOT NULL COMMENT 'float représentant la latitude',
+  `LONGITUDE` float(10) NOT NULL COMMENT 'float représentant la longitude',
   `DATE_INSCRIPTION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `CLE` varchar(255) DEFAULT NULL COMMENT 'le couplet(email,cle) permet l update du password par methode email+get si oubli'
+  `CLE` varchar(255) DEFAULT NULL COMMENT 'le couplet(email,cle) permet l update du password par methode email+get si oubli',
+  `CITY` varchar(255) DEFAULT NULL COMMENT 'Ville',
+  `COUNTRY` varchar(255) DEFAULT NULL COMMENT 'Pays'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -200,8 +204,12 @@ CREATE TABLE `users_inactif` (
   `MAIL` varchar(255) NOT NULL,
   `PASSWORD` varchar(255) NOT NULL ,
   `TELEPHONE` varchar(255) DEFAULT NULL,
+  `LATITUDE` float(10) NOT NULL COMMENT 'float représentant la latitude',
+  `LONGITUDE` float(10) NOT NULL COMMENT 'float représentant la longitude',
   `DATE_INSCRIPTION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `CLE` varchar(255) DEFAULT NULL COMMENT 'le couplet(email,cle) permet d activer le compte par une methode email+get'
+  `CLE` varchar(255) DEFAULT NULL COMMENT 'le couplet(email,cle) permet d activer le compte par une methode email+get',
+  `CITY` varchar(255) DEFAULT NULL COMMENT 'Ville',
+  `COUNTRY` varchar(255) DEFAULT NULL COMMENT 'Pays'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 

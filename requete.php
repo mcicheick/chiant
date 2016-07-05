@@ -216,16 +216,13 @@ function update_t_picture($photoparams, $id_team) {
     return update_photo($photoparams, new UpdatePTeamI($id_team));
 }
 
-function register($prenom, $nom, $email, $tel, $mdp) {
     if ($mdp!=null){
     $cle = md5(microtime(TRUE)*100000);
 
-    $iduser = I\create_user_inactif( $prenom, $nom, $email, $tel, $mdp,$cle);
     E\send_mail_inscription($email,$iduser,$cle);
 }
 else{
     $cle=null;
-    $iduser = I\create_user( $prenom, $nom, $email, $tel, $mdp,$cle);
 }
 
     return true;
@@ -354,9 +351,7 @@ function u_validate_result($id_result, $fairplay, $avis)  {
    return true;
 }
 
-function update_position(){
     $id_user = checkLogged();
-    I\update_position($id_user);
     return true;
 }
 

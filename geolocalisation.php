@@ -12,28 +12,28 @@ function calcule_barycentre($reponse){
     $triplet_solution=array();
     $min=-1;
     $longueur=count($reponse);
-    if($longueur==1) {return(array(TEAM_LATITUDE=>$reponse[0][TEAM_LATITUDE],TEAM_LONGITUDE=>$reponse[0][TEAM_LONGITUDE]));}
+    if($longueur==1) {return(array(strtolower(TEAM_LATITUDE)=>$reponse[0][strtolower(TEAM_LATITUDE)],strtolower(TEAM_LONGITUDE)=>$reponse[0][strtolower(TEAM_LONGITUDE)]));}
    elseif ($longueur==2) {
-    return(array(TEAM_LONGITUDE=>($reponse[0][TEAM_LONGITUDE]+$reponse[1][TEAM_LONGITUDE])/2,TEAM_LATITUDE=>($reponse[0][TEAM_LATITUDE]+$reponse[1][TEAM_LATITUDE]))/2);
+    return(array(strtolower(TEAM_LONGITUDE)=>($reponse[0][strtolower(TEAM_LONGITUDE)]+$reponse[1][strtolower(TEAM_LONGITUDE)])/2,strtolower(TEAM_LATITUDE)=>($reponse[0][strtolower(TEAM_LATITUDE)]+$reponse[1][strtolower(TEAM_LATITUDE)]))/2);
 }
     else{for($i1=0;$i1<$longueur-2;$i1++)
         for($i2=$i1+1;$i2<$longueur-1;$i2++)
             for ($i3=$i2+1; $i3 <=$longueur-1 ; $i3++) { 
-                $latitude_grav=($reponse[$i1][TEAM_LATITUDE]+$reponse[$i2][TEAM_LATITUDE]+$reponse[$i3][TEAM_LATITUDE])/3;
-                $longitude_grav=($reponse[$i1][TEAM_LONGITUDE]+$reponse[$i2][TEAM_LONGITUDE]+$reponse[$i3][TEAM_LONGITUDE])/3;
-                $positions_barycentre_possibles[$i1][$i2][$i3]= array(TEAM_LATITUDE =>$latitude_grav,TEAM_LONGITUDE=>$longitude_grav  );
+                $latitude_grav=($reponse[$i1][strtolower(TEAM_LATITUDE)]+$reponse[$i2][strtolower(TEAM_LATITUDE)]+$reponse[$i3][strtolower(TEAM_LATITUDE)])/3;
+                $longitude_grav=($reponse[$i1][strtolower(TEAM_LONGITUDE)]+$reponse[$i2][strtolower(TEAM_LONGITUDE)]+$reponse[$i3][strtolower(TEAM_LONGITUDE)])/3;
+                $positions_barycentre_possibles[$i1][$i2][$i3]= array(strtolower(TEAM_LATITUDE) =>$latitude_grav,strtolower(TEAM_LONGITUDE)=>$longitude_grav  );
                  $sum=0;
                  foreach(array($i1,$i2,$i3 ) as $t){
-                    $sum=$sum+calcule_distance2($latitude_grav,$longitude_grav,$reponse[$t][TEAM_LATITUDE],$reponse[$t][TEAM_LONGITUDE]);
+                    $sum=$sum+calcule_distance2($latitude_grav,$longitude_grav,$reponse[$t][strtolower(TEAM_LATITUDE)],$reponse[$t][strtolower(TEAM_LONGITUDE)]);
                  }
                  if ($min==-1){
-                    $positions_barycentre_solution=array(TEAM_LATITUDE=>$latitude_grav,TEAM_LONGITUDE=>$longitude_grav);
+                    $positions_barycentre_solution=array(strtolower(TEAM_LATITUDE)=>$latitude_grav,strtolower(TEAM_LONGITUDE)=>$longitude_grav);
                     $triplet_solution = array($i1,$i2,$i3 );
                     $min=$sum;
                 }
                  elseif($sum<$min){
                     $min=$sum;
-                    $positions_barycentre_solution=array(TEAM_LATITUDE=>$latitude_grav,TEAM_LONGITUDE=>$longitude_grav);
+                    $positions_barycentre_solution=array(strtolower(TEAM_LATITUDE)=>$latitude_grav,strtolower(TEAM_LONGITUDE)=>$longitude_grav);
                     $triplet_solution = array($i1,$i2,$i3 );
                  }
              }
