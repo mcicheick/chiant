@@ -278,3 +278,175 @@ function create_user_inactif($prenom, $nom, $email, $tel, $mdp,$cle,$latitude,$l
     return(insertDb(TBL_USERS_INACTIF, array(USERS_INACTIF_NOM => $nom, USERS_INACTIF_MAIL => $email, USERS_INACTIF_PASSWORD => $mdp, USERS_INACTIF_PRENOM => $prenom, USERS_INACTIF_TEL => $tel,USERS_INACTIF_CLE =>$cle,USERS_INACTIF_LATITUDE =>$latitude,USERS_INACTIF_LONGITUDE =>$longitude,USERS_INACTIF_COUNTRY =>$country,USERS_INACTIF_CITY =>$city)));
 
 }
+function rankReq() {
+    static $var = null;
+
+    if (!$var)
+      $var = 
+       	oselect()->from(TBL_TEAMS, 'L')
+	   ->setColStr("COUNT(*)+1")
+	   ->setWhere('L.'.TEAMS_SCORE.' > T.'.TEAMS_SCORE)->sqlrequete();
+   return $var;
+}
+
+//nb victoire/defaite/points/classement
+//
+function stat_team_req() {
+	return oselect()->from(TBL_MATCHES, 'M')
+		->addColStr('COUNT(*)')
+	        ->andWhereStr(MATCHES_VALIDE. ' = 1');
+}
+
+function get_stat_team($id_team)  {
+	$rank1 = rankReq();
+
+
+	$scorerank = oselect()->from(TBL_TEAMS, 'T')
+		->addCola('score', TEAMS_SCORE, 'T')
+		->addColStr("($rank1) AS rang")
+		->andWhereEqp('T', TEAMS_ID, $id_team)
+		->execute()
+		->fetch(\PDO::FETCH_ASSOC);
+
+	$nbvictoires = 
+		stat_team_req()
+		->andWhereStr(sprintf("(M.%s = 1 AND M.%s = ?) || (M.%s = 2 AND M.%s = ?)",
+			MATCHES_VICTOIRE, MATCHES_ID_TEAM1, MATCHES_VICTOIRE, MATCHES_ID_TEAM2),
+			array($id_team, $id_team)) 
+		->execute()
+		->fetchColumn();
+
+	$nbdefaites = 
+		stat_team_req()
+		->andWhereStr(sprintf("(M.%s = 2 AND M.%s = ?) || (M.%s = 1 AND M.%s = ?)",
+			MATCHES_VICTOIRE, MATCHES_ID_TEAM1, MATCHES_VICTOIRE, MATCHES_ID_TEAM2),
+		array($id_team, $id_team)) 
+		->execute()
+		->fetchColumn();
+
+	$nbnuls = 
+		stat_team_req()
+		->andWhereStr(sprintf("(M.%s = ? || M.%s = ?)",
+			MATCHES_ID_TEAM1, MATCHES_ID_TEAM2), array($id_team, $id_team)) 
+		->andWhereStr(MATCHES_VICTOIRE.' = 0')
+		->execute()
+		->fetchColumn();
+
+	$scorerank['nb_nuls'] = $nbnuls;
+	$scorerank['nb_victoires'] = $nbvictoires;
+        $scorerank['nb_defaites'] = $nbdefaites;
+
+	/*
+	list($nbtotal, $nb_nonnuls, $nb_victoires) =
+		oselect()->from(TBL_MATCHES, 'M')
+		->joinp(TBL_VIEW_MATCHES_VAINQUEUR, 'V', 'V', VIEW_MATCHES_VAINQUEUR_ID, 'M', MATCHES_ID)
+		// Compte le nombre total
+		->addColStr('COUNT(*)')
+		// Compte le nombre de non nuls
+		->addColStr(sprintf('COUNT(V.%s)', VIEW_MATCHES_VAINQUEUR_ID_VAINQUEUR))
+		->addColStr(sprintf('COUNT(CASE WHEN V.%s = ? THEN 1 END)', VIEW_MATCHES_VAINQUEUR_ID_VAINQUEUR))
+		->addVal($id_team)
+		//->addColStr(sprintf("COUNT(26SUM(CASE WHEN %s IS NULL THEN 1 ELSE 0 END), SUM(%s = ?)")
+		->andWhereStr(sprintf("(M.%s = ? || M.%s = ?)", MATCHES_ID_TEAM1, MATCHES_ID_TEAM2), array($id_team, $id_team)) 
+	        ->andWhereStr(MATCHES_VALIDE. ' = 1')
+		->execute()
+		->fetch(\PDO::FETCH_NUM);
+
+
+	$scorerank['nb_nuls'] = $nbtotal - $nb_nonnuls;
+	$scorerank['nb_victoires'] = $nb_victoires;
+        $scorerank['nb_defaites'] = $nb_nonnuls - $nb_victoires;
+	 */
+	return $scorerank;
+}
+
+function historique_req() {
+	return oselect()->from(TBL_MATCHES, 'M')
+		->addCola('date', MATCHES_DATE, 'M')
+		->addCola('id_team', MATCHES_ID_TEAM1, 'M')
+		->addCola('pseudo_team', TEAMS_PSEUDO, 'T')
+		->addColStr(sprintf("(%s) AS rang_team", rankReq()))
+		->addCola('resultat',  MATCHES_RESULTAT, 'M')
+	        ->andWhereStr('M.'.MATCHES_VALIDE. ' = 1');
+}
+
+function list_historique_team($id_team, $limit)  {
+
+
+	/*
+	$select1 = oselect()->from(TBL_MATCHES, 'M')
+		->addCola('date', MATCHES_DATE, 'M')
+		->addCola('score',  MATCHES_RESULTAT, 'M')
+		->addColStr(sprintf('(CASE WHEN V.%s IS NULL THEN "victoire" WHEN V.%s = ? THEN "victoire" ELSE "defaite")', 
+		'victoire',  MATCHES_VICTOIRE, 'M')
+		->addVal($id_team)
+		->addCola('id_team', MATCHES_ID_TEAM2, 'M')
+		->addCola('pseudo_team', TEAMS_PSEUDO, 'T')
+		->addColStr("($rank1) AS rang_team")
+		->joinp(TBL_VIEW_MATCHES_VAINQUEUR, 'V', 'V', VIEW_MATCHES_VAINQUEUR_ID, 'M', MATCHES_ID)
+		->joinp(TBL_TEAMS, 'T', 'T', TEAMS_ID, 'M', MATCHES_ID_TEAM2)
+		->andWhereEqp('M', MATCHES_ID_TEAM1)
+	        ->andWhereStr('M.'.MATCHES_VALIDE. ' = 1', array()) ;
+		->andWhereStr(sprintf("(M.%s = ? || M.%s = ?)", MATCHES_ID_TEAM1, MATCHES_ID_TEAM2), array($id_team, $id_team)) 
+	 */
+
+	$select1 = historique_req()
+		->andWhereEqp('M', MATCHES_ID_TEAM1)
+		->joinp(TBL_TEAMS, 'T', 'T', TEAMS_ID, 'M', MATCHES_ID_TEAM2)
+		->addColStr(sprintf('(CASE M.%s WHEN 1 THEN "victoire" WHEN 2 THEN "defaite" ELSE "nul" END) AS victoire', MATCHES_VICTOIRE));
+
+	$select2 = historique_req()
+		->andWhereEqp('M', MATCHES_ID_TEAM2)
+		->joinp(TBL_TEAMS, 'T', 'T', TEAMS_ID, 'M', MATCHES_ID_TEAM1)
+		->addColStr(sprintf('(CASE M.%s WHEN 2 THEN "victoire" WHEN 1 THEN "defaite" ELSE "nul" END) AS victoire', MATCHES_VICTOIRE));
+	
+	$requete = "$select1 UNION ALL $select2 ORDER BY date DESC LIMIT $limit";
+	$stmt = execCheck($requete, array($id_team, $id_team));
+	return ($stmt) ? $stmt->fetchAll(\PDO::FETCH_ASSOC) : false;
+	/*
+       $stmt= oselect()->addCol('alias', ?, 'R')->
+                ->from(?, 'M')
+		->joinp(?, 'L', 'L',
+			?, 'M', ?)
+		->andWhereEqp('M', ?, $?)
+		->execute();
+    return $stmt->fetchall();
+	 */
+}
+
+function list_t_classement_s($limit, $idsport)  {
+	$rank1 = rankReq();
+
+       $stmt= oselect()->addCola('score', TEAMS_SCORE)
+		->addColStr("($rank1) AS rang")
+		->andWhereEqp('T', TEAMS_SPORT, $idsport)
+                ->from(TBL_TEAMS, 'T')
+		->limit($limit)
+		->order('T', TEAMS_SCORE, 'DESC')
+		->execute();
+    return $stmt->fetchall(\PDO::FETCH_ASSOC);
+}
+
+// renvoie ID => nomdusport
+function list_sports() {
+    $stmt = selectDbWhStr(TBL_REF_SPORTS,array(REF_SPORTS_ID, REF_SPORTS_NOM), 1, array());
+     return $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
+}
+
+function list_waiting_results($id_team)  {
+    $stmt= oselect()
+                ->from(TBL_MATCHES, 'M')
+		->addCola('id', MATCHES_ID, 'M')
+		->addCola('date', MATCHES_DATE, 'M')
+		->addCola('victoire', MATCHES_VICTOIRE, 'M')
+		->addCola('resultat', MATCHES_RESULTAT, 'M')
+		->addCola('id_team', MATCHES_ID_TEAM1, 'M')
+		->addCola('pseudo_team', TEAMS_PSEUDO, 'T')
+		->joinp(TBL_TEAMS, 'T', 'T', TEAMS_ID, 'M', MATCHES_ID_TEAM1)
+		->andWhereEqp('M', MATCHES_VALIDE, 0)
+		->andWhereEqp('M', MATCHES_ID_TEAM2, $id_team)
+		->order('M', MATCHES_DATE, 'DESC')
+		->execute();
+    return $stmt->fetchall(\PDO::FETCH_ASSOC);
+}
+
