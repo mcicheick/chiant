@@ -105,7 +105,7 @@ $id_user1 = getLastIdTable(TBL_USERS);
 testParams('login', $valid_fail, array ("email" => 'ta@gueule', "hashmdp" => 'rien'));
 testParams('login', $valid_ok, array ("email" =>$user1_mail, "hashmdp" => 'hash'));
 testParams('update_user_sport_prefs', $valid_ok, array ("football" => 1, "basket" => 0));
-testParams('new_team', $valid_ok, array ("pseudo" => genName('test_team1'), "sport" => 1));
+testParams('new_team', $valid_ok, array ("pseudo" => genName('test_team1'), "id_sport" => 1));
 
 $id_team1 = getLastIdTable(TBL_TEAMS);
 
@@ -113,7 +113,7 @@ $mail2 = genName('ta@gueule2_');
 testParams('newuser',$valid_ok,  array ("prenom" => genName('user_test2'), "nom" => 'name_atest2', "email" =>$mail2, "tel" => '1132', "hashmdp" => 'hash2'));
 testParams('login', $valid_ok, array ("email" =>$mail2, "hashmdp" => 'hash2'));
 testParams('update_user_sport_prefs',$valid_ok,  array ("football" => 1, "basket" => 0));
-testParams('new_team',$valid_ok,  array ("pseudo" => genName('test_team2'), "sport" => 1));
+testParams('new_team',$valid_ok,  array ("pseudo" => genName('test_team2'), "id_sport" => 1));
 
 $id_team2 = getLastIdTable(TBL_TEAMS);
 
@@ -128,7 +128,7 @@ testParams('post_result_match', $valid_ok,  array ("id_team_user" => $id_team2, 
 testParams('post_chat_inter_teams', $valid_fail,  array ("id_team_user" => $id_team1, "id_team_cible" => $id_team2, "msg" => "coucou l'autre team"));
 testParams('post_chat_inter_teams', $valid_ok, array ("id_team_user" => $id_team2, "id_team_cible" => $id_team1, "msg" => "coucou l'autre team"));
 
-testParams('list_teams_by_sport', $valid_ok, array ("sport" => 1));
+testParams('list_teams_by_sport', $valid_ok, array ("id_sport" => 1));
 
 $id_result = getLastIdTable(TBL_MATCHES);
 
@@ -149,7 +149,7 @@ testParams('post_chat_interne', $valid_ok, array ("id_team" => $id_team1, "msg" 
 
 testParams('post_recherche_team_users', $valid_ok,  array ("id_team" => $id_team1, "frequence" => 5, "nb" => 3, "niveau" => 2, "description" => "On veut du lourd !"));
 // TODO: ne pas lister ses propres annonces
-testParams('list_recherche_team_users',  $valid_ok, array ("sport" => 1));
+testParams('list_recherche_team_users',  $valid_ok, array ("id_sport" => 1));
 testParams('remove_recherche_team_users', $valid_ok,  array ("id_team" => $id_team1));
 
 
