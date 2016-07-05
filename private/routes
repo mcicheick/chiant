@@ -12,7 +12,9 @@
     "update_user_picture": {
         "fun": "update_u_picture",
         "file": "photo",
-        "params": []
+        "params": [
+
+        ]
     },
     "update_team_picture": {
         "fun": "update_t_picture",
@@ -51,7 +53,7 @@
         "fun": "newteam_byuser_p",
         "params": [
             "pseudo",
-            "sport"
+            "id_sport"
         ]
     },
     "invites_team_team": {
@@ -129,19 +131,21 @@
     "list_recherche_team_users": {
         "fun": "list_t_annonce_us",
         "params": [
-            "sport"
+            "id_sport"
         ]
     },
     "list_teams_by_sport": {
         "fun": "list_t_sport",
         "params": [
-            "sport"
+            "id_sport"
         ]
     },
     "update_position": {
-      "fun" : "update_position", 
-      "params" : [] },
+        "fun": "update_position",
+        "params": [
 
+        ]
+    },
     "update_last_connexion" : {
         "fun" : "update_last_connexion", 
         "params": [] },
@@ -157,7 +161,26 @@
 
     "send_mail_inscription" : {
         "fun" : "send_mail_inscription", 
-        "params": ["email","iduser","cle"] }
+        "params": ["email","iduser","cle"] },
 
         
+    "historique_team": {
+        "fun": "get_historique_team",
+        "params": [
+            "id_team",
+            "limit"
+        ]
+    },
+    "classement_teams": {
+        "fun": "list_t_classements",
+        "params": [
+            "limit"
+        ]
+    },
+    "list_results_a_valider": {
+        "fun": "list_waiting_results",
+        "params": [
+            "id_team"
+        ]
+    }
 }

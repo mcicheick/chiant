@@ -61,7 +61,7 @@ function dispatchParams($req, $params){
     $routes = routage();
 
     if (!isset($routes[$req]))
-        return error("unknow request : " . $obj->requete);
+        return error("unknow request : " . $routes[$req]);
 
     $route = $routes[$req];
 
@@ -217,6 +217,7 @@ function update_t_picture($photoparams, $id_team) {
 }
 
 function register($prenom, $nom, $email, $tel, $mdp) {
+	echo "coucou register $mdp\n";
     if ($mdp!=null){
     $cle = md5(microtime(TRUE)*100000);
 
@@ -238,7 +239,7 @@ function update_user_sp_prefs($football, $basket){
 
 function check_same_sport($idteam1, $idteam2) {
     if (!C\same_sport_t($idteam1, $idteam2))
-        raiseMyExc('Teams have coucou different sport', ERR_FORBIDDEN);
+        raiseMyExc('Teams have different sport', ERR_FORBIDDEN);
 }
 
 
@@ -276,7 +277,7 @@ function t_invites_u_ch($id_team, $id_invite) {
 
 function join_team($id_team) {
     $id_user = checkLogged();
-    if (!C\belongs_to_u_same_sport($id_user, $id_team))
+    if (C\belongs_to_u_t_same_sport($id_user, $id_team))
       raiseMyExc('User already belongs to a team with the same sport', ERR_ERROR);
     I\delete_invitations_ut($id_user, $id_team);
     //TODO: CHeck that it is not already in the team
@@ -383,4 +384,24 @@ function send_mail_inscription($email,$iduser,$cle){
 }
 
 
+function get_historique_team($id_team, $limit)  {
+   $list = I\list_historique_team($id_team, $limit);
+   $stats = I\get_stat_team($id_team);
+   $stats['historique'] = $list;
+   return $stats;
+}
+
+function list_t_classements($limit)  {
+   $sportsa = I\list_sports();
+   $list_sports = array();
+   foreach ($sportsa as $idsport => $sport) {
+	$list_sports[$sport] = I\list_t_classement_s($limit, $idsport);
+   }
+   return $list_sports;
+}
+
+function list_waiting_results($id_team)  {
+   check_logged_u_t($id_team);
+   return I\list_waiting_results($id_team);
+}
 

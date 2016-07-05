@@ -5,6 +5,7 @@ require_once "nogit/config.php";
 require_once "noserver/config.php";
 require_once 'exceptions.php';
 require_once 'lib/medoo.php';
+require_once 'lib.php';
 
 if (ENV == "LOCAL")
 {
@@ -81,33 +82,223 @@ function exec_uniq($stmt,$vals) {
     return $id;
 }
 
-function insertDb($table, $array){
+
+interface SQLExecute {
+  function execute($stmt);
+}
+
+
+abstract class SQLExecAbs implements SQLExecute {
+  protected $vals;
+  function __construct($vals =null) { $this->setvals($vals);}
+  public function setvals($vals) { 
+	  if (DEBUG_DUMP_SQL) {
+	         echo "valeurs SQL : ";
+               var_dump($vals);
+		 echo "\n";
+	  }
+	  $this->vals = ($vals == null) ? array() : $vals; return $this ;
+  }
+}
+
+class SQLExecCheck extends SQLExecAbs {
+  function execute($stmt) {
+    if ($stmt->execute($this->vals))
+    	return $stmt;
+    else
+    	return false;
+  }
+}
+
+class SQLExecUniq extends SQLExecAbs {
+  function execute($stmt) {
+    $id = exec_uniq($stmt, $this->vals);
+    return $id;
+  }
+}
+
+
+function requestGeneric($requete, SQLExecute $e) {
     $db = getDb();
+    if (DEBUG_DUMP_SQL)
+    	echo "$requete\n";
+    $stmt= $db->prepare($requete);
+    return ($e->execute($stmt));
+}
+
+class SQLSelect {
+  //protected $cmd;
+  //var $table;
+  protected $where_str = null;
+  protected $orderstr = '';
+  protected $limit= null;
+  //protectedar $columns = array();
+  protected $cols_str = '';
+  protected $oexec=  null;
+  protected $vals = array();
+  protected $join_str = '';
+  protected $from_str = '';
+
+  function setColStr($colstr) {
+    $this->cols_str = $colstr;
+    return $this;
+  }
+  // colonne
+  public function setCols($cols) {
+     $this->cols_str = join($cols,',');
+     return $this;
+  }
+
+  public function addColStr($str) {
+     set_concat_sep($this->cols_str, $str);
+     return $this;
+  }
+
+  public function addCol($col, $prefix='T') {
+     return $this->addColStr("$prefix.$col");
+  }
+
+  public function addCola ($alias, $col, $prefix='T') {
+      return $this->addColStr("$prefix.$col AS $alias");
+  }
+
+  public function order($prefix, $col, $ordre) {
+      $this->orderstr = " ORDER BY $prefix.$col $ordre ";
+      return $this;
+  }
+
+
+  public function from($table, $alias = 'T') {
+    $this->from_str = $table.' AS '.$alias;
+    return $this;
+  }
+
+  function setWhere($wherestr, $vals=array()) {
+     $this->where_str = $wherestr;
+     $this->vals = $vals;
+     return $this;
+  }
+
+  public function limit($limit) {
+     $this->limit = $limit;
+     return $this;
+  }
+
+  
+   public function joinp($table, $alias, $prefix1, $col1, $prefix2, $col2) {
+     $this->join_str .= " JOIN $table AS $alias ON $prefix1.$col1 = $prefix2.$col2";
+     return $this;
+  }
+
+  public function addVal($val){
+     $this->vals[] = $val;
+     return $this;
+  }
+
+  public function addVals($vals){
+     $this->vals = array_merge($this->vals, $vals);
+     return $this;
+  }
+
+
+  public function andWhereEqp($prefix, $col, $val = null) {
+     set_concat_sep($this->where_str, "$prefix.$col = ?", ' AND ');
+
+     if ($val !== null)
+     	$this->vals[] = $val;
+     return $this;
+  }
+
+  public function andWhereStr($str, $vals = array()) {
+     set_concat_sep($this->where_str, $str, ' AND ');
+     $this->vals = array_merge($this->vals, $vals);
+     return $this;
+  }
+
+
+
+  protected function getWhereStr(){
+     return ($this->where_str) ? ' WHERE '.$this->where_str.' ' : '';
+  }
+  protected function getLimitStr() {
+     return ($this->limit) ? ' LIMIT '.intval($this->limit).' ' : '';
+  }
+
+
+  public function execute() {
+     if (!$this->oexec)
+       $this->oexec = new SQLExecCheck();
+
+     $vals = $this->vals;
+     $this->oexec->setvals($vals);
+     return requestGeneric($this->sqlrequete(), $this->oexec);
+  }
+
+  function sqlrequete() {
+    //$cols_str = join($cols,',');
+    $str = sprintf('SELECT %s FROM %s %s %s %s %s ', $this->cols_str, $this->from_str, $this->join_str, $this->getWhereStr(), $this->orderstr, $this->getLimitStr());
+
+    return $str;
+  }
+
+  function __toString() {
+	  return $this->sqlrequete();
+  }
+
+}
+
+
+
+function oselect() { return new SQLSelect(); }
+
+
+
+function selReqDbWhStr($table, $cols, $wherestr) {
+    $cols_str = join($cols,',');
+    return ('SELECT '.$cols_str.' FROM '.$table.' WHERE '.$wherestr);
+}
+
+
+
+
+function execCheck($req, $vals) {
+    return requestGeneric($req, new SQLExecCheck($vals));
+}
+
+function execUniqGeneric($req, $vals) {
+    return requestGeneric($req, new SQLExecUniq($vals));
+}
+function selectDbWhStr($table, $cols, $wherestr, $vals) {
+    return execCheck(selReqDbWhStr($table, $cols, $wherestr), $vals);
+}
+
+function insertDb($table, $array){
     list($cles, $vals,$marks) = arrToKeysAndMarks($array);
 
     $str_marks = join(',', $marks);
     $str_keys = join(',', $cles);
     $req = "INSERT INTO ".$table."(".$str_keys.') VALUES ('.$str_marks.')';
-    $stmt = $db->prepare($req);
+
+    return execUniqGeneric(($req), $vals);
     //var_dump($req);
     //var_dump($vals);
 
-    return exec_uniq($stmt, $vals);
+}
+
+function update_wherestr($table, $valeurs, $wherestr, $where_vals) {
+    list($set_str, $set_vals) = equalities_string($valeurs, ',');
+
+    $req = ("UPDATE $table SET $set_str WHERE $wherestr");
+    return execUniqGeneric(($req), array_merge($set_vals, $where_vals));
+}
+
+function update_wherea($table, $valeurs, $wherea) {
+    list($where_str, $where_vals) = equalities_string($wherea, 'AND');
+    return update_wherestr($table, $valeurs, $where_str,$where_vals);
 }
 
 function updateDb($table, $valeurs, $id) {
-    $db = getDb();
-
-    list($cles,$vals,$marks) = arrToKeysAndMarks($valeurs);
-
-    $lst_str = array_map(function($key) { return $key.'=?';}, $cles);
-    $str = join($lst_str, ',');
-
-    $stmt = $db->prepare("UPDATE ".$table." SET ".$str. ' WHERE ID=?');
-    $vals[] = $id;
-
-    $id = exec_uniq($stmt, $vals);
-    return $id;
+	return update_wherea($table, $valeurs, array('ID' => $id));
 }
 
 function updateDbEmail($table, $valeurs, $email) {
@@ -126,28 +317,24 @@ function updateDbEmail($table, $valeurs, $email) {
     return $email;
 }
 
-function selectDbWhStr($table, $cols, $wherestr, $vals) {
-    $db = getDb();
 
 
-    $cols_str = join($cols,',');
+function equalities_string($wherea, $sep) {
+    $str = '';
+    list($cles,$vals,$marks) = arrToKeysAndMarks($wherea);
 
-    $stmt= $db->prepare('SELECT '.$cols_str.' FROM '.$table.' WHERE '.$wherestr);
+    foreach ($cles as $cle)
+	$str .= "$sep $cle = ? ";
 
-    if ($stmt->execute($vals))
-	return $stmt;
-    else
-	return false;
+    if ($str)
+       $str = substr($str, strlen($sep));
+    return array($str, $vals);
 }
 
 function selectDbArr($table, $cols, $wherea) {
-    $db = getDb();
+    list($wherestr, $vals) = equalities_string($wherea, 'AND');
 
-    list($cles,$vals,$marks) = arrToKeysAndMarks($wherea);
-
-    $lst = array_map(function($key) { return $key.'=?';}, $cles);
-    $lst_str = join($lst, ' AND ');
-    return selectDbWhStr($table,$cols, $lst_str, $vals);
+    return selectDbWhStr($table,$cols, $wherestr, $vals);
 }
 
 function selectId($table, $cols, $id) {
@@ -162,9 +349,6 @@ function deleteDbWhStr($table, $wherestr, $vals) {
 }
 
 function deleteDbArr($table, $wherea) {
-    list($cles,$vals,$marks) = arrToKeysAndMarks($wherea);
-
-    $lst = array_map(function($key) { return $key.'=?';}, $cles);
-    $lst_str = join($lst, ' AND ');
-    return deleteDbWhStr($table,$lst_str, $vals);
+    list($wherestr, $vals) = equalities_string($wherea, 'AND');
+    return deleteDbWhStr($table,$wherestr, $vals);
 }

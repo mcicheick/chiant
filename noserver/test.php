@@ -74,7 +74,9 @@ foreach(routage() as $req => $route) {
 foreach(routage() as $req => $route) {
     $params = $route['params'];
     $params = array_flip($params);
-    $file = $route['file'];
+    $file = null;
+    if (isset($route['file']))
+      $file = $route['file'];
     $params[MAGIC_PWD_FIELD] = MAGIC_PWD;
     $params[SESSION_USERID_NAME] = 2;
     print_route($req, $params, $file);
