@@ -172,6 +172,8 @@ RANG
 (SELECT COUNT(*)+1 FROM teams AS L   WHERE L.SCORE > T.SCORE    ))
 FROM  `teams` T;
 
+
+
 --
 -- RELATIONS FOR TABLE `teams`:
 --
@@ -190,7 +192,6 @@ CREATE TABLE `users` (
   `PASSWORD` varchar(255) DEFAULT NULL COMMENT 'peut etre null si on se connecte par facebook',
   `PICTURE_FILE` varchar(255) DEFAULT NULL COMMENT 'nom du fichier image',
   `TELEPHONE` varchar(255) DEFAULT NULL,
-  `PREFS_SPORT` int(11) NOT NULL DEFAULT '0' COMMENT 'Préférences sous forme de masque bits',
   `LATITUDE` float(10) NOT NULL COMMENT 'float représentant la latitude',
   `LONGITUDE` float(10) NOT NULL COMMENT 'float représentant la longitude',
   `DATE_INSCRIPTION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -199,6 +200,11 @@ CREATE TABLE `users` (
   `COUNTRY` varchar(255) DEFAULT NULL COMMENT 'Pays'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE `lien_prefs_sports_user` (
+  `ID_USER` int(11) NOT NULL,
+  `ID_SPORT` int(11) NOT NULL,
+  PRIMARY KEY (`ID_USER`,`ID_SPORT`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Liste des sports de préférence par utilisateur';
 
 
 CREATE TABLE `users_inactif` (

@@ -8,39 +8,39 @@ require_once 'geolocalisation.php';
 
 require_once 'lib.php';
 
-class PreferencesSport {
-    public $football = false;
-    public $basket = false;
 
 
-    public function fromInt($n) {
-        $arr= bools_of_int($n, array(SPORT_BIT_FOOTBALL,
-                                     SPORT_BIT_BASKETBALL));
-        $this->football = $arr(0);
-        $this->basket   = $arr(1);
-        return $this;
+
+function addAffinitesSports($iduser, $id_sports) {
+    $vals = array();
+    $valeurs_str = '';
+
+    foreach ($id_sports as $id_sport) {
+       $valeurs_str .= ", (?, ?)";
+       $vals[] = $iduser;
+       $vals[] = $id_sport;
     }
 
-    public function toInt() {
-        return int_of_bools (array($this->football, $this->basket),
-                   array(SPORT_BIT_FOOTBALL, SPORT_BIT_BASKETBALL));
-    }
+    if (!$valeurs_str)
+	    return true;
+
+    $valeurs_str = substr($valeurs_str,1);
+
+
+    $req = sprintf ("INSERT INTO %s (%s, %s) VALUES %s",
+	    		TBL_LIEN_PREFS_SPORTS_USER,
+			LIEN_TEAM_USERS_ID_USER,
+			LIEN_PREFS_SPORTS_USER_ID_SPORT,
+			$valeurs_str);
+
+    return execCheck($req, $vals);
 }
 
-
-
-
-function updateAffinitesSports($iduser, $affinite) {
-    $params = array(USERS_PREFS_SPORT => $affinite->toInt());
-    return updateDb(TBL_USERS, $params,$iduser);
-}
-
-
-function updateBAffinitesSports($iduser, $football, $basketball) {
-    $prefs = new PreferencesSport();
-    $prefs->basket = $basketball;
-    $prefs->football = $football;
-    return updateAffinitesSports($iduser, $prefs);
+function removeAffinitesSports($iduser, $id_sports) {
+    $vals = $id_sports;
+    $vals[] = $iduser;
+    $marks = substr( str_repeat(', ?', count($id_sports)),1);
+    return deleteDbWhStr(TBL_LIEN_PREFS_SPORTS_USER, LIEN_PREFS_SPORTS_USER_ID_SPORT." IN ($marks) AND ".LIEN_TEAM_USERS_ID_USER.' = ?', $vals) ;
 }
 
 function create_team($pseudo, $sport) {

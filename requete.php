@@ -232,7 +232,28 @@ else{
 }
 
 function update_user_sp_prefs($football, $basket){
-    I\updateBAffinitesSports(checkLogged(), $football, $basket);
+
+   $messports = array(FOOTBALL => $football, BASKETBALL => $basket);
+
+   // Cette vérification est inutile en principe, car la liste des sports ne change pas mais on
+   // n'est jamais trop prudent
+   $sportsbyidx = (I\list_sports());
+   $sportsa = array_flip($sportsbyidx);
+
+   $valeurs = array();
+
+   foreach ($messports as $nomsport => $valsport) {
+      if(!isset($sportsa[$nomsport]))
+        raiseHermetiqueExc("sport inconnu : $nomsport (liste des sports connus : ".join($sportsbyidx).")", ERR_ERROR);
+      if ($valsport)  
+         $valeurs[] = $sportsa[$nomsport];
+   }
+
+	$id_user = checkLogged();
+	// enlève les préférences de basket  et de football
+	I\removeAffinitesSports($id_user, array_keys($messports));
+	// mets les bonnes à la place
+	I\addAffinitesSports($id_user, $valeurs);
     return true;
 }
 

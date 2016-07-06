@@ -133,3 +133,8 @@ define('TBL_VIEW_TEAMS_RANK', 'view_teams_rank');
 
 define('VIEW_TEAMS_RANK_ID','ID');
 define('VIEW_TEAMS_RANK_RANG','RANG');
+
+define('TBL_LIEN_PREFS_SPORTS_USER', 'lien_prefs_sports_user');
+
+define('LIEN_PREFS_SPORTS_USER_ID_USER','ID_USER');
+define('LIEN_PREFS_SPORTS_USER_ID_SPORT','ID_SPORT');

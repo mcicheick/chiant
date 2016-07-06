@@ -342,10 +342,7 @@ function selectId($table, $cols, $id) {
 }
 
 function deleteDbWhStr($table, $wherestr, $vals) {
-    $db = getDb();
-
-    $stmt= $db->prepare('DELETE FROM '.$table.' WHERE '.$wherestr);
-    return $stmt->execute($vals);
+    return execCheck('DELETE FROM '.$table.' WHERE '.$wherestr, $vals);
 }
 
 function deleteDbArr($table, $wherea) {
