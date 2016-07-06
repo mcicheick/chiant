@@ -101,7 +101,7 @@ $user1_name = genName('user_test');
 $user1_mail = genName('ta@gueule');
 //testParams('newuser', $valid_ok,  array ("prenom" => $user1_name, "nom" => 'name_atest', "email" => $user1_mail, "tel" => '0132', "hashmdp" => 'hash'));
 //$id_user1 = getLastIdTable(TBL_USERS);
-    $id_user1 = I\create_user( $user1_name, "nom_atest", $user1_mail, '0132', 'hash',null);
+    $id_user1 = I\create_user( $user1_name, "nom_atest", $user1_mail, '0132', 'hash',null,0,0,'','');
 
 
 testParams('login', $valid_fail, array ("email" => 'ta@gueule', "hashmdp" => 'rien'));
@@ -112,7 +112,7 @@ testParams('new_team', $valid_ok, array ("pseudo" => genName('test_team1'), "id_
 $id_team1 = getLastIdTable(TBL_TEAMS);
 
 $mail2 = genName('ta@gueule2_');
-$id_user2 = I\create_user( genName('user_test2'), "nom_atest2", $mail2, '1132', 'hash2',null);
+$id_user2 = I\create_user( genName('user_test2'), "nom_atest2", $mail2, '1132', 'hash2',null,0,0,'','');
 //testParams('newuser',$valid_ok,  array ("prenom" => genName('user_test2'), "nom" => 'name_atest2', "email" =>$mail2, "tel" => '1132', "hashmdp" => 'hash2'));
 testParams('login', $valid_ok, array ("email" =>$mail2, "hashmdp" => 'hash2'));
 testParams('update_user_sport_prefs',$valid_ok,  array ("football" => 1, "basket" => 0));
@@ -207,7 +207,7 @@ liensrc('list-matches-valid');
 $user1_name = genName('user_validator');
 $user1_mail = genName('ta@validator');
 //testParams('newuser', $valid_ok,  array ("prenom" => $user1_name, "nom" => 'name_atest', "email" => $user1_mail, "tel" => '0132', "hashmdp" => 'hash'));
-I\create_user( $user1_name, "nom_atest", $user1_mail, '1132', 'hash',null);
+I\create_user( $user1_name, "nom_atest", $user1_mail, '1132', 'hash',null,0,0,'','');
 testParams('login', $valid_ok, array ("email" =>$user1_mail, "hashmdp" => 'hash'));
 testParams('join_team', $valid_ok, array ("id_team" => $teams_ids[0]));
 
