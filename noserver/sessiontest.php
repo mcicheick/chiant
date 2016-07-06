@@ -5,6 +5,8 @@ require_once '../requete.php';
 require_once '../db.php';
 require_once '../lib/medoo.php';
 
+define('STOP_ON_ECHEC', 1);
+
 use dbinteraction as I;
 if (ENV != 'LOCAL')
 	die('Not in local mode');
@@ -39,7 +41,8 @@ function testParams($req, Validator $is_ok, $params) {
 
   echo "requete : ".$req."\n  params : ".json_encode($params)."\n\n";
   $ret = dispatchParams($req, $params);
-  if ($is_ok->validate($ret))
+  $is_good =$is_ok->validate($ret);
+  if ($is_good)
 	  $color = 'green';
   else {
 	  $color = 'red';
@@ -48,12 +51,22 @@ function testParams($req, Validator $is_ok, $params) {
 
 	  echo '<p style="background-color:'.$color.'">';
   echo json_encode($ret, JSON_PRETTY_PRINT);
+
+
 	  
   echo "</p>\n\n\n";
+  if (!$is_good && STOP_ON_ECHEC)
+	  die('fin');
 }
 class OKValidator implements Validator {
    function message() { return ''; }
-   function validate($ret) { return $ret['answer'] == 'OK'; }
+function validate($ret) { 
+	$contents = array();
+	if (isset($ret['contents']))
+	  $contents = $ret['contents'];
+	return $ret['answer'] == 'OK' && $this->validateContents($contents);
+}
+   protected function validateContents($contents) { return true; }
 }
 $valid_ok = new OKValidator();
 
@@ -90,6 +103,7 @@ function liensrc($lien) {
 lienTo('basique');
 lienTo('historique-teams');
 lienTo('list-matches-valid');
+lienTo('prefs-sports');
 
 
 liensrc('basique');
@@ -106,7 +120,7 @@ $user1_mail = genName('ta@gueule');
 
 testParams('login', $valid_fail, array ("email" => 'ta@gueule', "hashmdp" => 'rien'));
 testParams('login', $valid_ok, array ("email" =>$user1_mail, "hashmdp" => 'hash'));
-testParams('update_user_sport_prefs', $valid_ok, array ("football" => 1, "basket" => 0));
+testParams('update_user_sport_prefs', $valid_ok, array ("football" => 1, "basketball" => 0));
 testParams('new_team', $valid_ok, array ("pseudo" => genName('test_team1'), "id_sport" => 1));
 
 $id_team1 = getLastIdTable(TBL_TEAMS);
@@ -115,7 +129,7 @@ $mail2 = genName('ta@gueule2_');
 $id_user2 = I\create_user( genName('user_test2'), "nom_atest2", $mail2, '1132', 'hash2',null,0,0,'','');
 //testParams('newuser',$valid_ok,  array ("prenom" => genName('user_test2'), "nom" => 'name_atest2', "email" =>$mail2, "tel" => '1132', "hashmdp" => 'hash2'));
 testParams('login', $valid_ok, array ("email" =>$mail2, "hashmdp" => 'hash2'));
-testParams('update_user_sport_prefs',$valid_ok,  array ("football" => 1, "basket" => 0));
+testParams('update_user_sport_prefs',$valid_ok,  array ("football" => 1, "basketball" => 0));
 testParams('new_team',$valid_ok,  array ("pseudo" => genName('test_team2'), "id_sport" => 1));
 
 $id_team2 = getLastIdTable(TBL_TEAMS);
@@ -222,3 +236,56 @@ for ($i=0; $i < 20; $i++) {
         MATCHES_DATE => $date));
 }
 testParams('list_results_a_valider', $valid_ok, array ("id_team" => $teams_ids[0]));
+
+liensrc('prefs-sports');
+echo "Test des préférences de sports\n";
+
+$user1_name = genName('user_pref_sports');
+$user1_mail = genName('ta@user_pref_sport');
+//testParams('newuser', $valid_ok,  array ("prenom" => $user1_name, "nom" => 'name_atest', "email" => $user1_mail, "tel" => '0132', "hashmdp" => 'hash'));
+I\create_user( $user1_name, "nom_atest", $user1_mail, '1132', 'hash',null,0,0,'','');
+testParams('login', $valid_ok, array ("email" =>$user1_mail, "hashmdp" => 'hash'));
+
+class  ValidListPrefs extends OKValidator  {
+   var $resultats;
+	function message() {
+		return "should yield ".json_encode($this->resultats, JSON_PRETTY_PRINT);
+	}
+   function setResultats($res) { $this->resultats = $res; sort($this->resultats); }
+   function validateContents($ret) {
+	   sort($ret);
+	   $bool = $this->resultats == $ret;
+	   return $bool;
+
+   }
+}
+
+$valid = new ValidListPrefs();
+echo "On va tester toutes les possibilités de transition pour football/basket \n";
+
+function testListPrefs ($i,$j) {
+	global $valid_ok;
+	global $valid;
+	$valeurs =array ("football" => $i, "basketball" => $j);
+	/*
+	var_dump($valeurs);
+	var_dump(array_filter($valeurs));
+	var_dump(array_keys(array_filter($valeurs)));
+	 */
+	$valid->setResultats(array_keys(array_filter($valeurs)));
+  testParams('update_user_sport_prefs', $valid_ok, $valeurs);
+  testParams('list_prefs_sport', $valid, $valeurs);
+}
+
+for ($i = 0; $i < 2;$i++) {
+for ($j = 0; $j < 2;$j++) {
+for ($i2 = 0; $i2 < 2;$i2++) {
+for ($j2 = 0; $j2 < 2;$j2++) {
+	testListPrefs($i,$j);
+	testListPrefs($i2,$j2);
+}
+}
+}
+}
+
+testParams('update_user_sport_prefs', $valid_ok, array ("football" => 1, "basketball" => 0));

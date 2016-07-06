@@ -240,20 +240,23 @@ function update_user_sp_prefs($football, $basket){
    $sportsbyidx = (I\list_sports());
    $sportsa = array_flip($sportsbyidx);
 
-   $valeurs = array();
+   $liste_positive = array();
+   $liste_total = array();
 
    foreach ($messports as $nomsport => $valsport) {
       if(!isset($sportsa[$nomsport]))
         raiseHermetiqueExc("sport inconnu : $nomsport (liste des sports connus : ".join($sportsbyidx).")", ERR_ERROR);
+
+      $liste_total[] = $sportsa[$nomsport];
       if ($valsport)  
-         $valeurs[] = $sportsa[$nomsport];
+         $liste_positive[] = $sportsa[$nomsport];
    }
 
 	$id_user = checkLogged();
 	// enlève les préférences de basket  et de football
-	I\removeAffinitesSports($id_user, array_keys($messports));
+	I\removeAffinitesSports($id_user, $liste_total);
 	// mets les bonnes à la place
-	I\addAffinitesSports($id_user, $valeurs);
+	I\addAffinitesSports($id_user, $liste_positive);
     return true;
 }
 
@@ -423,5 +426,9 @@ function list_t_classements($limit)  {
 function list_waiting_results($id_team)  {
    check_logged_u_t($id_team);
    return I\list_waiting_results($id_team);
+}
+
+function list_prefs_sport()  {
+   return I\list_prefs_sport(checkLogged());
 }
 

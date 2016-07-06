@@ -31,7 +31,7 @@
         "fun": "update_user_sp_prefs",
         "params": [
             "football",
-            "basket"
+            "basketball"
         ]
     },
     "team_likes_team": {
@@ -145,46 +145,41 @@
         ]
     },
     "update_position": {
-      "fun" : "update_position", 
-      "params" : [
-      		"latitude",
-      		"longitude",
-      		"city",
-      		"country"
-      	] 
-    },
-    "update_last_connexion" : {
-        "fun" : "update_last_connexion", 
+        "fun": "update_position",
         "params": [
-        ] 
+            "latitude",
+            "longitude",
+            "city",
+            "country"
+        ]
     },
-
-
-    "update_password" : {
-        "fun" : "update_password", 
+    "update_last_connexion": {
+        "fun": "update_last_connexion",
         "params": [
-        		"email",
-        		"password"
-        	]
-    },
 
-    "send_mail_change_password" : {
-        "fun" : "send_mail_change_password", 
+        ]
+    },
+    "update_password": {
+        "fun": "update_password",
         "params": [
-        		"email"
-        	] 
+            "email",
+            "password"
+        ]
     },
-
-    "send_mail_inscription" : {
-        "fun" : "send_mail_inscription", 
+    "send_mail_change_password": {
+        "fun": "send_mail_change_password",
         "params": [
-        		"email",
-        		"iduser",
-        		"cle"
-        	] 
+            "email"
+        ]
     },
-
-        
+    "send_mail_inscription": {
+        "fun": "send_mail_inscription",
+        "params": [
+            "email",
+            "iduser",
+            "cle"
+        ]
+    },
     "historique_team": {
         "fun": "get_historique_team",
         "params": [
@@ -202,6 +197,12 @@
         "fun": "list_waiting_results",
         "params": [
             "id_team"
+        ]
+    },
+    "list_prefs_sport": {
+        "fun": "list_prefs_sport",
+        "params": [
+
         ]
     }
 }

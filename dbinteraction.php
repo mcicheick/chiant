@@ -43,6 +43,17 @@ function removeAffinitesSports($iduser, $id_sports) {
     return deleteDbWhStr(TBL_LIEN_PREFS_SPORTS_USER, LIEN_PREFS_SPORTS_USER_ID_SPORT." IN ($marks) AND ".LIEN_TEAM_USERS_ID_USER.' = ?', $vals) ;
 }
 
+function list_prefs_sport($id_user)  {
+       $stmt= oselect()->addCol(REF_SPORTS_NOM, 'R')
+                ->from(TBL_LIEN_PREFS_SPORTS_USER, 'L')
+		->joinp(TBL_REF_SPORTS, 'R', 'R',
+			REF_SPORTS_ID, 'L', LIEN_PREFS_SPORTS_USER_ID_SPORT)
+		->andWhereEqp('L', LIEN_PREFS_SPORTS_USER_ID_USER, $id_user)
+		->execute();
+    return $stmt->fetchall(\PDO::FETCH_COLUMN);
+}
+
+
 function create_team($pseudo, $sport) {
     return insertDb(TBL_TEAMS, array(TEAMS_PSEUDO=>$pseudo, TEAMS_SPORT => $sport));
 }
