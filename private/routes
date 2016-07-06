@@ -145,32 +145,44 @@
         ]
     },
     "update_position": {
-<<<<<<< HEAD
       "fun" : "update_position", 
-      "params" : ["latitude","longitude","city","country"] },
-=======
-        "fun": "update_position",
-        "params": [
->>>>>>> origin/master
-
-        ]
+      "params" : [
+      		"latitude",
+      		"longitude",
+      		"city",
+      		"country"
+      	] 
     },
     "update_last_connexion" : {
         "fun" : "update_last_connexion", 
-        "params": [] },
+        "params": [
+        ] 
+    },
 
 
     "update_password" : {
         "fun" : "update_password", 
-        "params": ["email","password"] },
+        "params": [
+        		"email",
+        		"password"
+        	]
+    },
 
     "send_mail_change_password" : {
         "fun" : "send_mail_change_password", 
-        "params": ["email"] },
+        "params": [
+        		"email"
+        	] 
+    },
 
     "send_mail_inscription" : {
         "fun" : "send_mail_inscription", 
-        "params": ["email","iduser","cle"] },
+        "params": [
+        		"email",
+        		"iduser",
+        		"cle"
+        	] 
+    },
 
         
     "historique_team": {
