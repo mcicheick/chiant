@@ -4,6 +4,8 @@ require_once '../config.php';
 require_once '../requete.php';
 require_once '../db.php';
 require_once '../lib/medoo.php';
+require_once '../routes.php';
+require_once '../sports.php';
 
 define('STOP_ON_ECHEC', 1);
 
@@ -36,6 +38,10 @@ interface Validator {
    function validate($ret);
 }
 
+function str_color($color, $str) {
+    return '<p style="background-color:'.$color.'">'.$str."</p>\n\n";
+}
+
 function testParams($req, Validator $is_ok, $params) {
   echo $is_ok->message()."\n";
 
@@ -48,13 +54,8 @@ function testParams($req, Validator $is_ok, $params) {
 	  $color = 'red';
 	  echo "ECHEC\n";
   }
+  echo str_color($color, json_encode($ret, JSON_PRETTY_PRINT));
 
-	  echo '<p style="background-color:'.$color.'">';
-  echo json_encode($ret, JSON_PRETTY_PRINT);
-
-
-	  
-  echo "</p>\n\n\n";
   if (!$is_good && STOP_ON_ECHEC)
 	  die('fin');
 }
@@ -76,14 +77,16 @@ class FailValidator implements Validator {
 }
 $valid_fail = new FailValidator();
 
-class MatchValidator implements Validator {
+class MatchValidator extends OKValidator {
    var $arr;
-   function __construct($arr) { $this->arr = $arr; }
+   function __construct($arr=array()) { $this->setResultats( $arr); }
+   function setResultats($arr) { $this->arr = $arr; sort($this->arr); }
    function message() { return 'should give as a result : '.json_encode($this->arr, JSON_PRETTY_PRINT); }
-   function validate($ret) { 
+   function validateContents($contents) { 
    //var_dump($ret['contents']);
    ////var_dump($this->arr);
-   return $ret['answer'] == 'OK' && $ret['contents'] == $this->arr; }
+	   sort($contents);
+   return $contents == $this->arr; }
         
 }
 
@@ -107,6 +110,23 @@ lienTo('prefs-sports');
 
 
 liensrc('basique');
+
+echo "Test de l'accord entre la liste des sports en SQL et la liste des sports en PHP";
+$phpSports = listSports();
+sort($phpSports);
+$validatorSports = new MatchValidator($phpSports);
+
+
+ $stmt = selectDbWhStr(TBL_REF_SPORTS,array(REF_SPORTS_ID, REF_SPORTS_NOM), 1, array());
+ $dbSports = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
+ sort($dbSports);
+
+ if ($validatorSports->validateContents($dbSports))
+	 echo str_color("green", "OK");
+ else
+	 echo str_color("red", "PHP : ".join($phpSports,', ')."\nSQL : ".join($dbSports, ', '));
+
+ echo "\n";
 
 //testParams('update_user_picture',  array ($photo => ?));
 //testParams('update_team_picture',  array ($photo => ?, $id_team => ?));
@@ -246,21 +266,7 @@ $user1_mail = genName('ta@user_pref_sport');
 I\create_user( $user1_name, "nom_atest", $user1_mail, '1132', 'hash',null,0,0,'','');
 testParams('login', $valid_ok, array ("email" =>$user1_mail, "hashmdp" => 'hash'));
 
-class  ValidListPrefs extends OKValidator  {
-   var $resultats;
-	function message() {
-		return "should yield ".json_encode($this->resultats, JSON_PRETTY_PRINT);
-	}
-   function setResultats($res) { $this->resultats = $res; sort($this->resultats); }
-   function validateContents($ret) {
-	   sort($ret);
-	   $bool = $this->resultats == $ret;
-	   return $bool;
-
-   }
-}
-
-$valid = new ValidListPrefs();
+$valid = new MatchValidator();
 echo "On va tester toutes les possibilités de transition pour football/basket \n";
 
 function testListPrefs ($i,$j) {
@@ -274,7 +280,7 @@ function testListPrefs ($i,$j) {
 	 */
 	$valid->setResultats(array_keys(array_filter($valeurs)));
   testParams('update_user_sport_prefs', $valid_ok, $valeurs);
-  testParams('list_prefs_sport', $valid, $valeurs);
+  testParams('list_prefs_sport', $valid, array());
 }
 
 for ($i = 0; $i < 2;$i++) {

@@ -1,7 +1,4 @@
 <?php
-function array_values_from_keys($arr, $keys) {
-    return array_map(function($x) use ($arr) { return $arr[$x]; }, $keys);
-}
 
 function concat_sep($str1, $str2, $sep=', ') {
   if($str1)

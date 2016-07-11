@@ -2,6 +2,7 @@
 require_once 'config.php';
 require_once '../requete.php';
 require_once '../config.php';
+require_once '../routes.php';
 
 if (ENV != 'LOCAL')
 	die('Not in local mode');
@@ -16,12 +17,8 @@ if ($serieux) {
 echo "--- ".$file."\n\n".$content."\n\n\n";
 }
 
-function putRoutes($routes) {
-  appendFile('../'.PRIVATE_DIR.'/routes', json_encode($routes, JSON_PRETTY_PRINT));
-}
 
 echo "PLEASE Check with git diff <pre>\n\n";
-$routes = routage();
 
 
 ?>
@@ -52,6 +49,8 @@ $serieux = $_POST['serieux'] == 'serieux';
 if ($serieux)
   echo "ATTENTION: SERIEUX\n";
 $fun = $_POST['fun'];
+
+$routes = getRoutesFromFiles();
 
 $route = array('fun' => $fun, 'params' => $params);
 

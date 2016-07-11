@@ -11,6 +11,7 @@ class HermetiqueExc extends Exception {
  define('ERR_NOLOGIN', 3);
  define('ERR_FORBIDDEN', 4);
  define('ERR_BAD_CREDENTIALS',5);
+ define('ERR_REQ_WRONG_ARGS',6);
 
  function raiseMyExc($msg, $code)
  {

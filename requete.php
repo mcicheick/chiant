@@ -9,15 +9,13 @@ require_once 'config.php';
 require_once 'dbinteraction.php';
 require_once 'check.php';
 require_once 'envoyer_mail.php';
+require_once 'routes.php';
 
 use dbcheck as C;
 use dbinteraction as I;
 use envoyer_mail as E;
 
 
-function routage() {
-   return (json_decode(file_get_contents( PRIVATE_DIR.'/routes',true), true));
-}
 
 /*
  * Pour crÃ©er un nouvel utilisateur
@@ -57,6 +55,10 @@ function dispatchReq( $params) {
    return dispatchParams($req, $params);
 }
 
+function array_values_from_keys($arr, $keys) {
+    return array_map(function($x) use ($arr) { return $arr[$x]; }, $keys);
+}
+
 function dispatchParams($req, $params){  
     $routes = routage();
 
@@ -68,17 +70,35 @@ function dispatchParams($req, $params){
     try {
         $fun = $route['fun'];
         $args = $route['params'];
-        $args_fun = array_values_from_keys($params,$args);
-        // Si upload de fichier
-        if (isset($route['file'])) {
-            // le premiÃ¨r argument de fun est les infos relatifs au fichier
-            // sur le serveur
-		//true;
-           array_unshift($args_fun, $_FILES[$route['file']]);
 
+	$keys = array_keys($params);
+	sort($keys);
+	sort($args);
+
+	if ($args != $keys)
+		raiseHermetiqueExc(
+			"Request $req : given arguments ".join($keys,', ').
+			" ; expected arguments ". join(array_keys($args),', '),
+				ERR_REQ_WRONG_ARGS);
+
+
+	if (isset($route['args_as_array'])) {
+
+		// Si upload de fichier
+		if (isset($route['file']))
+			$params['file'] = $_FILES[$route['file']];
+		return bret($fun( $params));
 	}
-        return bret(call_user_func_array($fun,
-                $args_fun));
+	else {
+		$args_fun = array_values_from_keys($params,$route['params']);
+		// Si upload de fichier
+		if (isset($route['file'])) {
+			array_unshift($args_fun, $_FILES[$route['file']]);
+
+		}
+	   return bret(call_user_func_array($fun, $args_fun));
+	}
+
     }
     catch (DbInsertUniqueExc $e) {
              return errDuplicateEntry();
@@ -231,30 +251,21 @@ else{
     return true;
 }
 
-function update_user_sp_prefs($football, $basket){
+function update_user_sp_prefs($prefs){
 
-   $messports = array(FOOTBALL => $football, BASKETBALL => $basket);
+	$sports = listSports();
+	$liste_total = array_keys($sports);
+	$liste_positive = array();
 
-   // Cette vérification est inutile en principe, car la liste des sports ne change pas mais on
-   // n'est jamais trop prudent
-   $sportsbyidx = (I\list_sports());
-   $sportsa = array_flip($sportsbyidx);
-
-   $liste_positive = array();
-   $liste_total = array();
-
-   foreach ($messports as $nomsport => $valsport) {
-      if(!isset($sportsa[$nomsport]))
-        raiseHermetiqueExc("sport inconnu : $nomsport (liste des sports connus : ".join($sportsbyidx).")", ERR_ERROR);
-
-      $liste_total[] = $sportsa[$nomsport];
-      if ($valsport)  
-         $liste_positive[] = $sportsa[$nomsport];
-   }
-
+	foreach ($sports as $id_sport => $sport) {
+		if ($prefs[$sport])
+			$liste_positive[] = $id_sport;
+	}
 	$id_user = checkLogged();
+
 	// enlève les préférences de basket  et de football
 	I\removeAffinitesSports($id_user, $liste_total);
+	echo "entre\n";
 	// mets les bonnes à la place
 	I\addAffinitesSports($id_user, $liste_positive);
     return true;
@@ -415,7 +426,7 @@ function get_historique_team($id_team, $limit)  {
 }
 
 function list_t_classements($limit)  {
-   $sportsa = I\list_sports();
+   $sportsa = listSports();
    $list_sports = array();
    foreach ($sportsa as $idsport => $sport) {
 	$list_sports[$sport] = I\list_t_classement_s($limit, $idsport);

@@ -1,6 +1,7 @@
 <?php
 require_once '../config.php';
 require_once '../requete.php';
+require_once '../routes.php';
 
 
 if (ENV != 'LOCAL')

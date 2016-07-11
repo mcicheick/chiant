@@ -439,10 +439,6 @@ function list_t_classement_s($limit, $idsport)  {
 }
 
 // renvoie ID => nomdusport
-function list_sports() {
-    $stmt = selectDbWhStr(TBL_REF_SPORTS,array(REF_SPORTS_ID, REF_SPORTS_NOM), 1, array());
-     return $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
-}
 
 function list_waiting_results($id_team)  {
     $stmt= oselect()
