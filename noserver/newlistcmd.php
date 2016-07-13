@@ -50,7 +50,7 @@ if ($serieux)
   echo "ATTENTION: SERIEUX\n";
 $fun = $_POST['fun'];
 
-$routes = getRoutesFromFiles();
+$routes = getRoutesFromFile();
 
 $route = array('fun' => $fun, 'params' => $params);
 
