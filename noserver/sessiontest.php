@@ -107,6 +107,7 @@ lienTo('basique');
 lienTo('historique-teams');
 lienTo('list-matches-valid');
 lienTo('prefs-sports');
+lienTo('signals-team');
 
 
 liensrc('basique');
@@ -295,3 +296,28 @@ for ($j2 = 0; $j2 < 2;$j2++) {
 }
 
 testParams('update_user_sport_prefs', $valid_ok, array ("football" => 1, "basketball" => 0));
+
+liensrc('signals-team');
+$user1_name = genName('user_signal_teams');
+$user1_mail = genName('ta@user_signal_teams');
+//testParams('newuser', $valid_ok,  array ("prenom" => $user1_name, "nom" => 'name_atest', "email" => $user1_mail, "tel" => '0132', "hashmdp" => 'hash'));
+I\create_user( $user1_name, "nom_signal", $user1_mail, '1132', 'hash',null,0,0,'','');
+testParams('login', $valid_ok, array ("email" =>$user1_mail, "hashmdp" => 'hash'));
+
+testParams('new_team', $valid_ok, array ("pseudo" => genName('test_team1'), "id_sport" => 1));
+
+$id_team = getLastIdTable(TBL_TEAMS);
+
+$valid = new MatchValidator();
+
+testParams('signale_team', $valid_ok, array ("id_team_signalante" => $id_team,
+	"id_team_signale" => 3));
+$res = selectDbArr(TBL_SIGNALS_TEAMS, array(SIGNALS_TEAMS_ID_TEAM2), array(SIGNALS_TEAMS_ID_TEAM1 => $id_team))->fetchColumn();
+
+
+ if ($res == 3)
+	 echo str_color("green", "OK");
+ else
+	 echo str_color("red", "Résultat obtenu : $res (attendu : 3)");
+
+ echo "\n";

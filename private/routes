@@ -197,5 +197,12 @@
         "params": [
 
         ]
+    },
+    "signale_team": {
+        "fun": "signale_t_team",
+        "params": [
+            "id_team_signalante",
+            "id_team_signale"
+        ]
     }
 }

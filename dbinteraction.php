@@ -457,3 +457,12 @@ function list_waiting_results($id_team)  {
     return $stmt->fetchall(\PDO::FETCH_ASSOC);
 }
 
+function signale_t_team($id_team_user, $id_team2)  {
+    return insertDb(TBL_SIGNALS_TEAMS, array(
+	SIGNALS_TEAMS_ID_TEAM1 => $id_team_user,
+	SIGNALS_TEAMS_ID_TEAM2 => $id_team2,
+    
+    ));
+}
+
+

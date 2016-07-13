@@ -443,3 +443,10 @@ function list_prefs_sport()  {
    return I\list_prefs_sport(checkLogged());
 }
 
+function signale_t_team($id_team_signalante, $id_team_signale)  {
+    check_logged_u_t($id_team_signalante);
+   I\signale_t_team($id_team_signalante, $id_team_signale);
+    return true;
+}
+
+
