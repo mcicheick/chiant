@@ -27,13 +27,6 @@
             "id_team"
         ]
     },
-    "update_user_sport_prefs": {
-        "fun": "update_user_sp_prefs",
-        "params": [
-            "football",
-            "basketball"
-        ]
-    },
     "team_likes_team": {
         "fun": "like_team_ch",
         "params": [
