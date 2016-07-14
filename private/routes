@@ -204,5 +204,12 @@
             "id_team_signalante",
             "id_team_signale"
         ]
+    },
+    "list_msg_chat_interne_team": {
+        "fun": "list_msg_chat_interne",
+        "params": [
+            "id_team",
+            "date_last"
+        ]
     }
 }

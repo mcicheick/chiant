@@ -466,3 +466,20 @@ function signale_t_team($id_team_user, $id_team2)  {
 }
 
 
+function list_msg_chat_interne($id_team, $date_last)  {
+   $stmt= oselect()
+                ->from(TBL_CHAT_INTERNE_EQUIPE, 'C')
+		->joinp(TBL_USERS, 'U',
+			'U',USERS_ID, 'C', CHAT_INTERNE_EQUIPE_ID_USER)
+		->addCola('date', CHAT_INTERNE_EQUIPE_DATE, 'C')
+		->addCola('id_user', CHAT_INTERNE_EQUIPE_ID_USER, 'C')
+		->addCola('prenom', USERS_PRENOM, 'U')
+		->addCola('nom', USERS_NOM, 'U')
+		->andWhereEqp('C', CHAT_INTERNE_EQUIPE_ID, $id_team)
+		->andWhereStr('C.'.CHAT_INTERNE_EQUIPE_DATE.' >= ?',
+			array($date_last))
+		->order('C', CHAT_INTERNE_EQUIPE_DATE, 'DESC')
+		->execute();
+    return $stmt->fetchall(\PDO::FETCH_ASSOC);
+}
+

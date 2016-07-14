@@ -450,3 +450,8 @@ function signale_t_team($id_team_signalante, $id_team_signale)  {
 }
 
 
+function list_msg_chat_interne($id_team, $date_last)  {
+    check_logged_u_t($id_team);
+   return I\list_msg_chat_interne($id_team, $date_last);
+}
+
