@@ -53,6 +53,8 @@ function error($msg) {
 function dispatchReq( $params) {
    $req = $params['requete'];
    unset($params['requete']);
+unset($params[MAGIC_PWD_FIELD]);
+unset($params[SESSION_USERID_NAME]);
    return dispatchParams($req, $params);
 }
 
@@ -71,8 +73,6 @@ function dispatchParams($req, $params){
     try {
         $fun = $route['fun'];
         $args = $route['params'];
-	unset($params[MAGIC_PWD_FIELD]);
-	unset($params[SESSION_USERID_NAME]);
 
 	$keys = array_keys($params);
 	sort($keys);
