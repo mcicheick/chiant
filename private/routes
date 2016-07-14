@@ -69,6 +69,13 @@
             "id_invite"
         ]
     },
+    "post_chat_user_team": {
+        "fun": "u_post_msg_user_team",
+        "params": [
+            "id_team",
+            "msg"
+        ]
+    },
     "post_chat_interne": {
         "fun": "u_post_msg_t",
         "params": [

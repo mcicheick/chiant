@@ -39,6 +39,15 @@ CREATE TABLE `chat_interne_equipe` (
   `DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE `chat_user_team` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+  `CONTENT` text NOT NULL,
+  `ID_USER` int(11) NOT NULL,
+  `ID_EQUIPE` int(11) NOT NULL,
+  `DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 --
 -- RELATIONS FOR TABLE `chat_interne_equipe`:
 --

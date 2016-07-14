@@ -113,6 +113,14 @@ function u_post_msg_t ($id_user, $id_team, $msg) {
 	CHAT_INTERNE_EQUIPE_ID_EQUIPE => $id_team));
 }
 
+function u_post_msg_user_team ($id_user, $id_team, $msg) {
+    return insertDb(TBL_CHAT_USER_TEAM, array(
+	CHAT_USER_TEAM_CONTENT => $msg,
+	CHAT_USER_TEAM_ID_USER => $id_user,
+	CHAT_USER_TEAM_ID_EQUIPE => $id_team));
+}
+
+
 function u_post_msg_tt ($id_user, $id_team1, $id_team2, $msg) {
     return insertDb(TBL_CHAT_INTER_EQUIPE, array(
 	CHAT_INTER_EQUIPE_CONTENT => $msg,

@@ -52,6 +52,7 @@ function error($msg) {
 
 function dispatchReq( $params) {
    $req = $params['requete'];
+   unset($params['requete']);
    return dispatchParams($req, $params);
 }
 
@@ -70,6 +71,8 @@ function dispatchParams($req, $params){
     try {
         $fun = $route['fun'];
         $args = $route['params'];
+	unset($params[MAGIC_PWD_FIELD]);
+	unset($params[SESSION_USERID_NAME]);
 
 	$keys = array_keys($params);
 	sort($keys);
@@ -78,7 +81,7 @@ function dispatchParams($req, $params){
 	if ($args != $keys)
 		raiseHermetiqueExc(
 			"Request $req : given arguments ".join($keys,', ').
-			" ; expected arguments ". join(array_keys($args),', '),
+			" ; expected arguments ". join(($args),', '),
 				ERR_REQ_WRONG_ARGS);
 
 
@@ -343,6 +346,12 @@ function t_invites_t($id_invitant, $id_invite, $date_rencontre, $montant) {
 function u_post_msg_t ($id_team, $msg) {
     $id_user = check_logged_u_t($id_team);
     return I\u_post_msg_t($id_user, $id_team, $msg);
+}
+
+function u_post_msg_user_team ($id_team, $msg) {
+	// TODO : check that $id_team a posté une annonce (pour éviter le flood)
+    $id_user = checkLogged();
+    return I\u_post_msg_user_team($id_user, $id_team, $msg);
 }
 
 function u_post_msg_tt ($id_team_u, $id_team_cible, $msg) {
