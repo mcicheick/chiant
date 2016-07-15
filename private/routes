@@ -218,5 +218,13 @@
             "id_team",
             "date_last"
         ]
+    },
+    "list_msg_chat_inter_team": {
+        "fun": "list_msg_chat_inter",
+        "params": [
+            "id_team_user",
+            "id_team2",
+            "date_last"
+        ]
     }
 }

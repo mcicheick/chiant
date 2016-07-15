@@ -210,7 +210,7 @@ class SQLSelect {
   }
 
   public function andWhereStr($str, $vals = array()) {
-     set_concat_sep($this->where_str, $str, ' AND ');
+     set_concat_sep($this->where_str, "($str)", ' AND ');
      $this->vals = array_merge($this->vals, $vals);
      return $this;
   }

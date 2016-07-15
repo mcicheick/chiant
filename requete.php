@@ -464,3 +464,9 @@ function list_msg_chat_interne($id_team, $date_last)  {
    return I\list_msg_chat_interne($id_team, $date_last);
 }
 
+function list_msg_chat_inter($id_team_user, $id_team2, $date_last)  {
+    check_logged_u_t($id_team_user);
+   return I\list_msg_chat_inter($id_team_user, $id_team2, $date_last);
+}
+
+

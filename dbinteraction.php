@@ -491,3 +491,25 @@ function list_msg_chat_interne($id_team, $date_last)  {
     return $stmt->fetchall(\PDO::FETCH_ASSOC);
 }
 
+function list_msg_chat_inter($id_team_user, $id_team2, $date_last)  {
+   $stmt= oselect()
+                ->from(TBL_CHAT_INTER_EQUIPE, 'C')
+		->joinp(TBL_USERS, 'U',
+			'U',USERS_ID, 'C', CHAT_INTERNE_EQUIPE_ID_USER)
+		->addCola('date', CHAT_INTER_EQUIPE_DATE, 'C')
+		->addCola('id_user', CHAT_INTER_EQUIPE_ID_USER, 'C')
+		->addCola('id_team', CHAT_INTER_EQUIPE_ID_EQUIPE_U, 'C')
+		->addCola('prenom', USERS_PRENOM, 'U')
+		->addCola('nom', USERS_NOM, 'U')
+		->andWhereStr(
+			sprintf('(C.%s = ? AND C.%s = ?) || (C.%s = ? AND C.%s = ?)',
+			CHAT_INTER_EQUIPE_ID_EQUIPE_U, CHAT_INTER_EQUIPE_ID_EQUIPE2,
+			CHAT_INTER_EQUIPE_ID_EQUIPE_U, CHAT_INTER_EQUIPE_ID_EQUIPE2),
+			array($id_team_user, $id_team2, $id_team2, $id_team_user))
+		->andWhereStr('C.'.CHAT_INTER_EQUIPE_DATE.' >= ?',
+			array($date_last))
+		->order('C', CHAT_INTERNE_EQUIPE_DATE, 'DESC')
+		->execute();
+    return $stmt->fetchall(\PDO::FETCH_ASSOC);
+}
+
