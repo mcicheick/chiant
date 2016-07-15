@@ -4,6 +4,8 @@ require_once 'noserver/config.php';
 
 // Si on génère des messages d'erreurs internes ou pas
 define('SESSION_USERID_NAME', 'id_user');
+define('MAGIC_USERID_NAME', 'id_magic_user');
+
 define('ID_SUPER_USER', 1);
 define('WARNINGS', true);
 define('HERMETIQUE', ENV != 'LOCAL');

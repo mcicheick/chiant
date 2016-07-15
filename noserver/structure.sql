@@ -42,10 +42,11 @@ CREATE TABLE `chat_interne_equipe` (
 CREATE TABLE `chat_user_team` (
   `ID` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
   `CONTENT` text NOT NULL,
-  `ID_USER` int(11) NOT NULL,
+  `ID_USER_CIBLE` int(11) NOT NULL COMMENT 'utilisateur qui discute avec léquipe',
+  `ID_USER_MSG` int(11) NOT NULL COMMENT 'utilisateur qui a écrit le message',
   `ID_EQUIPE` int(11) NOT NULL,
   `DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='chat entre un utilisateur et une équipe, suite à une annonce de léquipe';
 
 
 --
@@ -63,7 +64,7 @@ CREATE TABLE `chat_inter_equipes` (
   `CONTENT` text NOT NULL,
   `ID_USER` int(11) NOT NULL,
   `ID_EQUIPE_USER` int(11) NOT NULL COMMENT 'Ã©quipe de celui qui a postÃ©',
-  `ID_EQUIPE2` int(11) NOT NULL COMMENT 'Par convention le plus grand des deux indices',
+  `ID_EQUIPE2` int(11) NOT NULL,
   `DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

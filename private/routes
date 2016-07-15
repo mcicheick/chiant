@@ -226,5 +226,20 @@
             "id_team2",
             "date_last"
         ]
+    },
+    "list_msg_chat_annonce_user_team": {
+        "fun": "list_msg_chat_user_team",
+        "params": [
+            "id_team",
+            "date_last"
+        ]
+    },
+    "list_msg_chat_annonce_team_user": {
+        "fun": "list_msg_chat_team_user",
+        "params": [
+            "id_team_user",
+            "id_user",
+            "date_last"
+        ]
     }
 }

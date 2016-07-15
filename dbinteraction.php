@@ -483,6 +483,7 @@ function list_msg_chat_interne($id_team, $date_last)  {
 		->addCola('id_user', CHAT_INTERNE_EQUIPE_ID_USER, 'C')
 		->addCola('prenom', USERS_PRENOM, 'U')
 		->addCola('nom', USERS_NOM, 'U')
+		->addCola('msg', CHAT_INTERNE_EQUIPE_CONTENT, 'C')
 		->andWhereEqp('C', CHAT_INTERNE_EQUIPE_ID, $id_team)
 		->andWhereStr('C.'.CHAT_INTERNE_EQUIPE_DATE.' >= ?',
 			array($date_last))
@@ -495,12 +496,13 @@ function list_msg_chat_inter($id_team_user, $id_team2, $date_last)  {
    $stmt= oselect()
                 ->from(TBL_CHAT_INTER_EQUIPE, 'C')
 		->joinp(TBL_USERS, 'U',
-			'U',USERS_ID, 'C', CHAT_INTERNE_EQUIPE_ID_USER)
+			'U',USERS_ID, 'C', CHAT_INTER_EQUIPE_ID_USER)
 		->addCola('date', CHAT_INTER_EQUIPE_DATE, 'C')
 		->addCola('id_user', CHAT_INTER_EQUIPE_ID_USER, 'C')
 		->addCola('id_team', CHAT_INTER_EQUIPE_ID_EQUIPE_U, 'C')
 		->addCola('prenom', USERS_PRENOM, 'U')
 		->addCola('nom', USERS_NOM, 'U')
+		->addCola('msg', CHAT_INTER_EQUIPE_CONTENT, 'C')
 		->andWhereStr(
 			sprintf('(C.%s = ? AND C.%s = ?) || (C.%s = ? AND C.%s = ?)',
 			CHAT_INTER_EQUIPE_ID_EQUIPE_U, CHAT_INTER_EQUIPE_ID_EQUIPE2,
@@ -509,6 +511,24 @@ function list_msg_chat_inter($id_team_user, $id_team2, $date_last)  {
 		->andWhereStr('C.'.CHAT_INTER_EQUIPE_DATE.' >= ?',
 			array($date_last))
 		->order('C', CHAT_INTERNE_EQUIPE_DATE, 'DESC')
+		->execute();
+    return $stmt->fetchall(\PDO::FETCH_ASSOC);
+}
+
+function list_msg_chat_user_team($id_user, $id_team, $date_last)  {
+   $stmt= oselect()
+                ->from(TBL_CHAT_USER_TEAM, 'C')
+		->joinp(TBL_USERS, 'U',
+			'U',USERS_ID, 'C', CHAT_USER_TEAM_ID_USER_MSG)
+		->addCola('date', CHAT_USER_TEAM_DATE, 'C')
+		->addCola('id_user', CHAT_USER_TEAM_ID_USER_MSG, 'C')
+		->addCola('prenom', USERS_PRENOM, 'U')
+		->addCola('nom', USERS_NOM, 'U')
+		->andWhereEqp('C', CHAT_USER_TEAM_ID_EQUIPE, $id_team)
+		->andWhereEqp('C', CHAT_USER_TEAM_ID_USER_CIBLE, $id_user)
+		->andWhereStr('C.'.CHAT_USER_TEAM_DATE.' >= ?',
+			array($date_last))
+		->order('C', CHAT_USER_TEAM_DATE, 'DESC')
 		->execute();
     return $stmt->fetchall(\PDO::FETCH_ASSOC);
 }

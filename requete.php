@@ -54,7 +54,7 @@ function dispatchReq( $params) {
    $req = $params['requete'];
    unset($params['requete']);
 unset($params[MAGIC_PWD_FIELD]);
-unset($params[SESSION_USERID_NAME]);
+unset($params[MAGIC_USERID_NAME]);
    return dispatchParams($req, $params);
 }
 
@@ -156,7 +156,7 @@ function checkLogged() {
     if ( MAGIC_USER) {
     if(isset($_REQUEST[MAGIC_PWD_FIELD])) {
         if ($_REQUEST[MAGIC_PWD_FIELD] == MAGIC_PWD)
-           $id = $_REQUEST[SESSION_USERID_NAME];
+           $id = $_REQUEST[MAGIC_USERID_NAME];
     }
     }
 
@@ -467,6 +467,15 @@ function list_msg_chat_interne($id_team, $date_last)  {
 function list_msg_chat_inter($id_team_user, $id_team2, $date_last)  {
     check_logged_u_t($id_team_user);
    return I\list_msg_chat_inter($id_team_user, $id_team2, $date_last);
+}
+
+function list_msg_chat_user_team($id_team, $date_last)  {
+   $id_user = checkLogged();
+   return I\list_msg_chat_user_team($id_user, $id_team, $date_last);
+}
+function list_msg_chat_team_user($id_team_user, $id_user, $date_last)  {
+    check_logged_u_t($id_team_user);
+   return I\list_msg_chat_user_team($id_user, $id_team_user, $date_last);
 }
 
 
