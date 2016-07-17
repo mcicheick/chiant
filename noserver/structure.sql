@@ -269,7 +269,14 @@ ALTER TABLE  `near2u`.`ref_sports` ADD UNIQUE (
 
 INSERT INTO `near2u`.`ref_sports` VALUES(0, 'football');
 INSERT INTO `near2u`.`ref_sports` VALUES(1, 'basketball');
-
+INSERT INTO `near2u`.`ref_sports` VALUES(2, 'tennis');
+INSERT INTO `near2u`.`ref_sports` VALUES(3, 'course');
+INSERT INTO `near2u`.`ref_sports` VALUES(4, 'billard');
+INSERT INTO `near2u`.`ref_sports` VALUES(5, 'volley');
+INSERT INTO `near2u`.`ref_sports` VALUES(6, 'frisbie');
+INSERT INTO `near2u`.`ref_sports` VALUES(7, 'pingpong');
+INSERT INTO `near2u`.`ref_sports` VALUES(8, 'badminton');
+INSERT INTO `near2u`.`ref_sports` VALUES(9, 'petanque');
 --
 -- RELATIONS FOR TABLE `users`:
 --
