@@ -10,6 +10,6 @@ define('NB_SPORTS', 10);
 function listSports() {
 	// ID_SPORT => Nom du sport
 	return array(0 => 'football', 1 => 'basketball', 2 => 'tennis', 3 => 'course', 4 => 'billard', 5 => 'volley'
-		, 6 => 'frisbie', 7 => 'pingpong', 8 => 'badminton', 9 => 'petanque');
+		, 6 => 'frisbie', 7 => 'pingpong', 8 => 'badminton', 9 => 'petanque', 10 => 'baseball');
 }
 // test
