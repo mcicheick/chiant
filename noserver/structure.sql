@@ -279,7 +279,7 @@ INSERT INTO `near2u`.`ref_sports` VALUES(8, 'badminton');
 INSERT INTO `near2u`.`ref_sports` VALUES(9, 'petanque');
 INSERT INTO `near2u`.`ref_sports` VALUES(10, 'baseball');
 INSERT INTO `near2u`.`ref_sports` VALUES(11, 'handball');
-INSERT INTO `near2u`.`ref_sports` VALUES(11, 'cricket');
+INSERT INTO `near2u`.`ref_sports` VALUES(12, 'cricket');
 --
 -- RELATIONS FOR TABLE `users`:
 --
