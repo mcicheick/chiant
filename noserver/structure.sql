@@ -171,7 +171,7 @@ CREATE TABLE `teams` (
   `SPORT` int(11) NOT NULL COMMENT 'entier représentant le sport',
   `LATITUDE` float(10) NOT NULL COMMENT 'float représentant la latitude',
   `LONGITUDE` float(10) NOT NULL COMMENT 'float représentant la longitude',
-  `LAST_CONNEXION` DATE NOT NULL COMMENT 'date représentant la date de la dernière connexion'
+  `LAST_CONNEXION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'date représentant la date de la dernière connexion'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE VIEW  `view_teams_rank` (

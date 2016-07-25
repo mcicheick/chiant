@@ -50,7 +50,9 @@
         "fun": "newteam_byuser_p",
         "params": [
             "pseudo",
-            "id_sport"
+            "id_sport",
+            "latitude",
+            "longitude"
         ]
     },
     "invites_team_team": {
