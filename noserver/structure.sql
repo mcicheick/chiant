@@ -171,6 +171,8 @@ CREATE TABLE `teams` (
   `SPORT` int(11) NOT NULL COMMENT 'entier représentant le sport',
   `LATITUDE` float(10) NOT NULL COMMENT 'float représentant la latitude',
   `LONGITUDE` float(10) NOT NULL COMMENT 'float représentant la longitude',
+  `CITY` varchar(255) DEFAULT NULL COMMENT 'Ville',
+  `COUNTRY` varchar(255) DEFAULT NULL COMMENT 'Pays',
   `LAST_CONNEXION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'date représentant la date de la dernière connexion'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

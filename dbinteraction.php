@@ -54,8 +54,8 @@ function list_prefs_sport($id_user)  {
 }
 
 
-function create_team($pseudo, $sport,$latitude,$longitude) {
-    return insertDb(TBL_TEAMS, array(TEAMS_PSEUDO=>$pseudo, TEAMS_SPORT => $sport,TEAM_LATITUDE=>$latitude,TEAM_LONGITUDE=>$longitude));
+function create_team($pseudo, $sport,$latitude,$longitude,$city,$country) {
+    return insertDb(TBL_TEAMS, array(TEAMS_PSEUDO=>$pseudo, TEAMS_SPORT => $sport,TEAM_LATITUDE=>$latitude,TEAM_LONGITUDE=>$longitude,TEAM_CITY=>$city,TEAM_COUNTRY =>$country));
 }
 
 function create_user($prenom, $nom, $email, $tel, $mdp,$cle,$latitude,$longitude,$city,$country) {
@@ -63,8 +63,8 @@ function create_user($prenom, $nom, $email, $tel, $mdp,$cle,$latitude,$longitude
 
 }
 
-function create_team_by_user($id_user, $pseudo, $sport,$latitude,$longitude) {
-    if (! create_team($pseudo, $sport,$latitude,$longitude))
+function create_team_by_user($id_user, $pseudo, $sport,$latitude,$longitude,$city,$country) {
+    if (! create_team($pseudo, $sport,$latitude,$longitude,$city,$country))
 	return false;
 
     $id_team = getDb()->lastInsertId();

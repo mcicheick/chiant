@@ -52,7 +52,9 @@
             "pseudo",
             "id_sport",
             "latitude",
-            "longitude"
+            "longitude",
+            "city",
+            "country"
         ]
     },
     "invites_team_team": {

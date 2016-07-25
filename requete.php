@@ -289,10 +289,10 @@ function like_team_ch($id_bogoss, $id_amoureux) {
     return array('match' => C\like_team($id_amoureux, $id_bogoss));
 }
 
-function newteam_byuser_p($pseudo, $sport,$latitude,$longitude) {
+function newteam_byuser_p($pseudo, $sport,$latitude,$longitude,$city,$country) {
     return (I\create_team_by_user(checkLogged(),
         $pseudo,
-        $sport,$latitude,$longitude));
+        $sport,$latitude,$longitude,$city,$country));
 }
 
 function check_user_team ($id_user, $id_team) {
