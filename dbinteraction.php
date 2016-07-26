@@ -227,24 +227,39 @@ function u_post_result($id_team_user, $id_team2, $result, $fairplay, $avis)  {
 function update_position($id_user,$latitude,$longitude,$city,$country){
     updateDb(TBL_USERS, array(USERS_LATITUDE=> $latitude,USERS_LONGITUDE=>$longitude,USERS_CITY=>$city,USERS_COUNTRY=>$country ),$id_user );
     $req=selectDbArr(TBL_LIEN_TEAM_USERS,array(LIEN_TEAM_USERS_ID_TEAM), array(LIEN_TEAM_USERS_ID_USER =>$id_user ));
-    while($donnees=$req->fetch()) update_positionTeam($donnees[LIEN_TEAM_USERS_ID_TEAM]);
+    while($donnees=$req->fetch()) update_positionTeam($donnees[strtolower(LIEN_TEAM_USERS_ID_TEAM)]);
     $req->closeCursor();
     return true;
 }
 
 function update_positionTeam($idteam){   
 
-$req=selectDbArr(TBL_LIEN_TEAM_USERS,array(LIEN_TEAM_USERS_ID_USER), array(TEAMS_ID =>$idteam ));
+$req=selectDbArr(TBL_LIEN_TEAM_USERS,array(LIEN_TEAM_USERS_ID_USER), array(LIEN_TEAM_USERS_ID_TEAM =>$idteam ));
 $reponse=$req->fetchall();
+
+$reponse=array_column($reponse, strtolower(LIEN_TEAM_USERS_ID_USER));
+
+print_r($reponse);
+$marks = substr( str_repeat(', ?', count($reponse)),1);
+$req2=selectDbWhStr(TBL_USERS, array(USERS_LATITUDE,USERS_LONGITUDE), USERS_ID." IN ($marks) ", $reponse);
+$reponse=$req2->fetchall();
+
+print_r($reponse);
+
 $solution=calcule_barycentre($reponse);
-updatepositionDB($id_team,$solution[TEAM_LATITUDE],$solution[TEAM_LONGITUDE]);
+
+print_r($solution);
+$geo=getCityCountry($solution[strtolower(TEAMS_LATITUDE)],$solution[strtolower(TEAMS_LONGITUDE)]);
+
+updatepositionDB($idteam,$solution[strtolower(TEAMS_LATITUDE)],$solution[strtolower(TEAMS_LONGITUDE)],$geo[strtolower(TEAMS_CITY)],$geo[strtolower(TEAMS_COUNTRY)]);
 
 }
 
 
-function updatepositionDB($latitude,$longitude,$id_team){
+function updatepositionDB($id_team,$latitude,$longitude,$city,$country){
 
-return(updateDb(TBL_TEAMS, array(TEAM_LATITUDE => $latitude,TEAM_LONGITUDE=>$longitude ),$id_team ));
+return(updateDb(TBL_TEAMS, array(TEAMS_LATITUDE => $latitude,TEAMS_LONGITUDE=>$longitude,TEAMS_CITY=>$city, TEAMS_COUNTRY=>$country ),$id_team ));
+
 }
 
 
@@ -252,7 +267,7 @@ return(updateDb(TBL_TEAMS, array(TEAM_LATITUDE => $latitude,TEAM_LONGITUDE=>$lon
 /*fonction qui actualise la date de dernière connexion des équipes*/
 function update_last_connexion($id_user){
     $req=selectDbArr(TBL_LIEN_TEAM_USERS,array(LIEN_TEAM_USERS_ID_TEAM), array(LIEN_TEAM_USERS_ID_USER =>$id_user ));
-    while($donnees=$req->fetch()) updateDb(TABLE_TEAMS,array(TEAM_LAST_CONNEXION => date('d/m/Y')), $donnees[LIEN_TEAM_USERS_ID_TEAM]);
+    while($donnees=$req->fetch()) updateDb(TABLE_TEAMS,array(TEAM_LAST_CONNEXION => date('d/m/Y')), $donnees[strtolower(LIEN_TEAM_USERS_ID_TEAM)]);
     $req->closeCursor();
     return(true);
 }
