@@ -276,7 +276,6 @@ function update_user_sp_prefs($prefs){
 
 	// enlève les préférences de basket  et de football
 	I\removeAffinitesSports($id_user, $liste_total);
-	echo "entre\n";
 	// mets les bonnes à la place
 	I\addAffinitesSports($id_user, $liste_positive);
     return true;
@@ -298,10 +297,10 @@ function like_team_ch($id_bogoss, $id_amoureux) {
     return array('match' => C\like_team($id_amoureux, $id_bogoss));
 }
 
-function newteam_byuser_p($pseudo, $sport) {
+function newteam_byuser_p($pseudo, $sport,$latitude,$longitude,$city,$country) {
     return (I\create_team_by_user(checkLogged(),
         $pseudo,
-        $sport));
+        $sport,$latitude,$longitude,$city,$country));
 }
 
 function check_user_team ($id_user, $id_team) {

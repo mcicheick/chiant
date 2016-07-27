@@ -172,6 +172,8 @@ CREATE TABLE `teams` (
   `SPORT` int(11) NOT NULL COMMENT 'entier représentant le sport',
   `LATITUDE` float(10) NOT NULL COMMENT 'float représentant la latitude',
   `LONGITUDE` float(10) NOT NULL COMMENT 'float représentant la longitude',
+    `CITY` varchar(255) DEFAULT NULL COMMENT 'Ville',
+  `COUNTRY` varchar(255) DEFAULT NULL COMMENT 'Pays',
   `LAST_CONNEXION` DATE NOT NULL COMMENT 'date représentant la date de la dernière connexion'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -270,7 +272,17 @@ ALTER TABLE  `near2u`.`ref_sports` ADD UNIQUE (
 
 INSERT INTO `near2u`.`ref_sports` VALUES(0, 'football');
 INSERT INTO `near2u`.`ref_sports` VALUES(1, 'basketball');
-
+INSERT INTO `near2u`.`ref_sports` VALUES(2, 'tennis');
+INSERT INTO `near2u`.`ref_sports` VALUES(3, 'course');
+INSERT INTO `near2u`.`ref_sports` VALUES(4, 'billard');
+INSERT INTO `near2u`.`ref_sports` VALUES(5, 'volley');
+INSERT INTO `near2u`.`ref_sports` VALUES(6, 'frisbie');
+INSERT INTO `near2u`.`ref_sports` VALUES(7, 'pingpong');
+INSERT INTO `near2u`.`ref_sports` VALUES(8, 'badminton');
+INSERT INTO `near2u`.`ref_sports` VALUES(9, 'petanque');
+INSERT INTO `near2u`.`ref_sports` VALUES(10, 'baseball');
+INSERT INTO `near2u`.`ref_sports` VALUES(11, 'handball');
+INSERT INTO `near2u`.`ref_sports` VALUES(12, 'cricket');
 --
 -- RELATIONS FOR TABLE `users`:
 --

@@ -43,6 +43,20 @@ function str_color($color, $str) {
 }
 
 function testParams($req, Validator $is_ok, $params) {
+// grossier patch
+	switch ($req) {
+	case 'update_user_sport_prefs': 
+		$params = completeSports( $params);
+		break;
+	case 'new_team': 
+		$params['city'] = 'ville par defaut';
+		$params['country'] = 'pays par defaut';
+		$params['longitude'] = 0;
+		$params['latitude'] = 0;
+		break;
+	}
+
+
   echo $is_ok->message()."\n";
 
   echo "requete : ".$req."\n  params : ".json_encode($params)."\n\n";
@@ -117,6 +131,17 @@ liensrc('basique');
 
 echo "Test de l'accord entre la liste des sports en SQL et la liste des sports en PHP";
 $phpSports = listSports();
+
+$basicPrefs = array();
+foreach($phpSports as $sport) {
+	$basicPrefs[$sport] = 0;
+}
+
+function completeSports($prefs) {
+	global $basicPrefs;
+ return array_merge($basicPrefs,  $prefs);
+}
+
 sort($phpSports);
 $validatorSports = new MatchValidator($phpSports);
 
@@ -132,6 +157,7 @@ $validatorSports = new MatchValidator($phpSports);
 
  echo "\n";
 
+ 
 //testParams('update_user_picture',  array ($photo => ?));
 //testParams('update_team_picture',  array ($photo => ?, $id_team => ?));
 
@@ -148,6 +174,7 @@ testParams('login', $valid_fail, array ("email" => 'ta@gueule', "hashmdp" => 'ri
 
 testParams('login', $valid_fail, array ("email" => 'ta@gueule', "hashmdp" => 'rien'));
 testParams('login', $valid_ok, array ("email" =>$user1_mail, "hashmdp" => 'hash'));
+//testSports($valid_ok, array ("football" => 1, "basketball" => 0));
 testParams('update_user_sport_prefs', $valid_ok, array ("football" => 1, "basketball" => 0));
 testParams('new_team', $valid_ok, array ("pseudo" => genName('test_team1'), "id_sport" => 1));
 
