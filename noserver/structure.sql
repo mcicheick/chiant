@@ -20,7 +20,7 @@ DROP DATABASE IF EXISTS `near2u`;
 --
 -- Database: `near2u`
 --
-CREATE DATABASE IF NOT EXISTS `near2u` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+CREATE DATABASE IF NOT EXISTS `near2u` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `near2u`;
 
 
@@ -37,7 +37,7 @@ CREATE TABLE `chat_interne_equipe` (
   `ID_USER` int(11) NOT NULL,
   `ID_EQUIPE` int(11) NOT NULL,
   `DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `chat_user_team` (
   `ID` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -46,7 +46,7 @@ CREATE TABLE `chat_user_team` (
   `ID_USER_MSG` int(11) NOT NULL COMMENT 'utilisateur qui a �crit le message',
   `ID_EQUIPE` int(11) NOT NULL,
   `DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='chat entre un utilisateur et une �quipe, suite � une annonce de l�quipe';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='chat entre un utilisateur et une �quipe, suite � une annonce de l�quipe';
 
 
 --
@@ -66,7 +66,7 @@ CREATE TABLE `chat_inter_equipes` (
   `ID_EQUIPE_USER` int(11) NOT NULL COMMENT 'équipe de celui qui a posté',
   `ID_EQUIPE2` int(11) NOT NULL,
   `DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- RELATIONS FOR TABLE `chat_inter_equipes`:
@@ -83,7 +83,7 @@ CREATE TABLE `coup_coeurs_equipes` (
   `ID_BOGOSS` int(11) NOT NULL,
   `DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ID` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- RELATIONS FOR TABLE `coup_coeurs_equipes`:
@@ -99,7 +99,7 @@ CREATE TABLE `invitations_equipe_joueur` (
   `ID_INVITANT` int(11) NOT NULL,
   `ID_INVITE` int(11) NOT NULL,
   `ID_EQUIPE` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- RELATIONS FOR TABLE `invitations_equipe_joueur`:
@@ -117,7 +117,7 @@ CREATE TABLE `invitations_inter_equipes` (
   `ID_INVITE` int(11) NOT NULL,
   `DATE_RENCONTRE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `MONTANT` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- RELATIONS FOR TABLE `invitations_inter_equipes`:
@@ -132,7 +132,7 @@ CREATE TABLE `invitations_inter_equipes` (
 CREATE TABLE `lien_team_users` (
   `ID_TEAM` int(11) NOT NULL,
   `ID_USER` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- RELATIONS FOR TABLE `lien_team_users`:
@@ -150,7 +150,7 @@ CREATE TABLE `offre_team_users` (
   `NB` int(11) NOT NULL COMMENT 'nombre de joueurs recherchés',
   `FREQUENCE` int(11) NOT NULL COMMENT 'fréquence de jeu attendu',
   `NIVEAU` int(11) NOT NULL COMMENT 'niveau de jeu attendu'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Annonces d''offres pour les équipes recherchant des joueur.';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Annonces d''offres pour les équipes recherchant des joueur.';
 
 --
 -- RELATIONS FOR TABLE `offre_team_users`:
@@ -173,7 +173,7 @@ CREATE TABLE `teams` (
   `LATITUDE` float(10) NOT NULL COMMENT 'float représentant la latitude',
   `LONGITUDE` float(10) NOT NULL COMMENT 'float représentant la longitude',
   `LAST_CONNEXION` DATE NOT NULL COMMENT 'date représentant la date de la dernière connexion'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE VIEW  `view_teams_rank` (
 ID,
@@ -208,13 +208,13 @@ CREATE TABLE `users` (
   `CLE` varchar(255) DEFAULT NULL COMMENT 'le couplet(email,cle) permet l update du password par methode email+get si oubli',
   `CITY` varchar(255) DEFAULT NULL COMMENT 'Ville',
   `COUNTRY` varchar(255) DEFAULT NULL COMMENT 'Pays'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `lien_prefs_sports_user` (
   `ID_USER` int(11) NOT NULL,
   `ID_SPORT` int(11) NOT NULL,
   PRIMARY KEY (`ID_USER`,`ID_SPORT`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Liste des sports de préférence par utilisateur';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Liste des sports de préférence par utilisateur';
 
 
 CREATE TABLE `users_inactif` (
@@ -230,7 +230,7 @@ CREATE TABLE `users_inactif` (
   `CLE` varchar(255) DEFAULT NULL COMMENT 'le couplet(email,cle) permet d activer le compte par une methode email+get',
   `CITY` varchar(255) DEFAULT NULL COMMENT 'Ville',
   `COUNTRY` varchar(255) DEFAULT NULL COMMENT 'Pays'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -262,7 +262,7 @@ CREATE TABLE `near2u`.`ref_sports` (
   `ID` int(11) NOT NULL,
   `NOM` varchar(50) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='table de références : idsport/nom du sport (non modifiable)';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='table de références : idsport/nom du sport (non modifiable)';
 
 ALTER TABLE  `near2u`.`ref_sports` ADD UNIQUE (
 `NOM`

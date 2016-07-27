@@ -69,10 +69,18 @@
             "id_invite"
         ]
     },
-    "post_chat_user_team": {
+    "post_chat_user_team_annonce": {
         "fun": "u_post_msg_user_team",
         "params": [
             "id_team",
+            "msg"
+        ]
+    },
+    "post_chat_team_user_annonce": {
+        "fun": "u_post_msg_team_user",
+        "params": [
+            "id_team",
+             "id_user_cible",
             "msg"
         ]
     },
@@ -238,8 +246,13 @@
         "fun": "list_msg_chat_team_user",
         "params": [
             "id_team_user",
-            "id_user",
+            "id_user_cible",
             "date_last"
+        ]
+    },
+    "last_chat_msg": {
+        "fun": "last_chat_msg",
+        "params": [
         ]
     }
 }

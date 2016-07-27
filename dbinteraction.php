@@ -116,7 +116,16 @@ function u_post_msg_t ($id_user, $id_team, $msg) {
 function u_post_msg_user_team ($id_user, $id_team, $msg) {
     return insertDb(TBL_CHAT_USER_TEAM, array(
 	CHAT_USER_TEAM_CONTENT => $msg,
-	CHAT_USER_TEAM_ID_USER => $id_user,
+	CHAT_USER_TEAM_ID_USER_CIBLE => $id_user,
+	CHAT_USER_TEAM_ID_USER_MSG => $id_user,
+	CHAT_USER_TEAM_ID_EQUIPE => $id_team));
+}
+
+function u_post_msg_team_user ($id_user, $id_user_cible, $id_team, $msg) {
+    return insertDb(TBL_CHAT_USER_TEAM, array(
+	CHAT_USER_TEAM_CONTENT => $msg,
+	CHAT_USER_TEAM_ID_USER_CIBLE => $id_user_cible,
+	CHAT_USER_TEAM_ID_USER_MSG => $id_user,
 	CHAT_USER_TEAM_ID_EQUIPE => $id_team));
 }
 
@@ -533,3 +542,200 @@ function list_msg_chat_user_team($id_user, $id_team, $date_last)  {
     return $stmt->fetchall(\PDO::FETCH_ASSOC);
 }
 
+/*
+ *
+ *
+ * Bill Karwin, author of "SQL Antipatterns: Avoiding the Pitfalls of Database Programming"
+ *
+ *  trouvé sur Quora (mySQL):
+ * SELECT m.*
+FROM mytable AS m
+JOIN (SELECT category, MIN(id) AS id 
+    FROM mytable GROUP BY category) AS t
+  USING (id);
+ *
+ *
+ * renvoie le dernier message par id_team
+ *
+ * */
+function last_chat_interne_msg($id_user) {
+   $stmt= oselect()
+                ->from(TBL_CHAT_INTERNE_EQUIPE, 'C')
+		->joinstr(sprintf('(SELECT %s, MAX(%s) AS date FROM %s GROUP BY %s) AS C2 ON C.%s = C2.date AND C.%s = C2.%s',
+			CHAT_INTERNE_EQUIPE_ID_EQUIPE, CHAT_INTERNE_EQUIPE_DATE, TBL_CHAT_INTERNE_EQUIPE, CHAT_INTERNE_EQUIPE_ID_EQUIPE, 
+			// ON
+			CHAT_INTERNE_EQUIPE_DATE,
+			CHAT_INTERNE_EQUIPE_ID_EQUIPE,
+			CHAT_INTERNE_EQUIPE_ID_EQUIPE
+		      ))
+		->joinp(TBL_USERS, 'U',
+			'U',USERS_ID, 'C', CHAT_INTERNE_EQUIPE_ID_USER)
+		->joinp(TBL_LIEN_TEAM_USERS, 'L',
+			'L',LIEN_TEAM_USERS_ID_TEAM, 'C', CHAT_INTERNE_EQUIPE_ID_EQUIPE)
+		->joinp(TBL_TEAMS, 'T',
+			'T',TEAMS_ID, 'C', CHAT_INTERNE_EQUIPE_ID_EQUIPE)
+		->joinp(TBL_REF_SPORTS, 'S',
+			'S',REF_SPORTS_ID, 'T', TEAMS_SPORT)
+		->addCola('id_team', CHAT_INTERNE_EQUIPE_ID_EQUIPE, 'C')
+		->addCola('pseudo_team', TEAMS_PSEUDO, 'T')
+		->addCola('sport', REF_SPORTS_NOM, 'S')
+		->addCola('date', CHAT_INTERNE_EQUIPE_DATE, 'C')
+		->addCola('id_user', CHAT_INTERNE_EQUIPE_ID_USER, 'C')
+		->addCola('prenom', USERS_PRENOM, 'U')
+		->addCola('nom', USERS_NOM, 'U')
+		->addCola('msg', CHAT_INTERNE_EQUIPE_CONTENT, 'C')
+		->andWhereEqp('L', LIEN_TEAM_USERS_ID_USER, $id_user)
+		//->andWhereStr('C.'.CHAT_INTERNE_EQUIPE_DATE.' >= ?',
+			////array($date_last))
+		//->order('C', CHAT_INTERNE_EQUIPE_DATE, 'DESC')
+		->execute();
+    return $stmt->fetchall(\PDO::FETCH_ASSOC);
+}
+
+function condition_chat_inter($stmt, $id_user, $col_id_team) {
+	return $stmt
+		->joinp(TBL_LIEN_TEAM_USERS, 'L',
+			'L',LIEN_TEAM_USERS_ID_TEAM, 'C', $col_id_team)
+		->andWhereEqp('L', LIEN_TEAM_USERS_ID_USER, $id_user);
+}
+
+function last_chat_inter_msg($id_user) {
+
+   $col_id_team2 = 'id_team2';
+
+   $tbl_chat = TBL_CHAT_INTER_EQUIPE;
+   $tbl_lien = TBL_LIEN_TEAM_USERS;
+   $col_date = CHAT_INTER_EQUIPE_DATE;
+   $lien_team = LIEN_TEAM_USERS_ID_TEAM;
+   $lien_user = LIEN_TEAM_USERS_ID_USER;
+   $chat_equipeu = CHAT_INTER_EQUIPE_ID_EQUIPE_U;
+   $chat_equipe2 = CHAT_INTER_EQUIPE_ID_EQUIPE2;
+
+   $case_col ="(CASE CL.$chat_equipeu WHEN L.$lien_team THEN CL.$chat_equipe2 ELSE CL.$chat_equipeu END)";
+
+   $stmt_lastdate =
+	   oselect()
+	    ->joinstr("$tbl_lien AS L ON L.$lien_team = CL.$chat_equipeu OR L.$lien_team = CL.$chat_equipe2")
+	    ->andWhereEqp('L', LIEN_TEAM_USERS_ID_USER, $id_user)
+            ->from(TBL_CHAT_INTER_EQUIPE, 'CL')
+	    ->addColStr("MAX($col_date) AS $col_date")
+	    ->addColStr("L.$lien_team as $lien_team")
+	    ->addColStr("$case_col AS $col_id_team2")
+	    ->groupBy("$case_col, L.$lien_team");
+
+	   //condition_chat_inter(oselect(), $id_user, $chat_equipe_u)
+   $on_str = "C.$col_date = CL.$col_date AND (CL.$col_id_team2 = C.$chat_equipeu OR CL.$col_id_team2 = C.$chat_equipe2) AND CL.$lien_team = L.$lien_team";
+
+   $stmt= oselect()
+                ->from(TBL_CHAT_INTER_EQUIPE, 'C')
+	        ->joinstr("$tbl_lien AS L ON L.$lien_team = C.$chat_equipeu OR L.$lien_team = C.$chat_equipe2")
+		->joinstr("(\n  ".$stmt_lastdate->sqlrequete(). " )\n AS CL ON $on_str")
+		->addVals($stmt_lastdate->getVals())
+		->joinp(TBL_USERS, 'U',
+			'U',USERS_ID, 'C', CHAT_INTERNE_EQUIPE_ID_USER)
+		->joinp(TBL_TEAMS, 'TU',
+			'TU',TEAMS_ID, 'L', LIEN_TEAM_USERS_ID_TEAM)
+		->joinp(TBL_TEAMS, 'T2',
+			'T2',TEAMS_ID, 'CL', $col_id_team2)
+		->joinp(TBL_TEAMS, 'TM',
+			'TM',TEAMS_ID, 'C', CHAT_INTER_EQUIPE_ID_EQUIPE_U)
+		->joinp(TBL_REF_SPORTS, 'S',
+			'S',REF_SPORTS_ID, 'TU', TEAMS_SPORT)
+		->addCola('id_team_user', LIEN_TEAM_USERS_ID_TEAM, 'L')
+		->addCola($col_id_team2, $col_id_team2, 'CL')
+		->addCola('id_team_msg', CHAT_INTER_EQUIPE_ID_EQUIPE_U, 'C')
+		->addCola('pseudo_team_user', TEAMS_PSEUDO, 'TU')
+		->addCola('pseudo_team_2', TEAMS_PSEUDO, 'T2')
+		->addCola('sport', REF_SPORTS_NOM, 'S')
+		->addCola('date', CHAT_INTER_EQUIPE_DATE, 'C')
+		->addCola('id_user', CHAT_INTER_EQUIPE_ID_USER, 'C')
+		->addCola('prenom', USERS_PRENOM, 'U')
+		->addCola('nom', USERS_NOM, 'U')
+		->addCola('msg', CHAT_INTER_EQUIPE_CONTENT, 'C')
+		->andWhereEqp('L', LIEN_TEAM_USERS_ID_USER, $id_user)
+		//->andWhereStr('C.'.CHAT_INTERNE_EQUIPE_DATE.' >= ?',
+			//array($date_last))
+		//->order('C', CHAT_INTERNE_EQUIPE_DATE, 'DESC')
+		->execute();
+    return $stmt->fetchall(\PDO::FETCH_ASSOC);
+}
+function last_chat_user_team($id_user) {
+   $tbl_lien = TBL_CHAT_USER_TEAM;
+   $col_date = CHAT_USER_TEAM_DATE;
+   $chat_team2 = CHAT_USER_TEAM_ID_EQUIPE;
+
+   $stmt_lastdate = oselect()
+            ->from(TBL_CHAT_USER_TEAM, 'CL')
+	    ->addCola($chat_team2, $chat_team2, 'CL')
+	    ->addColStr("MAX($col_date) AS $col_date")
+	    ->groupBy($chat_team2)
+	    ->andWhereEqp('CL',CHAT_USER_TEAM_ID_USER_CIBLE,$id_user);
+   $stmt= oselect()
+                ->from(TBL_CHAT_USER_TEAM, 'C')
+	        ->andWhereEqp('C',CHAT_USER_TEAM_ID_USER_CIBLE,$id_user)
+		->joinstr("({$stmt_lastdate->sqlrequete()}) AS CL ON CL.$chat_team2 = C.$chat_team2 AND C.$col_date = CL.$col_date")
+		->addVals($stmt_lastdate->getVals())
+		->joinp(TBL_USERS, 'U',
+			'U',USERS_ID, 'C', CHAT_USER_TEAM_ID_USER_MSG)
+		->joinp(TBL_TEAMS, 'T',
+			'T',TEAMS_ID, 'C', $chat_team2)
+		->joinp(TBL_REF_SPORTS, 'S',
+			'S',REF_SPORTS_ID, 'T', TEAMS_SPORT)
+		->addCola('id_team', $chat_team2, 'C')
+		->addCola('pseudo_team', TEAMS_PSEUDO, 'T')
+		->addCola('sport', REF_SPORTS_NOM, 'S')
+		->addCola('date', $col_date, 'C')
+		->addCola('id_user', CHAT_USER_TEAM_ID_USER_MSG, 'C')
+		->addCola('prenom', USERS_PRENOM, 'U')
+		->addCola('nom', USERS_NOM, 'U')
+		->addCola('msg', CHAT_USER_TEAM_CONTENT, 'C')
+		->andWhereEqp('C', CHAT_USER_TEAM_ID_USER_CIBLE, $id_user)
+		//->andWhereStr('C.'.CHAT_INTERNE_EQUIPE_DATE.' >= ?',
+			////array($date_last))
+		//->order('C', CHAT_USER_TEAM_DATE, 'DESC')
+		->execute();
+    return $stmt->fetchall(\PDO::FETCH_ASSOC);
+}
+function last_chat_team_user($id_user) {
+   $tbl_lien = TBL_LIEN_TEAM_USERS;
+   $lien_team = LIEN_TEAM_USERS_ID_TEAM;
+   $col_date = CHAT_USER_TEAM_DATE;
+   $chat_team2 = CHAT_USER_TEAM_ID_EQUIPE;
+   $chat_user_cible = CHAT_USER_TEAM_ID_USER_CIBLE;
+
+   $stmt_lastdate = oselect()
+            ->from(TBL_CHAT_USER_TEAM, 'CL')
+	    ->joinstr("$tbl_lien AS L ON L.$lien_team = CL.$chat_team2")
+	    ->addCola($chat_team2, $chat_team2, 'CL')
+	    ->addColStr("CL.$chat_user_cible")
+	    ->addColStr("MAX(CL.$col_date) AS $col_date")
+	    ->groupBy("CL.$chat_team2, CL.$chat_user_cible")
+	    ->andWhereEqp('L', LIEN_TEAM_USERS_ID_USER, $id_user);
+
+   $on_str = "C.$col_date = CL.$col_date AND CL.$chat_user_cible = C.$chat_user_cible"; // AND CL.$chat_team2 = L.$lien_team";
+   $stmt= oselect()
+                ->from(TBL_CHAT_USER_TEAM, 'C')
+		->joinstr("( ".$stmt_lastdate->sqlrequete(). " ) AS CL ON $on_str")
+		->joinstr("$tbl_lien AS L ON L.$lien_team = CL.$chat_team2")
+		->addVals($stmt_lastdate->getVals())
+		->joinp(TBL_USERS, 'U',
+			'U',USERS_ID, 'C', CHAT_USER_TEAM_ID_USER_MSG)
+		->joinp(TBL_TEAMS, 'T',
+			'T',TEAMS_ID, 'C', $chat_team2)
+		->joinp(TBL_REF_SPORTS, 'S',
+			'S',REF_SPORTS_ID, 'T', TEAMS_SPORT)
+		->addCola('id_team', $chat_team2, 'C')
+		->addCola('pseudo_team', TEAMS_PSEUDO, 'T')
+		->addCola('sport', REF_SPORTS_NOM, 'S')
+		->addCola('date', $col_date, 'C')
+		->addCola('id_user', CHAT_USER_TEAM_ID_USER_MSG, 'C')
+		->addCola('prenom', USERS_PRENOM, 'U')
+		->addCola('nom', USERS_NOM, 'U')
+		->addCola('msg', CHAT_USER_TEAM_CONTENT, 'C')
+		->andWhereEqp('L', LIEN_TEAM_USERS_ID_USER, $id_user)
+		//->andWhereStr('C.'.CHAT_INTERNE_EQUIPE_DATE.' >= ?',
+			////array($date_last))
+		//->order('C', CHAT_USER_TEAM_DATE, 'DESC')
+		->execute();
+    return $stmt->fetchall(\PDO::FETCH_ASSOC);
+}

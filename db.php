@@ -50,6 +50,9 @@ function getDb() {
         // Configuration facultative de la connexion
         $db->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER); // les noms de champs seront en caractères minuscules
         $db->setAttribute(PDO::ATTR_ERRMODE , PDO::ERRMODE_EXCEPTION); // les erreurs lanceront des exceptions
+	$db->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND, "SET NAMES utf8");
+	//$stmt = $db->query('SET CHARACTER SET utf8');
+	//$stmt->execute();
     }
     return $db;
 }
@@ -138,6 +141,12 @@ class SQLSelect {
   protected $vals = array();
   protected $join_str = '';
   protected $from_str = '';
+  protected $groupby = '';
+
+  function groupBy($groupby) {
+    $this->groupby = $groupby;
+    return $this;
+  }
 
   function setColStr($colstr) {
     $this->cols_str = $colstr;
@@ -163,7 +172,7 @@ class SQLSelect {
   }
 
   public function order($prefix, $col, $ordre) {
-      $this->orderstr = " ORDER BY $prefix.$col $ordre ";
+      $this->orderstr = "\nORDER BY $prefix.$col $ordre ";
       return $this;
   }
 
@@ -184,10 +193,14 @@ class SQLSelect {
      return $this;
   }
 
+  public function joinstr($str) {
+     $this->join_str .= "\nJOIN $str";
+     return $this;
+  } 
+
   
    public function joinp($table, $alias, $prefix1, $col1, $prefix2, $col2) {
-     $this->join_str .= " JOIN $table AS $alias ON $prefix1.$col1 = $prefix2.$col2";
-     return $this;
+     return $this->joinstr(" $table AS $alias ON $prefix1.$col1 = $prefix2.$col2");
   }
 
   public function addVal($val){
@@ -198,6 +211,10 @@ class SQLSelect {
   public function addVals($vals){
      $this->vals = array_merge($this->vals, $vals);
      return $this;
+  }
+
+  public function getVals() {
+    return $this->vals;
   }
 
 
@@ -218,10 +235,14 @@ class SQLSelect {
 
 
   protected function getWhereStr(){
-     return ($this->where_str) ? ' WHERE '.$this->where_str.' ' : '';
+     return ($this->where_str) ? "\nWHERE ".$this->where_str.' ' : '';
   }
   protected function getLimitStr() {
-     return ($this->limit) ? ' LIMIT '.intval($this->limit).' ' : '';
+     return ($this->limit) ? "\nLIMIT ".intval($this->limit).' ' : '';
+  }
+
+  protected function getGroupbyStr() {
+     return ($this->groupby) ? "\nGROUP BY ".$this->groupby.' ' : '';
   }
 
 
@@ -236,7 +257,8 @@ class SQLSelect {
 
   function sqlrequete() {
     //$cols_str = join($cols,',');
-    $str = sprintf('SELECT %s FROM %s %s %s %s %s ', $this->cols_str, $this->from_str, $this->join_str, $this->getWhereStr(), $this->orderstr, $this->getLimitStr());
+    $str = sprintf('SELECT %s FROM %s %s %s %s %s %s', $this->cols_str, $this->from_str, $this->join_str, $this->getWhereStr(), $this->getGroupbyStr(), $this->orderstr, $this->getLimitStr());
+
 
     return $str;
   }

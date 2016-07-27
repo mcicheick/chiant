@@ -77,6 +77,9 @@ function dispatchParams($req, $params){
 	$keys = array_keys($params);
 	sort($keys);
 	sort($args);
+	//var_dump($keys);
+	//var_dump($args);
+	//var_dump(array_values($args) == array_values($keys));
 
 	if ($args != $keys)
 		raiseHermetiqueExc(
@@ -99,7 +102,9 @@ function dispatchParams($req, $params){
 			array_unshift($args_fun, $_FILES[$route['file']]);
 
 		}
-	   return bret(call_user_func_array($fun, $args_fun));
+	     $val = call_user_func_array($fun, $args_fun);
+	   $fval = bret($val);
+		return $fval;
 	}
 
     }
@@ -126,8 +131,11 @@ function dispatchParams($req, $params){
 }
 
 function bret($b) {
-    if (is_array($b))
+    if (is_array($b)) {
+	    if (isset($b['msg']))
+		    echo "COUCOU BOLOSS";
         return array('answer' => 'OK', 'contents' => $b);
+    }
 
     if ($b)
         return (array("answer" => "OK"));
@@ -354,6 +362,12 @@ function u_post_msg_user_team ($id_team, $msg) {
     return I\u_post_msg_user_team($id_user, $id_team, $msg);
 }
 
+function u_post_msg_team_user ($id_team, $id_user_cible, $msg) {
+	// TODO : check that $id_team a posté une annonce (pour éviter le flood)
+    $id_user = check_logged_u_t($id_team);
+    return I\u_post_msg_team_user($id_user, $id_user_cible, $id_team, $msg);
+}
+
 function u_post_msg_tt ($id_team_u, $id_team_cible, $msg) {
     $id_user = check_logged_u_t($id_team_u);
     //TODO: vÃ©rifier quoi d'autres ? (
@@ -466,7 +480,8 @@ function list_msg_chat_interne($id_team, $date_last)  {
 
 function list_msg_chat_inter($id_team_user, $id_team2, $date_last)  {
     check_logged_u_t($id_team_user);
-   return I\list_msg_chat_inter($id_team_user, $id_team2, $date_last);
+   $ret= I\list_msg_chat_inter($id_team_user, $id_team2, $date_last);
+    return $ret;
 }
 
 function list_msg_chat_user_team($id_team, $date_last)  {
@@ -479,3 +494,16 @@ function list_msg_chat_team_user($id_team_user, $id_user, $date_last)  {
 }
 
 
+function last_chat_msg()  {
+   $id_user = checkLogged();
+   return ch_list_chat_msg($id_user);
+}
+
+function ch_list_chat_msg($id_user) {
+   $ret = array();
+   $ret['interne'] = I\last_chat_interne_msg($id_user);
+   $ret['inter']     = I\last_chat_inter_msg($id_user);
+   $ret['user_team'] = I\last_chat_user_team($id_user);
+   $ret['team_user'] = I\last_chat_team_user($id_user);
+   return $ret;
+}
