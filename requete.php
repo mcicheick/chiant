@@ -270,20 +270,23 @@ function register($prenom, $nom, $email, $tel, $mdp,$latitude,$longitude,$city,$
     $iduser = I\create_user_inactif( $prenom, $nom, $email, $tel, $mdp,$cle,$latitude,$longitude,$city,$country);
     E\send_mail_inscription($email,$iduser,$cle);
 }
-else{
-    $cle=null;
+
+    return true;
+}
+
+function registerFB($prenom, $nom, $email, $tel,$latitude,$longitude,$city,$country,$accesstoken) {
+
+    $cle=md5(microtime(TRUE)*100000);
     $ch=curl_init('http://graph.facebook.com/v2.2/debug_token?input_token='.urlencode($accesstoken));
     $output=curl_exec($ch);
     curl_close($ch);
+    $mdp="wazafrerot";
     $output=json_decode($output);
     $appid=$output->data->app_id;
     $email=$output->data->email;
     if($appid==APP_ID && $email==$mail){
       $iduser = I\create_user( $prenom, $nom, $email, $tel, $mdp,$cle,$latitude,$longitude,$city,$country);
     }
-
-    
-}
 
     return true;
 }

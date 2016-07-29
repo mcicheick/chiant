@@ -14,6 +14,21 @@
             "accesstoken"
         ]
     },
+    "registerFB": {
+        "fun": "registerFB",
+        "params": [
+            "prenom",
+            "nom",
+            "email",
+            "tel",
+            "hashmdp",
+            "latitude",
+            "longitude",
+            "country",
+            "city",
+            "accesstoken"
+        ]
+    },
     "isregistered": {
         "fun": "isregistered",
         "params": [
