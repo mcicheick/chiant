@@ -46,8 +46,13 @@ else{for($i1=0;$i1<$longueur-2;$i1++)
 
 function getCityCountry($latitude,$longitude){
 
-$geocode=file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?latlng='.$latitude.','.$longitude.'&sensor=false');
-$output= json_decode($geocode);
+
+;
+$ch=curl_init('http://maps.googleapis.com/maps/api/geocode/json?latlng='.urlencode($latitude).','.urlencode($longitude).'&sensor=false');
+$output=curl_exec($ch);
+curl_close($ch);
+$output=json_decode($output);
+
 $country="not known";
 $city="not known";
 for($j=0;$j<count($output->results[0]->address_components);$j++){

@@ -10,7 +10,8 @@
             "latitude",
             "longitude",
             "country",
-            "city"
+            "city",
+            "accesstoken"
         ]
     },
     "update_user_picture": {
@@ -126,6 +127,13 @@
         "params": [
             "email",
             "hashmdp"
+        ]
+    },
+    "loginFB": {
+        "fun": "loginFB",
+        "params": [
+            "email",
+            "accesstoken"
         ]
     },
     "post_recherche_team_users": {

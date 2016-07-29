@@ -156,6 +156,22 @@ function login($email, $hashmdp) {
     return true;
 }
 
+function loginFB($mail,$accesstoken){
+  $ch=curl_init('http://graph.facebook.com/v2.2/debug_token?input_token='.urlencode($accesstoken));
+  $output=curl_exec($ch);
+  curl_close($ch);
+  $output=json_decode($output);
+	$appid=$output->data->app_id;
+	$email=$output->data->email;
+	if($appid==APP_ID && $email==$mail){
+		$id_user = C\check_credentials($email, null);
+	}
+
+  $_SESSION[SESSION_USERID_NAME] = $id_user;
+	return(true);
+
+}
+
 function checkLogged() {
     $id = null;
    if (isset ($_SESSION[SESSION_USERID_NAME]))
@@ -247,7 +263,7 @@ function update_t_picture($photoparams, $id_team) {
     return update_photo($photoparams, new UpdatePTeamI($id_team));
 }
 
-function register($prenom, $nom, $email, $tel, $mdp,$latitude,$longitude,$city,$country) {
+function register($prenom, $nom, $email, $tel, $mdp,$latitude,$longitude,$city,$country,$accesstoken) {
     if ($mdp!=null){
     $cle = md5(microtime(TRUE)*100000);
 
@@ -256,11 +272,22 @@ function register($prenom, $nom, $email, $tel, $mdp,$latitude,$longitude,$city,$
 }
 else{
     $cle=null;
-    $iduser = I\create_user( $prenom, $nom, $email, $tel, $mdp,$cle,$latitude,$longitude,$city,$country);
+    $ch=curl_init('http://graph.facebook.com/v2.2/debug_token?input_token='.urlencode($accesstoken));
+    $output=curl_exec($ch);
+    curl_close($ch);
+    $output=json_decode($output);
+    $appid=$output->data->app_id;
+    $email=$output->data->email;
+    if($appid==APP_ID && $email==$mail){
+      $iduser = I\create_user( $prenom, $nom, $email, $tel, $mdp,$cle,$latitude,$longitude,$city,$country);
+    }
+
+    
 }
 
     return true;
 }
+
 
 function update_user_sp_prefs($prefs){
 
