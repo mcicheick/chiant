@@ -288,6 +288,11 @@ else{
     return true;
 }
 
+function isregistered($email){
+  $a=I\isRegistered($email);
+  $a['isregistered']=($a['isregistered']==1);
+  return(array($a['isregistered']));
+}
 
 function update_user_sp_prefs($prefs){
 

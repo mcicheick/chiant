@@ -14,6 +14,12 @@
             "accesstoken"
         ]
     },
+    "isregistered": {
+        "fun": "isregistered",
+        "params": [
+            "email"
+        ]
+    },
     "update_user_picture": {
         "fun": "update_u_picture",
         "file": "photo",
