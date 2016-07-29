@@ -14,7 +14,7 @@
             "accesstoken"
         ]
     },
-    "registerFB": {
+    "newuserFB": {
         "fun": "registerFB",
         "params": [
             "prenom",
