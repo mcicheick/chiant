@@ -21,7 +21,6 @@
             "nom",
             "email",
             "tel",
-            "hashmdp",
             "latitude",
             "longitude",
             "country",

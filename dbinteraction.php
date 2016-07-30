@@ -258,16 +258,13 @@ $reponse=$req->fetchall();
 
 $reponse=array_column($reponse, strtolower(LIEN_TEAM_USERS_ID_USER));
 
-print_r($reponse);
+
 $marks = substr( str_repeat(', ?', count($reponse)),1);
 $req2=selectDbWhStr(TBL_USERS, array(USERS_LATITUDE,USERS_LONGITUDE), USERS_ID." IN ($marks) ", $reponse);
 $reponse=$req2->fetchall();
 
-print_r($reponse);
-
 $solution=calcule_barycentre($reponse);
 
-print_r($solution);
 $geo=getCityCountry($solution[strtolower(TEAMS_LATITUDE)],$solution[strtolower(TEAMS_LONGITUDE)]);
 
 updatepositionDB($idteam,$solution[strtolower(TEAMS_LATITUDE)],$solution[strtolower(TEAMS_LONGITUDE)],$geo[strtolower(TEAMS_CITY)],$geo[strtolower(TEAMS_COUNTRY)]);
