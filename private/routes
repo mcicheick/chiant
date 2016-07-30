@@ -10,7 +10,29 @@
             "latitude",
             "longitude",
             "country",
-            "city"
+            "city",
+            "accesstoken"
+        ]
+    },
+    "newuserFB": {
+        "fun": "registerFB",
+        "params": [
+            "prenom",
+            "nom",
+            "email",
+            "tel",
+            "hashmdp",
+            "latitude",
+            "longitude",
+            "country",
+            "city",
+            "accesstoken"
+        ]
+    },
+    "isregistered": {
+        "fun": "isregistered",
+        "params": [
+            "email"
         ]
     },
     "update_user_picture": {
@@ -126,6 +148,13 @@
         "params": [
             "email",
             "hashmdp"
+        ]
+    },
+    "loginFB": {
+        "fun": "loginFB",
+        "params": [
+            "email",
+            "accesstoken"
         ]
     },
     "post_recherche_team_users": {

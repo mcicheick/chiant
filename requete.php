@@ -156,6 +156,22 @@ function login($email, $hashmdp) {
     return true;
 }
 
+function loginFB($mail,$accesstoken){
+  $ch=curl_init('http://graph.facebook.com/v2.2/debug_token?input_token='.urlencode($accesstoken));
+  $output=curl_exec($ch);
+  curl_close($ch);
+  $output=json_decode($output);
+	$appid=$output->data->app_id;
+	$email=$output->data->email;
+	if($appid==APP_ID && $email==$mail){
+		$id_user = C\check_credentials($email, null);
+	}
+
+  $_SESSION[SESSION_USERID_NAME] = $id_user;
+	return(true);
+
+}
+
 function checkLogged() {
     $id = null;
    if (isset ($_SESSION[SESSION_USERID_NAME]))
@@ -247,19 +263,38 @@ function update_t_picture($photoparams, $id_team) {
     return update_photo($photoparams, new UpdatePTeamI($id_team));
 }
 
-function register($prenom, $nom, $email, $tel, $mdp,$latitude,$longitude,$city,$country) {
+function register($prenom, $nom, $email, $tel, $mdp,$latitude,$longitude,$city,$country,$accesstoken) {
     if ($mdp!=null){
     $cle = md5(microtime(TRUE)*100000);
 
     $iduser = I\create_user_inactif( $prenom, $nom, $email, $tel, $mdp,$cle,$latitude,$longitude,$city,$country);
     E\send_mail_inscription($email,$iduser,$cle);
 }
-else{
-    $cle=null;
-    $iduser = I\create_user( $prenom, $nom, $email, $tel, $mdp,$cle,$latitude,$longitude,$city,$country);
-}
 
     return true;
+}
+
+function registerFB($prenom, $nom, $email, $tel,$latitude,$longitude,$city,$country,$accesstoken) {
+
+    $cle=md5(microtime(TRUE)*100000);
+    $ch=curl_init('http://graph.facebook.com/v2.2/debug_token?input_token='.urlencode($accesstoken));
+    $output=curl_exec($ch);
+    curl_close($ch);
+    $mdp="wazafrerot";
+    $output=json_decode($output);
+    $appid=$output->data->app_id;
+    $email=$output->data->email;
+    if($appid==APP_ID && $email==$mail){
+      $iduser = I\create_user( $prenom, $nom, $email, $tel, $mdp,$cle,$latitude,$longitude,$city,$country);
+    }
+
+    return true;
+}
+
+function isregistered($email){
+  $a=I\isRegistered($email);
+  $a['isregistered']=($a['isregistered']==1);
+  return(array($a['isregistered']));
 }
 
 function update_user_sp_prefs($prefs){

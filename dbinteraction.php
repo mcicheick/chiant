@@ -60,7 +60,17 @@ function create_team($pseudo, $sport,$latitude,$longitude,$city,$country) {
 
 function create_user($prenom, $nom, $email, $tel, $mdp,$cle,$latitude,$longitude,$city,$country) {
     return insertDb(TBL_USERS, array(USERS_NOM => $nom, USERS_MAIL => $email, USERS_PASSWORD => $mdp, USERS_PRENOM => $prenom, USERS_TEL => $tel,USERS_CLE =>$cle,USERS_LONGITUDE =>$longitude,USERS_LATITUDE =>$latitude,USERS_COUNTRY =>$country,USERS_CITY =>$city));
+}
 
+
+function isregistered($email) {
+	$db=getDb();
+	$requete ='SELECT COUNT(*) as isregistered FROM '.TBL_USERS.'  WHERE '.  USERS_MAIL.'= ?';
+   //var_dump($requete);
+   $stmt= $db->prepare($requete);
+
+    if ($stmt->execute(array($email)))
+	return $stmt->fetch(\PDO::FETCH_ASSOC);
 }
 
 function create_team_by_user($id_user, $pseudo, $sport,$latitude,$longitude,$city,$country) {
