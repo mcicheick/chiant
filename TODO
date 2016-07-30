@@ -1,3 +1,6 @@
+TODO: une Èquipe ne doit pas pouvoir se liker elle meme
+TODO : Èlargir ce concept ci-dessus ‡ toutes les requÍtes
+
 MEttre une option dump SQL pour afficher les requetes sql rÈalisÈes
 Date d'inscription pour les utilisateurs
 Evaluation d'une √©quipe par une autre
@@ -16,25 +19,31 @@ nb victoire/defaite/points/classement
 
 liste des derniers matchs rencontr√©es par ordre chronologique avec leur classement d'√©quipe, date de rencontre, si ils ont gagn√© ou perdu
 limite
+FAIT
 
 
 Obtenir les classements
 points/classement
 classement : fonction du nombre de points
-id√©e : faire plusieurs requetes en une seule
+FAIT
 
 signaler une √©quipe
 une √©quipe signale une √©quipe
+PAS clair
 
 nouveau chat : team user
+QUESTION : qui initie le chat ? le team ou le user ?
 
 requete : classement par sports avec score
 limite
+FAIT
 
 requete liste des match (like dans les deux directions)
+QUESTION : Par Èquipe ?
 
 requete team like team : renvoie si l'autre a lik√© aussi
 FAIT
 
 requete la liste des message team team limit date
 prenom message heure
+QUESTIONS: quels chat ?
