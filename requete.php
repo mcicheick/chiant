@@ -157,23 +157,37 @@ function login($email, $hashmdp) {
 }
 
 function loginFB($mail,$accesstoken){
-  $ch=curl_init('http://graph.facebook.com/v2.2/debug_token?input_token='.urlencode($accesstoken));
-  $output=curl_exec($ch);
-  curl_close($ch);
-  $output=json_decode($output);
-	$appid=$output->data->app_id;
-	$email=$output->data->email;
-	if($appid==APP_ID && $email==$mail){
-		$id_user = C\check_credentials($email, null);
-	}
+    $cle=md5(microtime(TRUE)*100000);
+    $mdp="wazafrerot";
+              //on verifie que l'accesstoken est bien généré par notre app//
+    $adresse='https://graph.facebook.com/app/?access_token='.urlencode($accesstoken);
+    $ch=curl_init($adresse);
+    $output=curl_exec($ch);
+    curl_close($ch); 
+    $output=json_decode($output);
+    echo($output);
+    $appid=$output->id;
+    
+    //on vérifie que l'accesstoken correspond bien à l'email de la requête//
+    $ch=curl_init('https://graph.facebook.com/me?fields=email&access_token='.urlencode($accesstoken));
+    $output=curl_exec($ch);
+    curl_close($ch);
+    $output=json_decode($output);
+    $mail=$output->email;
 
-  $_SESSION[SESSION_USERID_NAME] = $id_user;
-	return(true);
+    //print_r(array($email ,$mail,APP_ID,$appid ));
+    if($appid==APP_ID && $email==$mail){
+
+      $id_user = C\check_credentials($email, null);
+    }
+
+    $_SESSION[SESSION_USERID_NAME] = $id_user;
+	 return(true);
 
 }
 
 function checkLogged() {
-    $id = null;
+   $id = null;
    if (isset ($_SESSION[SESSION_USERID_NAME]))
             $id = $_SESSION[SESSION_USERID_NAME];
 
@@ -274,17 +288,30 @@ function register($prenom, $nom, $email, $tel, $mdp,$latitude,$longitude,$city,$
     return true;
 }
 
-function registerFB($prenom, $nom, $email, $tel,$latitude,$longitude,$city,$country,$accesstoken) {
 
+
+function registerFB($prenom, $nom, $email, $tel,$latitude,$longitude,$city,$country,$accesstoken) {
     $cle=md5(microtime(TRUE)*100000);
-    $ch=curl_init('http://graph.facebook.com/v2.2/debug_token?input_token='.urlencode($accesstoken));
+    $mdp="wazafrerot";
+              //on verifie que l'accesstoken est bien généré par notre app//
+    $adresse='https://graph.facebook.com/app/?access_token='.urlencode($accesstoken);
+    $ch=curl_init($adresse);
+    $output=curl_exec($ch);
+    curl_close($ch); 
+    $output=json_decode($output);
+    echo($output);
+    $appid=$output->id;
+    
+    //on vérifie que l'accesstoken correspond bien à l'email de la requête//
+    $ch=curl_init('https://graph.facebook.com/me?fields=email&access_token='.urlencode($accesstoken));
     $output=curl_exec($ch);
     curl_close($ch);
-    $mdp="wazafrerot";
     $output=json_decode($output);
-    $appid=$output->data->app_id;
-    $email=$output->data->email;
+    $mail=$output->email;
+
+    //print_r(array($email ,$mail,APP_ID,$appid ));
     if($appid==APP_ID && $email==$mail){
+
       $iduser = I\create_user( $prenom, $nom, $email, $tel, $mdp,$cle,$latitude,$longitude,$city,$country);
     }
 
