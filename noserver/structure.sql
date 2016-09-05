@@ -209,7 +209,8 @@ CREATE TABLE `users` (
   `DATE_INSCRIPTION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `CLE` varchar(255) DEFAULT NULL COMMENT 'le couplet(email,cle) permet l update du password par methode email+get si oubli',
   `CITY` varchar(255) DEFAULT NULL COMMENT 'Ville',
-  `COUNTRY` varchar(255) DEFAULT NULL COMMENT 'Pays'
+  `COUNTRY` varchar(255) DEFAULT NULL COMMENT 'Pays',
+  `FCM_TOKEN` varchar(300) DEFAULT NULL COMMENT 'Token identifiant un apparaeil pour lenvoi de notifications (Firebase Cloud Messaging)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `lien_prefs_sports_user` (
