@@ -86,6 +86,8 @@ define('USERS_DATE_INSCRIPTION','DATE_INSCRIPTION');
 define('USERS_COUNTRY','COUNTRY');
 define('USERS_CITY','CITY');
 define('USERS_CLE','CLE');
+define('USERS_FCM_TOKEN','FCM_TOKEN');
+
 
 define('TBL_USERS_INACTIF', 'users_inactif');
 

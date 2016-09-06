@@ -571,3 +571,7 @@ function ch_list_chat_msg($id_user) {
    $ret['team_user'] = I\last_chat_team_user($id_user);
    return $ret;
 }
+function update_fcmtoken($token)  {
+   return I\update_fcmtoken(checkLogged(), $token);
+}
+

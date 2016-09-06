@@ -763,3 +763,8 @@ function last_chat_team_user($id_user) {
 		->execute();
     return $stmt->fetchall(\PDO::FETCH_ASSOC);
 }
+function update_fcmtoken($id_user, $token)  {
+    $params = array(USERS_FCM_TOKEN => $token);
+    return updateDb(TBL_USERS, $params, $iduser);
+}
+

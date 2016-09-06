@@ -106,7 +106,7 @@ class MatchValidator extends OKValidator {
 
 
 
-echo "<pre>Vider la base de donnÃ©es (de ses donnÃ©es) avant d'exÃ©cuter les tests\n";
+echo "<pre>ATTENTION : ce script génère plein de nouvelles lignes dans la base données afin de tester les requêtes\n";
 
 
 function lienTo($lien) {
