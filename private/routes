@@ -104,7 +104,7 @@
         "fun": "u_post_msg_team_user",
         "params": [
             "id_team",
-             "id_user_cible",
+            "id_user_cible",
             "msg"
         ]
     },
@@ -284,6 +284,13 @@
     "last_chat_msg": {
         "fun": "last_chat_msg",
         "params": [
+
+        ]
+    },
+    "update_fcmtoken": {
+        "fun": "update_fcmtoken",
+        "params": [
+            "token"
         ]
     }
 }

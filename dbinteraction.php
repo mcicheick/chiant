@@ -469,6 +469,8 @@ function list_t_classement_s($limit, $idsport)  {
 
        $stmt= oselect()->addCola('score', TEAMS_SCORE)
 		->addColStr("($rank1) AS rang")
+		->addCola('id_team', TEAMS_ID, 'T')
+		->addCola('pseudo_team', TEAMS_PSEUDO, 'T')
 		->andWhereEqp('T', TEAMS_SPORT, $idsport)
                 ->from(TBL_TEAMS, 'T')
 		->limit($limit)
@@ -761,3 +763,8 @@ function last_chat_team_user($id_user) {
 		->execute();
     return $stmt->fetchall(\PDO::FETCH_ASSOC);
 }
+function update_fcmtoken($id_user, $token)  {
+    $params = array(USERS_FCM_TOKEN => $token);
+    return updateDb(TBL_USERS, $params, $iduser);
+}
+

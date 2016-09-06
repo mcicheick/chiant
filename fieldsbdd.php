@@ -61,7 +61,7 @@ define('TEAMS_NB_PLAYED_M','NB_PLAYED_M');
 define('TEAMS_NB_VICTORIES','NB_VICTORIES');
 define('TEAMS_SCORE','SCORE');
 define('TEAMS_SPORT','SPORT');
-define('TEAMS_PICTURE_FILE','PICTURE_FILE');
+define('TEAMS_PICTURE_FILE','PHOTO');
 define('TEAMS_LATITUDE',"LATITUDE");
 define('TEAMS_LONGITUDE',"LONGITUDE");
 define('TEAMS_CITY',"CITY");
@@ -86,6 +86,8 @@ define('USERS_DATE_INSCRIPTION','DATE_INSCRIPTION');
 define('USERS_COUNTRY','COUNTRY');
 define('USERS_CITY','CITY');
 define('USERS_CLE','CLE');
+define('USERS_FCM_TOKEN','FCM_TOKEN');
+
 
 define('TBL_USERS_INACTIF', 'users_inactif');
 

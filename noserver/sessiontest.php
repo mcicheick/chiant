@@ -106,7 +106,7 @@ class MatchValidator extends OKValidator {
 
 
 
-echo "<pre>Vider la base de donnÃ©es (de ses donnÃ©es) avant d'exÃ©cuter les tests\n";
+echo "<pre>ATTENTION : ce script génère plein de nouvelles lignes dans la base données afin de tester les requêtes\n";
 
 
 function lienTo($lien) {
@@ -267,7 +267,23 @@ for ($i=0; $i < $nbrencontres; $i++) {
 }
 
 
-testParams('classement_teams', $valid_ok, array ('limit' => 20));
+class SizeClassementValidator extends OKValidator {
+   var $size;
+   function __construct($size=0) { $this->setSizeMax( $size); }
+   function setSizeMax($size) { $this->size = $size; }
+   function message() { return "should not exceed $this->size in size"; }
+   function validateContents($contents) { 
+   //var_dump($ret['contents']);
+   ////var_dump($this->arr);
+	 foreach ($contents as $arr)
+		 if (count($arr) > $this->size)
+			 return false;
+	 return true; 
+   }
+        
+}
+testParams('classement_teams', new SizeClassementValidator(20), array ('limit' => 20));
+testParams('classement_teams', new SizeClassementValidator(2), array ('limit' => 2));
 testParams('historique_team',$valid_ok,  array ('id_team' =>$teams_ids[0], 'limit' => 20));
 
 echo "Test de la liste des matches ? valider\n\n";

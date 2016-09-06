@@ -65,6 +65,21 @@ function belongs_to_u_different_sport($id_user, $id_team) {
     return $ret == 2;
 }
 
+// renvoie true si id_user appartient à une équipe du sport $id_sport
+function belongs_to_u_s($id_user, $id_sport) {
+   $req = 'SELECT 1 FROM '.TBL_LIEN_TEAM_USERS.' AS L JOIN '.
+            TBL_TEAMS.' AS T ON L.'.LIEN_TEAM_USERS_ID_TEAM.' = T.'.TEAMS_ID.
+                            ' WHERE L.'.LIEN_TEAM_USERS_ID_USER.' = ? AND T.'.TEAMS_SPORT.' = ?' ;
+
+    $stmt = execCheck($req, array($id_user, $id_sport));
+    /*
+    var_dump($req);
+    var_dump($id_user);
+    var_dump($id_team);
+    */
+    return $stmt->rowCount() > 0;
+}
+
 // renvoie false si l'utilisateur n'est pas dans une équipe
 function belongs_to_u_t_same_sport($id_user, $id_team) {
 
