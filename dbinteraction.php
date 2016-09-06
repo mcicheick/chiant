@@ -469,6 +469,8 @@ function list_t_classement_s($limit, $idsport)  {
 
        $stmt= oselect()->addCola('score', TEAMS_SCORE)
 		->addColStr("($rank1) AS rang")
+		->addCola('id_team', TEAMS_ID, 'T')
+		->addCola('pseudo_team', TEAMS_PSEUDO, 'T')
 		->andWhereEqp('T', TEAMS_SPORT, $idsport)
                 ->from(TBL_TEAMS, 'T')
 		->limit($limit)
