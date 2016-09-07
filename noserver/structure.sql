@@ -174,7 +174,7 @@ CREATE TABLE `teams` (
   `LONGITUDE` float(10) NOT NULL COMMENT 'float représentant la longitude',
     `CITY` varchar(255) DEFAULT NULL COMMENT 'Ville',
   `COUNTRY` varchar(255) DEFAULT NULL COMMENT 'Pays',
-  `LAST_CONNEXION` DATE NOT NULL COMMENT 'date représentant la date de la dernière connexion'
+  `LAST_CONNEXION` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'date représentant la date de la dernière connexion'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE VIEW  `view_teams_rank` (

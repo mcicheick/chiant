@@ -10,8 +10,7 @@
             "latitude",
             "longitude",
             "country",
-            "city",
-            "accesstoken"
+            "city"
         ]
     },
     "newuserFB": {

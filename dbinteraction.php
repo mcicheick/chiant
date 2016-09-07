@@ -81,7 +81,7 @@ function create_team_by_user($id_user, $pseudo, $sport,$latitude,$longitude,$cit
     //echo'Nouvelle team : '.$id_team."\n";
 
     u_joins_t($id_user, $id_team);
-    return true;
+    return array('id_team'=>$id_team,'id_sport'=>$sport,"name"=>$pseudo);
 }
 
 function like_team($id_bogoss, $id_amoureux) {
