@@ -10,7 +10,7 @@ define('ID_SUPER_USER', 1);
 define('WARNINGS', true);
 define('HERMETIQUE', ENV != 'LOCAL');
 
-// SI on affiche les requêtes FCM
+// SI on affiche les requêtes FCM et leur réponses
 define('DEBUG_FCM', 0);
 // Si les requêtes FCM ne sont pas réellement envoyés.
 define('FAKE_FCM', 0);
