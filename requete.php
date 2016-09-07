@@ -10,10 +10,12 @@ require_once 'dbinteraction.php';
 require_once 'check.php';
 require_once 'envoyer_mail.php';
 require_once 'routes.php';
+require_once 'chatfcm.php';
 
 use dbcheck as C;
 use dbinteraction as I;
 use envoyer_mail as E;
+use chatfcm as CFCM;
 
 
 
@@ -417,25 +419,38 @@ function t_invites_t($id_invitant, $id_invite, $date_rencontre, $montant) {
 
 function u_post_msg_t ($id_team, $msg) {
     $id_user = check_logged_u_t($id_team);
-    return I\u_post_msg_t($id_user, $id_team, $msg);
+    $ret = I\u_post_msg_t($id_user, $id_team, $msg);
+    if ($ret)
+	 CFCM\notify_team_msg($id_user, $id_team, $msg);
+    return $ret;
 }
 
 function u_post_msg_user_team ($id_team, $msg) {
 	// TODO : check that $id_team a posté une annonce (pour éviter le flood)
     $id_user = checkLogged();
-    return I\u_post_msg_user_team($id_user, $id_team, $msg);
+    $ret = I\u_post_msg_user_team($id_user, $id_team, $msg);
+
+    if ($ret)
+        CFCM\notify_user_team_msg($id_user, $id_team, $msg);
+
+    return $ret;
 }
 
 function u_post_msg_team_user ($id_team, $id_user_cible, $msg) {
 	// TODO : check that $id_team a posté une annonce (pour éviter le flood)
     $id_user = check_logged_u_t($id_team);
-    return I\u_post_msg_team_user($id_user, $id_user_cible, $id_team, $msg);
+    $ret = I\u_post_msg_team_user($id_user, $id_user_cible, $id_team, $msg);
+    if ($ret)
+        CFCM\notify_team_user_msg($id_user, $id_user_cible, $id_team, $msg);
+    return $ret;
 }
 
 function u_post_msg_tt ($id_team_u, $id_team_cible, $msg) {
     $id_user = check_logged_u_t($id_team_u);
     //TODO: vÃ©rifier quoi d'autres ? (
-    I\u_post_msg_tt($id_user, $id_team_u, $id_team_cible, $msg);
+    $ret = I\u_post_msg_tt($id_user, $id_team_u, $id_team_cible, $msg);
+    if ($ret)
+	CFCM\notify_team_inter_msg($id_user, $id_team_u, $id_team_cible, $msg);
     return true;
 }
 

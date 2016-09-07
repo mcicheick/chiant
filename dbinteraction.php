@@ -165,7 +165,7 @@ function list_t_annonce_us($sport) {
    $stmt= $db->prepare($requete);
 
     if ($stmt->execute(array($sport)))
-	return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	return $stmt->fetchall(\PDO::FETCH_ASSOC);
     else
 	return false;
 }
@@ -180,7 +180,7 @@ function list_t_sport_coupcoeur($sport, $iduser) {
    $stmt= $db->prepare($requete);
 
     if ($stmt->execute(array($sport, $iduser)))
-	return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	return $stmt->fetchall(\PDO::FETCH_ASSOC);
     else
 	return false;
 }
@@ -737,7 +737,7 @@ function last_chat_team_user($id_user) {
 	    ->andWhereEqp('L', LIEN_TEAM_USERS_ID_USER, $id_user);
 
    $on_str = "C.$col_date = CL.$col_date AND CL.$chat_user_cible = C.$chat_user_cible"; // AND CL.$chat_team2 = L.$lien_team";
-   $stmt= oselect()
+   $e = oselect()
                 ->from(TBL_CHAT_USER_TEAM, 'C')
 		->joinstr("( ".$stmt_lastdate->sqlrequete(). " ) AS CL ON $on_str")
 		->joinstr("$tbl_lien AS L ON L.$lien_team = CL.$chat_team2")
@@ -761,10 +761,50 @@ function last_chat_team_user($id_user) {
 			////array($date_last))
 		//->order('C', CHAT_USER_TEAM_DATE, 'DESC')
 		->execute();
-    return $stmt->fetchall(\PDO::FETCH_ASSOC);
+    $ret = $e->fetchAll(\PDO::FETCH_ASSOC);
+   return $ret;
 }
 function update_fcmtoken($id_user, $token)  {
     $params = array(USERS_FCM_TOKEN => $token);
-    return updateDb(TBL_USERS, $params, $iduser);
+    return updateDb(TBL_USERS, $params, $id_user);
 }
 
+// Récupère les tokens des gars dans la team sauf celui de $id_user
+function get_tokens_team_except($id_team, $id_user = null) {
+       $stmt= oselect()->addCol(USERS_FCM_TOKEN, 'U')
+                ->from(TBL_LIEN_TEAM_USERS, 'L')
+		->joinp(TBL_USERS, 'U', 'U',
+			USERS_ID, 'L', LIEN_TEAM_USERS_ID_USER)
+		->andWhereEqp('L', LIEN_TEAM_USERS_ID_TEAM, $id_team)
+		->andWhereStr('U.'. USERS_FCM_TOKEN. ' IS NOT NULL');
+
+       if ($id_user)
+		$stmt->andWhereStr('L.'. LIEN_TEAM_USERS_ID_USER. ' <> ?',array( $id_user));
+
+return	$stmt->execute()->fetchAll(\PDO::FETCH_COLUMN);
+}
+
+function get_token_user($id_user) {
+       $stmt= oselect()->addCol(USERS_FCM_TOKEN, 'U')
+                ->from(TBL_USERS, 'U')
+		->andWhereEqp('U', USERS_ID, $id_user);
+		//->andWhereStr('U.'. USERS_FCM_TOKEN. ' IS NOT NULL');
+
+return	$stmt->execute()->fetchColumn();
+}
+
+function get_tokens_2teams_except($id_team1, $id_team2, $id_user) {
+	$col_idteam = LIEN_TEAM_USERS_ID_TEAM;
+
+       $stmt= oselect()->addCol(USERS_FCM_TOKEN, 'U')
+                ->from(TBL_LIEN_TEAM_USERS, 'L')
+		->joinp(TBL_USERS, 'U', 'U',
+			USERS_ID, 'L', LIEN_TEAM_USERS_ID_USER)
+		->andWhereStr("L.$col_idteam = ? OR L.$col_idteam = ?", array($id_team1, $id_team2))
+		->andWhereStr('U.'. USERS_FCM_TOKEN. ' IS NOT NULL');
+
+       $stmt->andWhereStr('L.'. LIEN_TEAM_USERS_ID_USER. ' <> ?',array( $id_user));
+
+	
+       return $stmt->execute()->fetchall(\PDO::FETCH_COLUMN);
+}

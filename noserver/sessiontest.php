@@ -8,8 +8,15 @@ require_once '../routes.php';
 require_once '../sports.php';
 
 define('STOP_ON_ECHEC', 1);
-
 use dbinteraction as I;
+
+function createUser($prenom, $nom, $email, $token=null){
+      $id_user = I\create_user( $prenom, $nom, $email, '0132', 'hash',null,0,0,'','');
+      if ($token)
+	      I\update_fcmtoken($id_user, $token);
+      return $id_user;
+}
+
 if (ENV != 'LOCAL')
 	die('Not in local mode');
 
@@ -106,7 +113,7 @@ class MatchValidator extends OKValidator {
 
 
 
-echo "<pre>ATTENTION : ce script g�n�re plein de nouvelles lignes dans la base donn�es afin de tester les requ�tes\n";
+echo "<pre>ATTENTION : ce script génère plein de nouvelles lignes dans la base données afin de tester les requêtes\n";
 
 
 function lienTo($lien) {
@@ -195,7 +202,7 @@ testParams('invites_team_team', $valid_ok, array ("id_invitant" => $id_team2, "i
 testParams('team_likes_team', $valid_fail, array ("id_bogoss" => $id_team1, "id_amoureux" => $id_team2));
 testParams('team_likes_team', new MatchValidator(array('match' => false)), array ("id_bogoss" => $id_team2, "id_amoureux" => $id_team1));
 
-testParams('post_result_match', $valid_ok,  array ("id_team_user" => $id_team2, "id_team2" => $id_team1, "result" => 1, "avis" => "bonne équipe", "fairplay" => 1));
+testParams('post_result_match', $valid_ok,  array ("id_team_user" => $id_team2, "id_team2" => $id_team1, "result" => 1, "avis" => "bonne Ã©quipe", "fairplay" => 1));
 
 testParams('post_chat_inter_teams', $valid_fail,  array ("id_team_user" => $id_team1, "id_team_cible" => $id_team2, "msg" => "coucou l'autre team"));
 testParams('post_chat_inter_teams', $valid_ok, array ("id_team_user" => $id_team2, "id_team_cible" => $id_team1, "msg" => "coucou l'autre team"));
@@ -204,7 +211,7 @@ testParams('list_teams_by_sport', $valid_ok, array ("id_sport" => 1));
 
 $id_result = getLastIdTable(TBL_MATCHES);
 
-testParams('validate_result_match', $valid_fail, array ("id_result" => $id_result, "avis" => "Très mauvaise équipe", "fairplay" => 2));
+testParams('validate_result_match', $valid_fail, array ("id_result" => $id_result, "avis" => "TrÃ¨s mauvaise Ã©quipe", "fairplay" => 2));
 
 testParams('join_team', $valid_fail, array ("id_team" => $id_team1));
 
@@ -212,7 +219,7 @@ testParams('unjoin_team', $valid_fail, array ("id_team" => $id_team1));
 
 testParams('unjoin_team', $valid_ok, array ("id_team" => $id_team2));
 testParams('join_team', $valid_ok, array ("id_team" => $id_team1));
-testParams('validate_result_match',$valid_ok,  array ("id_result" => $id_result, "avis" => "Très mauvaise équipe", "fairplay" => 2));
+testParams('validate_result_match',$valid_ok,  array ("id_result" => $id_result, "avis" => "TrÃ¨s mauvaise Ã©quipe", "fairplay" => 2));
 
 testParams('team_likes_team', new MatchValidator(array('match' => true)), array ("id_bogoss" => $id_team1, "id_amoureux" => $id_team2));
 
@@ -376,7 +383,7 @@ liensrc('chat-inter-team');
 $nequipes = 7;
 $nbmsg = 30;
 $nbuserspargroupe = 2;
-echo "</pre>Chat inter équipes : $nequipes équipes, $nbmsg messages, $nbuserspargroupe utilisateurs par groupes<pre>\n";
+echo "</pre>Chat inter Ã©quipes : $nequipes Ã©quipes, $nbmsg messages, $nbuserspargroupe utilisateurs par groupes<pre>\n";
 
 $teams_ids = array();
 $users_ids = array();
@@ -390,7 +397,8 @@ for ($i=0; $i < $nequipes ;$i++) {
 	  $uname = genName( "user_{$j}_chat_inter_team_$i");
 	  $umail = $uname.'@mail';
 	  $u_mails[] = $umail;
-	  $u_ids[] = I\create_user($uname, "nom",$umail, '0132', 'hash',null,0,0,'','');
+	  $token = "inter-team-$i-$j";
+	  $u_ids[] = createUser($uname, "nom",$umail, $token);
 	  login($umail, 'hash');
 	  join_team($id_team);
   }
@@ -405,7 +413,7 @@ for($i=0; $i< $nbmsg; $i++) {
     $n_team_cible = $n_team_user;
     while ($n_team_cible == $n_team_user) 
     	$n_team_cible = rand(0, $nequipes -1);
-    $msg = "Msg numéro $i";
+    $msg = "Msg numÃ©ro $i";
 
     $msgs[] = array('user' => $n_user, 'team_user' => $n_team_user, 'team_cible' => $n_team_cible, 'msg' => $msg);
 
@@ -423,7 +431,7 @@ liensrc('chat-interne-team');
 $nequipes = 3;
 $nbmsg = 20;
 $nbuserspargroupe = 3 ;
-echo "</pre>Chat interne équipes : $nequipes équipes, $nbmsg messages, $nbuserspargroupe utilisateurs par équipe<pre>\n";
+echo "</pre>Chat interne Ã©quipes : $nequipes Ã©quipes, $nbmsg messages, $nbuserspargroupe utilisateurs par Ã©quipe<pre>\n";
 
 $teams_ids = array();
 $users_ids = array();
@@ -449,7 +457,7 @@ $msgs = array();
 for($i=0; $i< $nbmsg; $i++) {
     $n_user = rand(0, $nbuserspargroupe-1);
     $n_team_user = rand(0,$nequipes-1);
-    $msg = "Msg interne numéro $i";
+    $msg = "Msg interne numÃ©ro $i";
 
     $msgs[] = array('user' => $n_user, 'team_user' => $n_team_user,  'msg' => $msg);
 
@@ -467,7 +475,7 @@ $nequipes = 10;
 $nusers_annonce = 4;
 $nbmsg = 50;
 $nbuserspargroupe = 3 ;
-echo "</pre>Chat user vers team ( annonces) : $nusers_annonce utilisateurs cherchant une équipe, $nequipes équipes, $nbmsg messages, $nbuserspargroupe utilisateurs par équipe<pre>\nOn teste les deux sens (user vers team et team vers user)\n";
+echo "</pre>Chat user vers team ( annonces) : $nusers_annonce utilisateurs cherchant une Ã©quipe, $nequipes Ã©quipes, $nbmsg messages, $nbuserspargroupe utilisateurs par Ã©quipe<pre>\nOn teste les deux sens (user vers team et team vers user)\n";
 
 $users_cherchant_ids = array();
 $users_cherchant_mails = array();
@@ -476,7 +484,7 @@ $users_cherchant_mails = array();
 	  $umail = $uname.'@mail';
 	  $users_cherchant_mails[] = $umail;
 	  $users_cherchant_ids[] = I\create_user($uname, "nom",$umail, '0132', 'hash',null,0,0,'','');
-	  // pour vérifier le mot de passe
+	  // pour vÃ©rifier le mot de passe
 	  login($umail, 'hash');
  }
 
@@ -504,10 +512,10 @@ $msgs = array();
 for($i=0; $i< $nbmsg; $i++) {
 
 	if (rand(0,1) == 0) {
-		// C'est un utilisateur d'une équipe qui va poster
+		// C'est un utilisateur d'une Ã©quipe qui va poster
 		$n_user = rand(0, $nbuserspargroupe-1);
 		$n_team_user = rand(0,$nequipes-1);
-		$msg = "Msg team annonce numéro $i";
+		$msg = "Msg team annonce numÃ©ro $i";
 		$n_user_cible = rand(0,$nusers_annonce-1);
 
 		$msgs[] = array('origine' => 'team' , 'user' => $n_user, 'team' => $n_team_user,  'msg' => $msg, 'user_cible' => $n_user_cible);
@@ -525,7 +533,7 @@ for($i=0; $i< $nbmsg; $i++) {
 	else {
 		$n_user = rand(0, $nusers_annonce-1);
 		$n_team = rand(0,$nequipes-1);
-		$msg = "Msg cherchant annonce numéro $i";
+		$msg = "Msg cherchant annonce numÃ©ro $i";
 		$msgs[] = array('origine' => 'user' , 'user' => $n_user, 'team' => $n_team,  'msg' => $msg);
 		login($mail_user, 'hash');
 		$mail_user = $users_cherchant_mails[$n_user];
@@ -537,4 +545,4 @@ for($i=0; $i< $nbmsg; $i++) {
 }
 
 liensrc('chat-team-user-annonces');
-echo "Inutile : on le fait déjà au dessus";
+echo "Inutile : on le fait dÃ©jÃ  au dessus";
