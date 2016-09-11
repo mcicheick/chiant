@@ -369,8 +369,8 @@ function newteam_byuser_p($pseudo, $sport,$latitude,$longitude,$city,$country) {
     $id_user = checkLogged();
     if (C\belongs_to_u_s($id_user, $sport))
       raiseMyExc('User already belongs to a team with the same sport', ERR_ERROR);
-    return (I\create_team_by_user($id_user,$pseudo,
-        $sport,$latitude,$longitude,$city,$country));
+    return (array(I\create_team_by_user($id_user,$pseudo,
+        $sport,$latitude,$longitude,$city,$country)));
 }
 
 function check_user_team ($id_user, $id_team) {
